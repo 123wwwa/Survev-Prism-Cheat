@@ -2,14 +2,14 @@
   "schemaVersion": 2,
   "upstreamRepository": "https://github.com/survev/survev.git",
   "upstreamCommit": "7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223",
-  "inputHash": "531e54670709b59bffffe0df112b7883191bfcf1472ca2dfc03170a960ff00a8",
-  "builtAt": "2026-09-19T08:01:51.639Z",
+  "inputHash": "23ee6c939ec2b05c22cddd70254df13e21aff0160db2ab2419a55a3382d84bac",
+  "builtAt": "2026-09-19T08:09:15.629Z",
   "artifacts": {
     "app": {
       "file": "app.js",
-      "bytes": 1518773,
-      "sha256": "a1684683581118e9c07a372989bab04bd799e494414eaae20ebbc838437afd47",
-      "originalFile": "js/CgZ4va9G.js",
+      "bytes": 1519144,
+      "sha256": "5037be02325b446f75fded437f53e9cd414616dbcf037192e868d459377f09b0",
+      "originalFile": "js/CO68WnbJ.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/app.js"
     },
     "shared": {
@@ -27,11 +27,20 @@
     "throwable",
     "objects"
   ],
+  "appPatches": [
+    "Map colorizing",
+    "Position without interpolation",
+    "Mouse position without server delay",
+    "Class definition with methods",
+    "isMobile (basicDataInfo)",
+    "GameInitInjection",
+    "Override gameControls"
+  ],
   "sourceUrl": "https://github.com/survev/survev/tree/7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223",
   "build": {
     "artifacts": {
       "app": {
-        "entry": "js/CgZ4va9G.js",
+        "entry": "js/CO68WnbJ.js",
         "readableEntry": "readable-app.js",
         "imports": [
           "js/B0Z9INg1.js",
@@ -50,13 +59,13 @@
     },
     "generatedJavaScript": [
       "js/BUm7Ay-6.js",
-      "js/CgZ4va9G.js",
+      "js/CO68WnbJ.js",
       "js/B0Z9INg1.js",
       "js/BvmdDwTY.js"
     ],
     "productionHashes": {
       "js/BUm7Ay-6.js": "f8e839d90ca44c6bf3df311470423bce5616da188033c37492a47ddefcf4f6ab",
-      "js/CgZ4va9G.js": "be3ecdffaef4957ca1087523ec5beb97799b58618af598e8ab7e6fdb502e1161",
+      "js/CO68WnbJ.js": "5d80ddbfc967f4676280ecda748fa725cc62dc2c1b587a0cccd333ee811e6ae9",
       "js/B0Z9INg1.js": "5e9b0d884d2ebb14e241ab38b43e41efb61bce2e74d71507b0b95b264fba4047",
       "js/BvmdDwTY.js": "d36e306219a1eff4b66e760aca64663a885d407c103384754b628a7338aaf1dc"
     }
