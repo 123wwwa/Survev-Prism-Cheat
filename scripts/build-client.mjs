@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
-import { selectGameEntry } from './lib.mjs';
+import { selectGameEntry, restoreChunkHashes, sha256 } from './lib.mjs';
 
 // Runs in a separate process: upstream config changes are never held in an import cache.
 const source = resolve(process.argv[2]);
@@ -21,43 +21,52 @@ const loaded = await loadConfigFromFile(
 );
 if (!loaded) throw new Error('Upstream Vite config could not be loaded.');
 const config = loaded.config;
-async function flatten(items) {
-  return (await Promise.all(items.map(async item => {
-    item = await item;
-    return Array.isArray(item) ? flatten(item) : item ? [item] : [];
-  }))).flat();
-}
-const plugins = await flatten(config.plugins ?? []);
-if (!plugins.some(plugin => plugin.name === 'codefend-plugin')) {
-  throw new Error('Upstream obfuscation plugin changed. Review the build adapter before publishing.');
-}
+let readableGame;
 await build({
   ...config,
   configFile: false,
   root: client,
   mode: 'production',
   plugins: [
-    ...plugins.filter(plugin => plugin.name !== 'codefend-plugin'),
+    ...(config.plugins ?? []),
     {
-      name: 'select-game-entry',
-      generateBundle(_, bundle) {
+      name: 'capture-game-before-native-minification',
+      enforce: 'post',
+      configResolved(resolved) {
+        if (resolved.build.minify !== 'oxc') throw new Error('The upstream minifier changed; review the capture adapter.');
+      },
+      renderChunk: {
+        order: 'post',
+        handler(code, chunk) {
+          if (chunk.isEntry && chunk.facadeModuleId?.replaceAll('\\', '/') === resolve(client, 'index.html').replaceAll('\\', '/')) {
+            readableGame = code;
+          }
+          // Observe only: the original production chunks must remain untouched.
+          return null;
+        },
+      },
+      generateBundle: { order: 'post', handler(_, bundle) {
         const chunks = Object.values(bundle).filter(item => item.type === 'chunk');
         const game = selectGameEntry(chunks, resolve(client, 'index.html'));
+        if (!readableGame) throw new Error('The game entry was not captured before minification.');
+        const readableFile = 'readable-game.js';
+        if (bundle[readableFile]) throw new Error('Readable output filename conflicts with upstream output.');
+        this.emitFile({ type: 'asset', fileName: readableFile, source: restoreChunkHashes(readableGame, chunks) });
         this.emitFile({ type: 'asset', fileName: 'build-report.json', source: JSON.stringify({
           entry: game.fileName,
+          readableEntry: readableFile,
           imports: game.imports,
           dynamicImports: game.dynamicImports,
           generatedJavaScript: chunks.map(item => item.fileName),
+          productionHashes: Object.fromEntries(chunks.map(item => [item.fileName, sha256(item.code)])),
         }, null, 2) });
-      },
+      } },
     },
   ],
   build: {
     ...config.build,
     outDir: outputDirectory,
     emptyOutDir: true,
-    minify: false,
-    sourcemap: false,
     reportCompressedSize: false,
     license: { fileName: 'THIRD_PARTY_LICENSES.md' },
   },

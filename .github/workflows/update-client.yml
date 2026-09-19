@@ -2,16 +2,9 @@ name: Update client CDN
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/**'
-      - 'pipeline.config.json'
-      - 'client-config.hjson'
-      - 'package.json'
-      - '.github/workflows/update-client.yml'
   schedule:
-    - cron: '3-59/5 * * * *'
+    # Daily at 09:17 Asia/Seoul (00:17 UTC).
+    - cron: '17 0 * * *'
 
 permissions:
   contents: write
@@ -22,17 +15,21 @@ concurrency:
 
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
         with:
           node-version: '24'
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: '11.24.0'
       - name: Validate pipeline
         run: node --test tests/*.test.mjs
       - name: Update, build and publish
-        run: node scripts/pipeline.mjs deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/pipeline.mjs update

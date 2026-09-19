@@ -16,14 +16,19 @@ const dist = resolve(root, 'dist');
 const gitExe = process.env.GIT_BIN || (process.platform === 'win32' && existsSync('C:/Program Files/Git/cmd/git.exe')
   ? 'C:/Program Files/Git/cmd/git.exe' : 'git');
 const mode = process.argv[2] ?? 'build';
-if (!['build', 'deploy', 'watch'].includes(mode)) throw new Error('Usage: pipeline.mjs build|deploy|watch');
+if (!['check', 'build', 'update', 'deploy', 'watch'].includes(mode)) throw new Error('Usage: pipeline.mjs check|build|update|deploy|watch');
 const log = message => console.log(`[${new Date().toISOString()}] ${message}`);
 
 function run(executable, args, cwd = root, capture = false) {
   return new Promise((accept, reject) => {
+    const childEnv = { ...process.env, GIT_TERMINAL_PROMPT: '0', GCM_INTERACTIVE: 'never' };
+    // Git receives its scoped authentication header explicitly. Build scripts
+    // and dependency lifecycle commands do not need the publication token.
+    delete childEnv.GH_TOKEN;
+    delete childEnv.GITHUB_TOKEN;
     const child = spawn(executable, args, {
       cwd, windowsHide: true, stdio: capture ? ['ignore', 'pipe', 'pipe'] : 'inherit',
-      env: { ...process.env, GIT_TERMINAL_PROMPT: '0' },
+      env: childEnv,
     });
     let stdout = '', stderr = '';
     child.stdout?.on('data', data => { stdout += data; });
@@ -39,7 +44,8 @@ async function git(args, cwd = root, capture = true) {
   // separate publication checkout needs that same header, without persisting it.
   if (cwd === publishDir && process.env.GITHUB_ACTIONS === 'true') {
     const key = 'http.https://github.com/.extraheader';
-    const header = await run(gitExe, ['config', '--get', key], root, true).catch(() => '');
+    const header = process.env.GH_TOKEN ? `AUTHORIZATION: basic ${Buffer.from(`x-access-token:${process.env.GH_TOKEN}`).toString('base64')}`
+      : await run(gitExe, ['config', '--get', key], root, true).catch(() => '');
     if (header) args = ['-c', `${key}=${header}`, ...args];
   }
   return run(gitExe, args, cwd, capture);
@@ -77,12 +83,12 @@ async function syncSource() {
 }
 
 async function inputHash() {
-  const files = ['pipeline.config.json', 'scripts/build-client.mjs', 'scripts/canvas-paths.cjs',
+  const files = ['pipeline.config.json', 'client-config.hjson', 'scripts/build-client.mjs', 'scripts/canvas-paths.cjs',
     'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/invoke-pnpm.ps1'];
   const normalized = async path => Buffer.from((await readFile(path, 'utf8')).replaceAll('\r\n', '\n'));
   const contents = await Promise.all(files.map(file => normalized(resolve(root, file))));
   // Also observe locally supplied client build configuration without publishing it.
-  for (const file of ['survev-config.hjson', 'client/.env', 'client/.env.local',
+  for (const file of ['client/.env', 'client/.env.local',
     'client/.env.production', 'client/.env.production.local']) {
     const path = resolve(source, file);
     if (existsSync(path)) contents.push(await normalized(path));
@@ -98,7 +104,8 @@ async function preparePublish() {
   const response = await fetch(`https://api.github.com/repos/${githubSlug(config.publishRepository)}`, {
     headers: { 'User-Agent': 'survev-injector' }, signal: AbortSignal.timeout(20_000),
   });
-  if (!response.ok) throw new Error(`Public GitHub repository lookup returned HTTP ${response.status}. Check visibility, repository URL or API rate limits.`);
+  if (response.status === 404) throw new Error(`Publishing repository is not publicly accessible: https://github.com/${githubSlug(config.publishRepository)}. jsDelivr cannot serve a private repository. Set Settings > General > Change visibility > Public (or configure an existing public repository), then rerun update.`);
+  if (!response.ok) throw new Error(`Public GitHub repository lookup returned HTTP ${response.status}. Check API rate limits.`);
   if ((await response.json()).private !== false) throw new Error('jsDelivr requires a public publishing repository.');
   if (!existsSync(resolve(publishDir, '.git/config'))) {
     await mkdir(publishDir, { recursive: true });
@@ -117,6 +124,9 @@ async function preparePublish() {
   let manifest;
   try { manifest = JSON.parse(await git(['show', `${sha}:manifest.json`], publishDir)); }
   catch { throw new Error('Existing cdn branch lacks a valid manifest; refusing to overwrite unrelated content.'); }
+  // Only this disposable, clean publication checkout is moved. A prior failed
+  // push is abandoned without rewriting the remote or the user's main branch.
+  await git(['checkout', '--detach', sha], publishDir);
   return { sha, manifest };
 }
 
@@ -125,7 +135,7 @@ async function build(revision) {
   await pnpm(['install', '--frozen-lockfile', '--filter', '@survev/client...', '--filter', '@survev/shared...', '--filter', 'survev']);
   await run(process.execPath, [resolve(root, 'scripts/build-client.mjs'), source, buildDir]);
   const report = JSON.parse(await readFile(resolve(buildDir, 'build-report.json'), 'utf8'));
-  const artifactPath = resolve(buildDir, report.entry);
+  const artifactPath = resolve(buildDir, report.readableEntry);
   if (!artifactPath.startsWith(buildDir + (process.platform === 'win32' ? '\\' : '/'))) {
     throw new Error('Build report points outside the build directory.');
   }
@@ -143,7 +153,7 @@ async function build(revision) {
     sourceUrl: `https://github.com/${githubSlug(config.upstreamRepository)}/tree/${revision}`,
     latestUrl: cdnUrl(config, config.publishBranch),
     build: report,
-    publicationMode: 'game-entry-only',
+    publicationMode: 'readable-game-original-production-imports',
   };
   await atomicWrite(resolve(dist, config.fileName), data);
   await copyFile(resolve(source, 'LICENSE'), resolve(dist, 'LICENSE'));
@@ -155,8 +165,7 @@ async function build(revision) {
 
 async function publish(manifest, remote) {
   if (remote) {
-    // A failed push can leave an unpublished commit. Rebase is deliberately not
-    // automatic: a competing publisher must not be silently overwritten.
+    // Push remains fast-forward only; concurrent publication is retried next cycle.
     await git(['merge', '--ff-only', remote.sha], publishDir);
   }
   for (const file of [config.fileName, 'manifest.json', 'LICENSE', 'THIRD_PARTY_LICENSES.md']) {
@@ -175,47 +184,41 @@ async function publish(manifest, remote) {
   return git(['rev-parse', 'HEAD'], publishDir);
 }
 
-async function verifyCdn(manifest, revision) {
-  const url = cdnUrl(config, revision);
-  let lastError;
-  for (let attempt = 0; attempt < 4; attempt++) {
-    if (attempt) await delay(5_000 * attempt);
-    try {
-      const response = await fetch(url, { signal: AbortSignal.timeout(30_000) });
-      if (!response.ok) throw new Error(`jsDelivr HTTP ${response.status}`);
-      if (sha256(Buffer.from(await response.arrayBuffer())) !== manifest.sha256) throw new Error('CDN content hash mismatch.');
-      lastError = null;
-      break;
-    } catch (error) { lastError = error; }
-  }
-  if (lastError) throw lastError;
-  let purgeSucceeded = true;
-  for (const file of [config.fileName, 'manifest.json']) {
-    try {
-      const purgeUrl = cdnUrl(config, config.publishBranch, file).replace('cdn.jsdelivr.net', 'purge.jsdelivr.net');
-      const response = await fetch(purgeUrl, { signal: AbortSignal.timeout(20_000) });
-      const result = await response.json();
-      if (!response.ok || result.status !== 'finished') throw new Error(`Purge status: ${result.status ?? response.status}`);
-    } catch (error) {
-      purgeSucceeded = false;
-      log(`Cache purge pending: ${error.message}. The commit URL is already verified.`);
-    }
-  }
-  const state = { publicationCommit: revision, verifiedUrl: url,
-    latestUrl: cdnUrl(config, config.publishBranch), purgeSucceeded, verifiedAt: new Date().toISOString() };
+async function recordPublication(revision) {
+  const state = { publicationCommit: revision, immutableUrl: cdnUrl(config, revision),
+    latestUrl: cdnUrl(config, config.publishBranch), recordedAt: new Date().toISOString() };
   await writeJson(resolve(stateDir, 'published.json'), state);
-  log(`Verified CDN: ${url}`);
-  return state;
+  log(`GitHub commit: ${revision}`);
+  log(`jsDelivr branch URL (12-hour cache): ${state.latestUrl}`);
+  log(`jsDelivr immutable URL: ${state.immutableUrl}`);
+}
+
+async function checkUpdates() {
+  const remote = await git(['ls-remote', '--heads', config.upstreamRepository, `refs/heads/${config.upstreamBranch}`]);
+  const revision = remote.split(/\s+/)[0];
+  if (!/^[a-f0-9]{40}$/.test(revision)) throw new Error('Upstream branch was not found.');
+  const local = await readJson(resolve(dist, 'manifest.json'));
+  log(`Upstream: ${revision}`);
+  log(`Local build: ${local?.upstreamCommit ?? 'none'}`);
+  log(matchesBuild(local, revision, await inputHash()) ? 'Local build is up to date.' : 'An update/build is available. Run .\\run.ps1 update to build and publish.');
+  // Read-only: no checkout, build, commit, push, or CDN purge.
+  const publicManifest = await fetch(`https://raw.githubusercontent.com/${githubSlug(config.publishRepository)}/${config.publishBranch}/manifest.json`, {
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (publicManifest.ok) {
+    const published = await publicManifest.json();
+    log(`Published upstream commit: ${published.upstreamCommit}`);
+  } else log(`Public publication manifest is unavailable (HTTP ${publicManifest.status}); the cdn branch may not exist yet or the repository may still be private.`);
 }
 
 async function cycle() {
+  if (mode === 'check') return checkUpdates();
   const revision = await syncSource();
   const hash = await inputHash();
   const remote = mode === 'build' ? null : await preparePublish();
   if (remote && matchesBuild(remote.manifest, revision, hash)) {
-    const state = await readJson(resolve(stateDir, 'published.json'));
-    if (state?.publicationCommit !== remote.sha || !state.purgeSucceeded) await verifyCdn(remote.manifest, remote.sha);
-    else log(`Unchanged: ${revision.slice(0, 12)}`);
+    log(`Unchanged: ${revision.slice(0, 12)}. No build or push needed.`);
+    await recordPublication(remote.sha);
     return;
   }
   let manifest = await readJson(resolve(dist, 'manifest.json'));
@@ -227,7 +230,7 @@ async function cycle() {
   else log(`Reusing verified local build ${revision.slice(0, 12)}`);
   if (mode !== 'build') {
     const sha = await publish(manifest, remote);
-    await verifyCdn(manifest, sha);
+    await recordPublication(sha);
   }
 }
 

@@ -1,4 +1,4 @@
-param([ValidateSet('build', 'deploy', 'watch', 'test')][string]$Mode = 'build')
+param([ValidateSet('check', 'build', 'update', 'deploy', 'watch', 'test')][string]$Mode = 'check')
 $ErrorActionPreference = 'Stop'
 $runtimeRoot = Join-Path $env:USERPROFILE '.cache\codex-runtimes\codex-primary-runtime\dependencies'
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {

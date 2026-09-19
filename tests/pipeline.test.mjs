@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { validateConfig, githubSlug, cdnUrl, matchesBuild, validateArtifact, sha256, selectGameEntry } from '../scripts/lib.mjs';
+import { validateConfig, githubSlug, cdnUrl, matchesBuild, validateArtifact, sha256, selectGameEntry, restoreChunkHashes } from '../scripts/lib.mjs';
 
 const config = JSON.parse(await readFile(new URL('../pipeline.config.json', import.meta.url)));
 test('publish destination is restricted to a dedicated branch and a simple JS filename', () => {
@@ -39,4 +39,11 @@ test('publication selects game entry by HTML identity, never by size or hashed f
   assert.equal(selectGameEntry([stats, common, game], 'C:\\repo\\client\\index.html'), game);
   assert.throws(() => selectGameEntry([stats, common], game.facadeModuleId), /exactly one/);
   assert.throws(() => selectGameEntry([game, { ...game }], game.facadeModuleId), /exactly one/);
+});
+test('readable game imports retain the exact original production dependency filename', () => {
+  const before = 'import { a as GameConfig } from "./!~{001}~.js";';
+  assert.equal(restoreChunkHashes(before, [{ preliminaryFileName: 'js/!~{001}~.js', fileName: 'js/Cbg9k6wS.js' }]),
+    'import { a as GameConfig } from "./Cbg9k6wS.js";');
+  assert.throws(() => restoreChunkHashes(before, []), /Unresolved/);
+  assert.throws(() => restoreChunkHashes(before, [{ preliminaryFileName: 'js/!~{001}~.js', fileName: 'renamed/shared.js' }]), /naming pattern/);
 });

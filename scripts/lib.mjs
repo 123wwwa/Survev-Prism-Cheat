@@ -7,6 +7,26 @@ export function selectGameEntry(chunks, htmlPath) {
   if (entries.length !== 1) throw new Error('Could not identify exactly one game HTML entry; refusing ambiguous publication.');
   return entries[0];
 }
+export function restoreChunkHashes(code, chunks) {
+  const hashes = new Map();
+  for (const chunk of chunks) {
+    const preliminary = chunk.preliminaryFileName;
+    if (!preliminary) throw new Error('Bundler no longer exposes preliminary chunk names.');
+    const tokens = [...preliminary.matchAll(/!~\{[a-zA-Z0-9]+\}~/g)];
+    if (!tokens.length) continue;
+    if (tokens.length !== 1) throw new Error('Ambiguous chunk hash placeholders.');
+    const token = tokens[0][0];
+    const [prefix, suffix] = preliminary.split(token);
+    if (!chunk.fileName.startsWith(prefix) || !chunk.fileName.endsWith(suffix)) {
+      throw new Error('Final chunk path differs from the original naming pattern.');
+    }
+    hashes.set(token, chunk.fileName.slice(prefix.length, chunk.fileName.length - suffix.length));
+  }
+  return code.replace(/!~\{[a-zA-Z0-9]+\}~/g, token => {
+    if (!hashes.has(token)) throw new Error(`Unresolved build hash ${token}; refusing publication.`);
+    return hashes.get(token);
+  });
+}
 export function githubSlug(repository) {
   const match = /^https:\/\/github\.com\/([\w.-]+\/[\w.-]+?)(?:\.git)?$/.exec(repository);
   if (!match) throw new Error('Expected a public https://github.com/owner/repository.git URL.');

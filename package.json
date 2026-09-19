@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "check": "node scripts/pipeline.mjs check",
     "build": "node scripts/pipeline.mjs build",
+    "update": "node scripts/pipeline.mjs update",
     "deploy": "node scripts/pipeline.mjs deploy",
     "watch": "node scripts/pipeline.mjs watch",
     "test": "node --test tests/*.test.mjs"

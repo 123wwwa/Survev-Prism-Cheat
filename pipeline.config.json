@@ -3,6 +3,6 @@
   "upstreamBranch": "master",
   "publishRepository": "https://github.com/123wwwa/survev-injector.git",
   "publishBranch": "cdn",
-  "pollSeconds": 60,
+  "pollSeconds": 86400,
   "fileName": "survev-readable.js"
 }
