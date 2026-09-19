@@ -1,6 +1,7 @@
+import { validateMatches } from '../../scripts/patch-validation.mjs';
 export function transferProxy(originalShared, injectedShared) {
     const matches = [...originalShared.matchAll(/getProxyDef\(\)\s*\{\s*for\s*\(\s*(?:let|const|var)\s+[$\w]+\s+in\s*(\{(?:\s*(?:"[^"\\]+"|'[^'\\]+'|`[^`\\]+`|[\w]+)\s*:\s*\{[^{}]*\}\s*,?)+\})\s*\)/g)];
-    if (matches.length !== 1) throw new Error('Original proxy settings missing or ambiguous');
+    validateMatches(matches, { name: 'Original proxy settings', expectedMatches: 1, hint: 'missing or ambiguous' });
     const defs = Object.create(null);
     for (const entry of matches[0][1].matchAll(/("[^"\\]+"|'[^'\\]+'|`[^`\\]+`|[\w]+)\s*:\s*\{([^{}]*)\}/g)) {
         const key = /^["'`]/.test(entry[1]) ? entry[1].slice(1, -1) : entry[1];
@@ -30,7 +31,7 @@ export function transferProxy(originalShared, injectedShared) {
     if (start < 0 || end < 0) throw new Error('Injected proxy module missing');
     let scope = injectedShared.slice(start, end);
     const method = /getProxyDef\(\)\s*\{[\s\S]*?\},(?=\s*loginSupported\()/g;
-    if ([...scope.matchAll(method)].length !== 1) throw new Error('Injected proxy method missing or ambiguous');
+    validateMatches([...scope.matchAll(method)], { name: 'Injected proxy method', expectedMatches: 1, hint: 'missing or ambiguous' });
     scope = scope.replace(method, () => `getProxyDef() {
         const defs = JSON.parse(${JSON.stringify(JSON.stringify(defs))});
         for (const name in defs) {

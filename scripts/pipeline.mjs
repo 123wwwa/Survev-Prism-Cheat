@@ -1,3 +1,4 @@
+import { patchValidationReport, resetPatchValidationReport } from './patch-validation.mjs';
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { readFile, writeFile, mkdir, open, unlink, rename, copyFile } from 'node:fs/promises';
@@ -100,7 +101,7 @@ async function syncSource() {
 
 async function inputHash() {
   const files = ['pipeline.config.json', 'client-config.hjson', 'scripts/build-client.mjs', 'scripts/canvas-paths.cjs',
-    'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/shared-patches.mjs', 'scripts/app-patches.mjs', 'scripts/invoke-pnpm.ps1'];
+    'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/shared-patches.mjs', 'scripts/patch-validation.mjs', 'scripts/app-patches.mjs', 'scripts/invoke-pnpm.ps1'];
   const normalized = async path => Buffer.from((await readFile(path, 'utf8')).replaceAll('\r\n', '\n'));
   const contents = await Promise.all(files.map(file => normalized(resolve(root, file))));
   // Also observe locally supplied client build configuration without publishing it.
@@ -149,6 +150,7 @@ async function preparePublish() {
 }
 
 async function build(revision) {
+  resetPatchValidationReport();
   log(`Installing client/shared dependencies for ${revision.slice(0, 12)}`);
   await pnpm(['install', '--frozen-lockfile', '--filter', '@survev/client...', '--filter', '@survev/shared...', '--filter', 'survev']);
   await run(process.execPath, [resolve(root, 'scripts/build-client.mjs'), source, buildDir]);
@@ -165,7 +167,13 @@ async function build(revision) {
     let data = await readFile(artifactPath);
     let validationPath = artifactPath;
     {
-      const patched = (name === 'shared' ? patchSharedScript : patchAppScript)(data.toString('utf8'));
+      let patched;
+      try { patched = (name === 'shared' ? patchSharedScript : patchAppScript)(data.toString('utf8')); }
+      catch (error) {
+        await writeJson(resolve(buildDir, 'patch-report.json'), patchValidationReport);
+        console.error('[ERROR] aborting build/publication');
+        throw error;
+      }
       data = Buffer.from(patched.code);
       if (name === 'shared') sharedPatches = patched.applied;
       else appPatches = patched.applied;
@@ -179,6 +187,7 @@ async function build(revision) {
     artifacts[name] = { file: config.fileNames[name], bytes: data.length, sha256: sha256(data),
       originalFile: report.artifacts[name].entry, latestUrl: cdnUrl(config, config.publishBranch, config.fileNames[name]) };
   }
+  await writeJson(resolve(buildDir, 'patch-report.json'), patchValidationReport);
   const manifest = {
     schemaVersion: 2,
     upstreamRepository: config.upstreamRepository,
@@ -186,6 +195,7 @@ async function build(revision) {
     inputHash: await inputHash(),
     builtAt: new Date().toISOString(),
     artifacts,
+    patchValidation: [...patchValidationReport],
     sharedPatches,
     appPatches,
     sourceUrl: `https://github.com/${githubSlug(config.upstreamRepository)}/tree/${revision}`,

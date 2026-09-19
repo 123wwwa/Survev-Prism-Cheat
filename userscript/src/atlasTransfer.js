@@ -1,3 +1,4 @@
+import { validateMatches } from '../../scripts/patch-validation.mjs';
 // Decode a static JS string literal without evaluating downloaded JavaScript.
 function decodeLiteral(literal) {
     const body = literal.slice(1, -1);
@@ -51,9 +52,8 @@ export function transferAtlases(originalApp, injectedApp, pageBaseURL) {
     for (const resolution of ['high', 'low']) {
         const sources = original.filter(atlas => atlas.resolution === resolution);
         const destinations = targets.filter(atlas => atlas.resolution === resolution);
-        if (sources.length !== 1 || destinations.length !== 1) {
-            throw new Error(`Atlas ${resolution}: expected one source and target, found ${sources.length}/${destinations.length}`);
-        }
+        validateMatches(sources, { name: `Atlas ${resolution} source`, expectedMatches: 1, hint: 'expected one source and target' });
+        validateMatches(destinations, { name: `Atlas ${resolution} target`, expectedMatches: 1, hint: 'expected one source and target' });
         const { data } = sources[0];
         for (const sheets of Object.values(data)) for (const sheet of sheets) {
             const url = new URL(sheet.meta.image, pageBaseURL);

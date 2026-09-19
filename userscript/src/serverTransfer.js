@@ -1,7 +1,8 @@
 import { parse } from 'acorn';
+import { validateMatches } from '../../scripts/patch-validation.mjs';
 
 function exactlyOne(matches, label) {
-    if (matches.length !== 1) throw new Error(`${label}: expected one match, found ${matches.length}`);
+    validateMatches(matches, { name: label, expectedMatches: 1, hint: 'expected one match for this transfer.' });
     return matches[0];
 }
 
@@ -68,7 +69,7 @@ export function moduleImports(source) {
 // Refuse changed chunk layouts rather than redirecting an arbitrary import.
 export function rewriteImports(source, urls) {
     const imports = moduleImports(source);
-    if (imports.length !== urls.length) throw new Error(`Unexpected import layout: expected ${urls.length}, found ${imports.length}`);
+    validateMatches(imports, { name: `Static imports (${urls.length === 1 ? 'shared' : 'app'})`, expectedMatches: urls.length, hint: 'Unexpected import layout' });
     for (let i = imports.length - 1; i >= 0; i--) {
         const match = imports[i];
         source = source.slice(0, match.sourceStart) + JSON.stringify(urls[i]) + source.slice(match.sourceEnd);

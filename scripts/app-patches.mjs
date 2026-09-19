@@ -1,8 +1,8 @@
+import { findMatches } from './patch-validation.mjs';
 const id = String.raw`[$A-Z_a-z][$\w]*`;
 const re = pattern => new RegExp(pattern, 'g');
 function one(source, pattern, name) {
-  const matches = [...source.matchAll(pattern)];
-  if (matches.length !== 1) throw new Error(`App patch ${name}: expected exactly one match, found ${matches.length}.`);
+  const matches = findMatches(source, { name: `App patch ${name}`, pattern, expectedMatches: 1 });
   return matches[0];
 }
 function section(source, path) {

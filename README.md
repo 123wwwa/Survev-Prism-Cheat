@@ -87,3 +87,11 @@ A GitHub push makes the file available for jsDelivr to serve. **Branch URLs have
 - A compatibility helper handles node-canvas file-opening issues with Korean paths on Windows by passing the same file bytes directly. It does not modify upstream or dependency files.
 
 References: [jsDelivr caching policy](https://github.com/jsdelivr/jsdelivr#caching), [upstream project](https://github.com/survev/survev).
+
+## Patch validation
+
+Build patches declare expected match counts. Logs show `[OK]` or `[FAIL]`, the patch name and actual count. Missing or duplicate matches abort the build before publication artifacts are replaced. Patch validation results are written to `.pipeline/build/patch-report.json`; successful results are also included in `dist/manifest.json` under `patchValidation`.
+
+Before loading injected modules, the userscript checks server, region, proxy, atlas and import transfers. It parses downloaded modules to verify required global assignments and hook calls, ignoring comments and string literals. A mismatch prints `[ERROR] aborting injection` and prevents the injected module from being appended. Inspect `window.__surverInjectorPatchReport` in the browser console for recorded counts. Structural validation does not guarantee runtime game behavior.
+
+Run `.\run.cmd build` after changes and reinstall `userscript/dist/injector.user.js`. Use `.\run.cmd update` to also publish rebuilt client modules.

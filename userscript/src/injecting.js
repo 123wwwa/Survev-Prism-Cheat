@@ -1,3 +1,5 @@
+import { patchValidationReport, resetPatchValidationReport, validateMatches } from '../../scripts/patch-validation.mjs';
+import { validatePatchedModules } from './patchValidation.js';
 import { transferServers, moduleImports, rewriteImports } from './serverTransfer.js';
 import { transferAtlases } from './atlasTransfer.js';
 import { transferRegions } from './regionTransfer.js';
@@ -15,16 +17,18 @@ async function requestScript(url) {
 }
 
 (async () => {
+    resetPatchValidationReport();
+    unsafeWindow.__surverInjectorPatchReport = patchValidationReport;
     // The local host page must suppress its original app module before injection.
     // Removing an already executed module cannot undo its side effects.
     const apps = [...document.querySelectorAll('script[type="module"][src]')];
-    if (apps.length !== 1) throw new Error(`Expected one original app module, found ${apps.length}`);
+    validateMatches(apps, { name: 'Original app module', expectedMatches: 1 });
     const originalAppURL = apps[0].src;
     const [originalApp, injectedApp, injectedShared] = await Promise.all([
         requestScript(originalAppURL), requestScript(injectedAppUrl), requestScript(injectedSharedUrl),
     ]);
     const originalImports = moduleImports(originalApp);
-    if (originalImports.length !== 2) throw new Error('Original app must have runtime and shared imports');
+    validateMatches(originalImports, { name: 'Original app imports', expectedMatches: 2 });
     const originalRuntimeURL = new URL(originalImports[0][2], originalAppURL).href;
     const originalSharedURL = new URL(originalImports[1][2], originalAppURL).href;
     if (originalRuntimeURL === originalSharedURL) throw new Error('Original dependencies are ambiguous');
@@ -38,6 +42,8 @@ async function requestScript(url) {
     console.info('[RegionTransfer] Copied dropdown regions:', Object.keys(regional.regions));
     const textured = transferAtlases(originalApp, regional.code, document.baseURI);
     console.info('[AtlasTransfer] Copied original atlas metadata and image URLs:', textured.images);
+
+    validatePatchedModules(textured.code, proxied.code);
 
     let sharedBlobURL;
     let appBlobURL;
@@ -78,4 +84,4 @@ async function requestScript(url) {
         if (appBlobURL) URL.revokeObjectURL(appBlobURL);
         if (sharedBlobURL) URL.revokeObjectURL(sharedBlobURL);
     }
-})().catch(error => console.error('[Injector] Injection stopped:', error));
+})().catch(error => console.error('[ERROR] aborting injection:', error));
