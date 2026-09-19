@@ -6,9 +6,9 @@ import { inputCommands } from '../overrideInputs.js';
 
 
 export function esp(){
-    const pixi = unsafeWindow.game.pixi; 
-    const me = unsafeWindow.game.activePlayer;
-    const players = unsafeWindow.game.playerBarn.playerPool.pool;
+    const pixi = unsafeWindow.game.m_pixi; 
+    const me = unsafeWindow.game.m_activePlayer;
+    const players = unsafeWindow.game.m_playerBarn.playerPool.m_pool;
 
     // We check if there is an object of Pixi, otherwise we create a new
     if (!pixi || me?.container == undefined) {
@@ -16,8 +16,8 @@ export function esp(){
         return;
     }
 
-    const meX = me.pos.x;
-    const meY = me.pos.y;
+    const meX = me.m_pos.x;
+    const meY = me.m_pos.y;
 
     const meTeam = getTeam(me);
     
@@ -26,7 +26,7 @@ export function esp(){
     // lineDrawer
     const lineDrawer = me.container.lineDrawer;
     try{lineDrawer.clear()}
-    catch{if(!unsafeWindow.game?.ws || unsafeWindow.game?.activePlayer?.netData?.dead) return;}
+    catch{if(!unsafeWindow.game?.m_connection || unsafeWindow.game?.m_activePlayer?.m_netData?.m_dead) return;}
     if (state.isLineDrawerEnabled){
 
         if (!me.container.lineDrawer) {
@@ -37,10 +37,10 @@ export function esp(){
         // For each player
         players.forEach((player) => {
             // We miss inactive or dead players
-            if (!player.active || player.netData.dead || me.__id == player.__id) return;
+            if (!player.active || player.m_netData.m_dead || me.__id == player.__id) return;
     
-            const playerX = player.pos.x;
-            const playerY = player.pos.y;
+            const playerX = player.m_pos.x;
+            const playerY = player.m_pos.y;
     
             const playerTeam = getTeam(player);
     
@@ -60,14 +60,14 @@ export function esp(){
     // nadeDrawer
     const nadeDrawer = me.container.nadeDrawer;
     try{nadeDrawer?.clear()}
-    catch{if(!unsafeWindow.game?.ws || unsafeWindow.game?.activePlayer?.netData?.dead) return;}
+    catch{if(!unsafeWindow.game?.m_connection || unsafeWindow.game?.m_activePlayer?.m_netData?.m_dead) return;}
     if (state.isNadeDrawerEnabled){
         if (!me.container.nadeDrawer) {
             me.container.nadeDrawer = new PIXI.Graphics();
             me.container.addChild(me.container.nadeDrawer);
         }
     
-        Object.values(unsafeWindow.game.objectCreator.idToObj)
+        Object.values(unsafeWindow.game.m_objectCreator.m_idToObj)
             .filter(obj => {
                 const isValid = ( obj.__type === 9 && obj.type !== "smoke" )
                     ||  (
@@ -98,7 +98,7 @@ export function esp(){
     // flashlightDrawer(laserDrawer)
     const laserDrawer = me.container.laserDrawer;
     try{laserDrawer.clear()}
-    catch{if(!unsafeWindow.game?.ws || unsafeWindow.game?.activePlayer?.netData?.dead) return;}
+    catch{if(!unsafeWindow.game?.m_connection || unsafeWindow.game?.m_activePlayer?.m_netData?.m_dead) return;}
     if (state.isLaserDrawerEnabled) {
         const curWeapon = findWeap(me);
         const curBullet = findBullet(curWeapon);
@@ -115,7 +115,7 @@ export function esp(){
             color = 0x0000ff,
             opacity = 0.3,
         ) {
-            const { pos: acPlayerPos, posOld: acPlayerPosOld } = acPlayer;
+            const { m_pos: acPlayerPos, m_posOld: acPlayerPosOld } = acPlayer;
     
             const dateNow = performance.now();
     
@@ -143,14 +143,14 @@ export function esp(){
                 lasic.active = true;
                 lasic.range = curBullet.distance * 16.25;
                 let atan;
-                if (acPlayer == me && ( !(unsafeWindow.lastAimPos) || (unsafeWindow.lastAimPos) && !(unsafeWindow.game.touch.shotDetected || unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire)) ) ){
+                if (acPlayer == me && ( !(unsafeWindow.lastAimPos) || (unsafeWindow.lastAimPos) && !(unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire)) ) ){
                     //local rotation
                     atan = Math.atan2(
-                        unsafeWindow.game.input.mousePos._y - unsafeWindow.innerHeight / 2,
-                        unsafeWindow.game.input.mousePos._x - unsafeWindow.innerWidth / 2,
+                        unsafeWindow.game.m_input.mousePos._y - unsafeWindow.innerHeight / 2,
+                        unsafeWindow.game.m_input.mousePos._x - unsafeWindow.innerWidth / 2,
                     );
-                }else if(acPlayer == me && (unsafeWindow.lastAimPos) && ( unsafeWindow.game.touch.shotDetected || unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire) ) ){
-                    const playerPointToScreen = unsafeWindow.game.camera.pointToScreen({x: acPlayer.pos._x, y: acPlayer.pos._y})
+                }else if(acPlayer == me && (unsafeWindow.lastAimPos) && ( unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) ){
+                    const playerPointToScreen = unsafeWindow.game.m_camera.m_pointToScreen({x: acPlayer.m_pos._x, y: acPlayer.m_pos._y})
                     atan = Math.atan2(
                         playerPointToScreen.y - unsafeWindow.lastAimPos.clientY,
                         playerPointToScreen.x - unsafeWindow.lastAimPos.clientX
@@ -159,8 +159,8 @@ export function esp(){
                     Math.PI;
                 }else{
                     atan = Math.atan2(
-                        acPlayer.dir.x,
-                        acPlayer.dir.y
+                        acPlayer.m_dir.x,
+                        acPlayer.m_dir.y
                     ) 
                     -
                     Math.PI / 2;
@@ -180,8 +180,8 @@ export function esp(){
             }
     
             const center = {
-                x: (acPlayerPos._x - me.pos._x) * 16,
-                y: (me.pos._y - acPlayerPos._y) * 16,
+                x: (acPlayerPos._x - me.m_pos._x) * 16,
+                y: (me.m_pos._y - acPlayerPos._y) * 16,
             };
             const radius = lasic.range;
             let angleFrom = lasic.direction - lasic.angle;
@@ -213,7 +213,7 @@ export function esp(){
         );
         
         players
-            .filter(player => player.active && !player.netData.dead && me.__id !== player.__id && me.layer === player.layer && getTeam(player) != meTeam)
+            .filter(player => player.active && !player.m_netData.m_dead && me.__id !== player.__id && me.layer === player.layer && getTeam(player) != meTeam)
             .forEach(enemy => {
                 const enemyWeapon = findWeap(enemy);
                 laserPointer(

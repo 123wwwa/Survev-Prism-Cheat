@@ -8,7 +8,7 @@ import { updateButtonColors } from '../iceHackMenu.js'; // Импортируй�
 
 function keybinds(){
     unsafeWindow.document.addEventListener('keyup', function (event) {
-        if (!unsafeWindow?.game?.ws) return;
+        if (!unsafeWindow?.game?.m_connection) return;
 
         const validKeys = ['B', 'Z', 'M', 'Y', 'T', 'V'];
         if (!validKeys.includes(String.fromCharCode(event.keyCode))) return;
@@ -26,7 +26,7 @@ function keybinds(){
                 if(state.focusedEnemy){
                     state.focusedEnemy = null;
                 }else{
-                    if (!state.enemyAimBot?.active || state.enemyAimBot?.netData?.dead) break;
+                    if (!state.enemyAimBot?.active || state.enemyAimBot?.m_netData?.m_dead) break;
                     state.focusedEnemy = state.enemyAimBot;
                 }
                 break;
@@ -40,7 +40,7 @@ function keybinds(){
     });
     
     unsafeWindow.document.addEventListener('keydown', function (event) {
-        if (!unsafeWindow?.game?.ws) return;
+        if (!unsafeWindow?.game?.m_connection) return;
 
         const validKeys = ['M', 'T', 'V'];
         if (!validKeys.includes(String.fromCharCode(event.keyCode))) return;
@@ -56,8 +56,8 @@ function keybinds(){
         const mouseX = event.clientX;
         const mouseY = event.clientY;
 
-        const players = unsafeWindow.game.playerBarn.playerPool.pool;
-        const me = unsafeWindow.game.activePlayer;
+        const players = unsafeWindow.game.m_playerBarn.playerPool.m_pool;
+        const me = unsafeWindow.game.m_activePlayer;
         const meTeam = getTeam(me);
 
         let enemy = null;
@@ -65,9 +65,9 @@ function keybinds(){
 
         players.forEach((player) => {
             // We miss inactive or dead players
-            if (!player.active || player.netData.dead || player.downed || me.__id === player.__id || getTeam(player) == meTeam) return;
+            if (!player.active || player.m_netData.m_dead || player.downed || me.__id === player.__id || getTeam(player) == meTeam) return;
 
-            const screenPlayerPos = unsafeWindow.game.camera.pointToScreen({x: player.pos._x, y: player.pos._y});
+            const screenPlayerPos = unsafeWindow.game.m_camera.m_pointToScreen({x: player.m_pos._x, y: player.m_pos._y});
             const distanceToEnemyFromMouse = (screenPlayerPos.x - mouseX) ** 2 + (screenPlayerPos.y - mouseY) ** 2;
 
             if (distanceToEnemyFromMouse < minDistanceToEnemyFromMouse) {

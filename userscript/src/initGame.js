@@ -20,24 +20,24 @@ export function initGame() {
     state.lastFrames = {};
 
     const tasks = [
-        {isApplied: false, condition: () => unsafeWindow.game?.input?.mousePos && unsafeWindow.game?.touch?.aimMovement?.toAimDir, action: overrideMousePos},
-        {isApplied: false, condition: () => unsafeWindow.game?.input?.mouseButtonsOld, action: bumpFire},
-        {isApplied: false, condition: () => unsafeWindow.game?.activePlayer?.localData, action: betterZoom},
-        {isApplied: false, condition: () => Array.prototype.push === unsafeWindow.game?.smokeBarn?.particles.push, action: smokeOpacity},
-        {isApplied: false, condition: () => Array.prototype.push === unsafeWindow.game?.playerBarn?.playerPool?.pool.push, action: visibleNames},
-        {isApplied: false, condition: () => unsafeWindow.game?.pixi?._ticker && unsafeWindow.game?.activePlayer?.container && unsafeWindow.game?.activePlayer?.pos, action: () => { if (!tickerOneTime) { tickerOneTime = true; initTicker(); } } },
+        {isApplied: false, condition: () => unsafeWindow.game?.m_input?.mousePos && unsafeWindow.game?.m_touch?.aimMovement?.toAimDir, action: overrideMousePos},
+        {isApplied: false, condition: () => unsafeWindow.game?.m_input?.mouseButtonsOld, action: bumpFire},
+        {isApplied: false, condition: () => unsafeWindow.game?.m_activePlayer?.m_localData, action: betterZoom},
+        {isApplied: false, condition: () => Array.prototype.push === unsafeWindow.game?.m_smokeBarn?.m_particles.push, action: smokeOpacity},
+        {isApplied: false, condition: () => Array.prototype.push === unsafeWindow.game?.m_playerBarn?.playerPool?.m_pool.push, action: visibleNames},
+        {isApplied: false, condition: () => unsafeWindow.game?.m_pixi?._ticker && unsafeWindow.game?.m_activePlayer?.container && unsafeWindow.game?.m_activePlayer?.m_pos, action: () => { if (!tickerOneTime) { tickerOneTime = true; initTicker(); } } },
     ];
 
     (function checkLocalData(){
-        if(!unsafeWindow?.game?.ws) return;
+        if(!unsafeWindow?.game?.m_connection) return;
 
         console.log('Checking local data')
 
         console.log(
-            unsafeWindow.game?.activePlayer?.localData, 
-            unsafeWindow.game?.map?.obstaclePool?.pool,
-            unsafeWindow.game?.smokeBarn?.particles,
-            unsafeWindow.game?.playerBarn?.playerPool?.pool
+            unsafeWindow.game?.m_activePlayer?.m_localData, 
+            unsafeWindow.game?.m_map?.m_obstaclePool?.m_pool,
+            unsafeWindow.game?.m_smokeBarn?.m_particles,
+            unsafeWindow.game?.m_playerBarn?.playerPool?.m_pool
         );
 
         tasks.forEach(task => console.log(task.action, task.isApplied))

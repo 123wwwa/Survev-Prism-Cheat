@@ -6,12 +6,12 @@ let spinAngle = 0;
 const radius = 100; // The radius of the circle
 const spinSpeed = 37.5; // Rotation speed (increase for faster speed)
 export function overrideMousePos() {
-    Object.defineProperty(unsafeWindow.game.input.mousePos, 'x', {
+    Object.defineProperty(unsafeWindow.game.m_input.mousePos, 'x', {
         get() {
-            if ( (  unsafeWindow.game.touch.shotDetected || unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.activePlayer.localData.curWeapIdx != 3) {
+            if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
                 return unsafeWindow.lastAimPos.clientX;
             }
-            if ( !(  unsafeWindow.game.touch.shotDetected || unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire) ) && !(unsafeWindow.game.inputBinds.isBindPressed(inputCommands.EmoteMenu) || unsafeWindow.game.inputBinds.isBindDown(inputCommands.EmoteMenu)) && unsafeWindow.game.activePlayer.localData.curWeapIdx != 3 && state.isSpinBotEnabled) {
+            if ( !(  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && !(unsafeWindow.game.m_inputBinds.isBindPressed(inputCommands.EmoteMenu) || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.EmoteMenu)) && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3 && state.isSpinBotEnabled) {
                 // SpinBot
                 spinAngle += spinSpeed;
                 return Math.cos(degreesToRadians(spinAngle)) * radius + unsafeWindow.innerWidth / 2;
@@ -23,12 +23,12 @@ export function overrideMousePos() {
         }
     });
 
-    Object.defineProperty(unsafeWindow.game.input.mousePos, 'y', {
+    Object.defineProperty(unsafeWindow.game.m_input.mousePos, 'y', {
         get() {
-            if ( (  unsafeWindow.game.touch.shotDetected || unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.activePlayer.localData.curWeapIdx != 3) {
+            if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
                 return unsafeWindow.lastAimPos.clientY;
             }
-            if ( !(  unsafeWindow.game.touch.shotDetected || unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire) ) && !(unsafeWindow.game.inputBinds.isBindPressed(inputCommands.EmoteMenu) || unsafeWindow.game.inputBinds.isBindDown(inputCommands.EmoteMenu)) && unsafeWindow.game.activePlayer.localData.curWeapIdx != 3 && state.isSpinBotEnabled) {
+            if ( !(  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && !(unsafeWindow.game.m_inputBinds.isBindPressed(inputCommands.EmoteMenu) || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.EmoteMenu)) && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3 && state.isSpinBotEnabled) {
                 return Math.sin(degreesToRadians(spinAngle)) * radius + unsafeWindow.innerHeight / 2;
             }
             return this._y;

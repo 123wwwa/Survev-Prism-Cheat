@@ -4,7 +4,7 @@ import { BLUE, RED, GREEN } from '../constants.js';
 
 
 export function visibleNames(){
-    const pool = unsafeWindow.game.playerBarn.playerPool.pool;
+    const pool = unsafeWindow.game.m_playerBarn.playerPool.m_pool;
 
     console.log('visibleNames', pool)
 
@@ -13,7 +13,7 @@ export function visibleNames(){
             const player = args[0];
             Object.defineProperty(player.nameText, 'visible', {
                 get(){
-                    const me = unsafeWindow.game.activePlayer;
+                    const me = unsafeWindow.game.m_activePlayer;
                     const meTeam = getTeam(me);
                     const playerTeam = getTeam(player);
                     // console.log('visible', player?.nameText?._text, playerTeam === meTeam ? BLUE : RED, player, me, playerTeam, meTeam)
@@ -32,7 +32,7 @@ export function visibleNames(){
     pool.forEach(player => {
         Object.defineProperty(player.nameText, 'visible', {
             get(){
-                const me = unsafeWindow.game.activePlayer;
+                const me = unsafeWindow.game.m_activePlayer;
                 const meTeam = getTeam(me);
                 const playerTeam = getTeam(player);
                 // console.log('visible', player?.nameText?._text, playerTeam === meTeam ? BLUE : RED, player, me, playerTeam, meTeam)

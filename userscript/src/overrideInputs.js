@@ -55,17 +55,17 @@ unsafeWindow.initGameControls = function(gameControls){
             unsafeWindow.lastAimPos.clientY - unsafeWindow.innerHeight / 2,
         ) - Math.PI / 2;
 
-        if ( (  unsafeWindow.game.touch.shotDetected || unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.activePlayer.localData.curWeapIdx != 3) {
+        if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
             gameControls.toMouseDir.x = Math.cos(atan);
 
         }
-        if ( (  unsafeWindow.game.touch.shotDetected || unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.activePlayer.localData.curWeapIdx != 3) {
+        if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
             gameControls.toMouseDir.y = Math.sin(atan);
         }
     }
 
     // autoMelee
-    if ((  unsafeWindow.game.touch.shotDetected || unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.aimTouchMoveDir) {
+    if ((  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.aimTouchMoveDir) {
         if (unsafeWindow.aimTouchDistanceToEnemy < 4) gameControls.addInput(inputCommands['EquipMelee']);
         gameControls.touchMoveActive = true;
         gameControls.touchMoveLen = 255;

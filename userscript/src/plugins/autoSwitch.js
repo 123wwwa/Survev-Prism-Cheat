@@ -23,13 +23,13 @@ const ammo = [
     },
 ]
 export function autoSwitch(){
-    if (!(unsafeWindow.game?.ws && unsafeWindow.game?.activePlayer?.localData?.curWeapIdx != null)) return; 
+    if (!(unsafeWindow.game?.m_connection && unsafeWindow.game?.m_activePlayer?.m_localData?.m_curWeapIdx != null)) return; 
 
     if (!state.isAutoSwitchEnabled) return;
 
     try {
-    const curWeapIdx = unsafeWindow.game.activePlayer.localData.curWeapIdx;
-    const weaps = unsafeWindow.game.activePlayer.localData.weapons;
+    const curWeapIdx = unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx;
+    const weaps = unsafeWindow.game.m_activePlayer.m_localData.m_weapons;
     const curWeap = weaps[curWeapIdx];
     const shouldSwitch = gun => {
         let s = false;
@@ -47,7 +47,7 @@ export function autoSwitch(){
     if(curWeap.ammo !== ammo[curWeapIdx].ammo) {
         const otherWeapIdx = (curWeapIdx == 0) ? 1 : 0
         const otherWeap = weaps[otherWeapIdx]
-        if ((curWeap.ammo < ammo[curWeapIdx].ammo || (ammo[curWeapIdx].ammo === 0 && curWeap.ammo > ammo[curWeapIdx].ammo && (  unsafeWindow.game.touch.shotDetected ||  unsafeWindow.game.inputBinds.isBindDown(inputCommands.Fire) ))) && shouldSwitch(curWeap.type) && curWeap.type == ammo[curWeapIdx].type) {
+        if ((curWeap.ammo < ammo[curWeapIdx].ammo || (ammo[curWeapIdx].ammo === 0 && curWeap.ammo > ammo[curWeapIdx].ammo && (  unsafeWindow.game.m_touch.shotDetected ||  unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ))) && shouldSwitch(curWeap.type) && curWeap.type == ammo[curWeapIdx].type) {
             ammo[curWeapIdx].lastShotDate = Date.now();
             console.log("Switching weapon due to ammo change");
             if ( shouldSwitch(otherWeap.type) && otherWeap.ammo && !state.isUseOneGunEnabled) { inputs.push(weapsEquip[otherWeapIdx]); } // && ammo[curWeapIdx].ammo !== 0

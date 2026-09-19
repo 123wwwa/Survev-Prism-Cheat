@@ -6,10 +6,10 @@ import { grenadeTimer } from './plugins/grenadeTimer.js';
 
 
 export function initTicker(){
-    unsafeWindow.game.pixi._ticker.add(esp);
-    unsafeWindow.game.pixi._ticker.add(aimBot);
-    unsafeWindow.game.pixi._ticker.add(autoSwitch);
-    unsafeWindow.game.pixi._ticker.add(obstacleOpacity);
-    unsafeWindow.game.pixi._ticker.add(grenadeTimer);
-    unsafeWindow.game.pixi._ticker.add(unsafeWindow.GameMod.startUpdateLoop.bind(unsafeWindow.GameMod));
+    unsafeWindow.game.m_pixi._ticker.add(esp);
+    unsafeWindow.game.m_pixi._ticker.add(aimBot);
+    unsafeWindow.game.m_pixi._ticker.add(autoSwitch);
+    unsafeWindow.game.m_pixi._ticker.add(obstacleOpacity);
+    unsafeWindow.game.m_pixi._ticker.add(grenadeTimer);
+    unsafeWindow.game.m_pixi._ticker.add(unsafeWindow.GameMod.startUpdateLoop.bind(unsafeWindow.GameMod));
 }

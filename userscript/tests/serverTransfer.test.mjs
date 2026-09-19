@@ -64,3 +64,23 @@ test('server transfer works with the current real app artifact', async () => {
     assert.ok(code.includes('window.servers = [{"region":"na"'));
     assert.ok(code.includes('window.initGameControls'));
 });
+
+test('import rewriting ignores documentation, strings, templates and dynamic imports', () => {
+    const source = `/* import { Color } from 'pixi.js'; */
+import { a } /* from 'misleading' */ from './runtime.js';
+// import { Sprite } from 'pixi.js';
+const example = "import { Fake } from 'fake';";
+const template = \`import { Fake } from 'fake';\`;
+const lazy = () => import('./lazy.js');`;
+    const imports = moduleImports(source);
+    assert.equal(imports.length, 1);
+    const rewritten = rewriteImports(source, ['https://example.test/runtime.js']);
+    assert.equal(rewritten, source.replace("'./runtime.js'", '"https://example.test/runtime.js"'));
+});
+
+test('unminified shared has one actual import despite PixiJS documentation examples', async () => {
+    const shared = await readFile(new URL('../../dist/shared.js', import.meta.url), 'utf8');
+    assert.equal(moduleImports(shared).length, 1);
+    const rewritten = rewriteImports(shared, ['https://example.test/runtime.js']);
+    assert.equal(moduleImports(rewritten)[0][2], 'https://example.test/runtime.js');
+});

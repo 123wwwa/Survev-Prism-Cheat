@@ -80,11 +80,11 @@ const uiContainer = createElement('div', {
 });
 
 uiContainer.addEventListener('mouseenter', () => {
-    unsafeWindow.game.inputBinds.menuHovered = true;
+    unsafeWindow.game.m_inputBinds.menuHovered = true;
 });
 
 uiContainer.addEventListener('mouseleave', () => {
-    unsafeWindow.game.inputBinds.menuHovered = false;
+    unsafeWindow.game.m_inputBinds.menuHovered = false;
 });
 
 // Создание заголовка

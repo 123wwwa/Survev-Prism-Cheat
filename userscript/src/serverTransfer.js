@@ -1,3 +1,5 @@
+import { parse } from 'acorn';
+
 function exactlyOne(matches, label) {
     if (matches.length !== 1) throw new Error(`${label}: expected one match, found ${matches.length}`);
     return matches[0];
@@ -50,7 +52,16 @@ export function transferServers(originalApp, injectedApp) {
 }
 
 export function moduleImports(source) {
-    return [...source.matchAll(/\bimport\s*[$\w*{},\s]+?\s*from\s*(["'])([^"']+)\1\s*;?/g)];
+    const program = parse(source, { ecmaVersion: 'latest', sourceType: 'module' });
+    return program.body.filter(node => node.type === 'ImportDeclaration').map(node => {
+        // Preserve the callers' match-array interface, with exact parser offsets
+        // for the module string. Comments/examples are never declarations.
+        const match = [source.slice(node.start, node.end), source[node.source.start], node.source.value];
+        match.index = node.start;
+        match.sourceStart = node.source.start;
+        match.sourceEnd = node.source.end;
+        return match;
+    });
 }
 
 // The current build has two app dependencies and one shared runtime dependency.
@@ -60,8 +71,7 @@ export function rewriteImports(source, urls) {
     if (imports.length !== urls.length) throw new Error(`Unexpected import layout: expected ${urls.length}, found ${imports.length}`);
     for (let i = imports.length - 1; i >= 0; i--) {
         const match = imports[i];
-        const replacement = match[0].replace(/\bfrom\s*(["'])([^"']+)\1/, () => `from ${JSON.stringify(urls[i])}`);
-        source = source.slice(0, match.index) + replacement + source.slice(match.index + match[0].length);
+        source = source.slice(0, match.sourceStart) + JSON.stringify(urls[i]) + source.slice(match.sourceEnd);
     }
     return source;
 }
