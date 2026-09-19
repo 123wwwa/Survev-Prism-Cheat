@@ -1,5 +1,4 @@
 import './detectWrongExtension.js';
-import './scriptNotWorking.js';
 import './newFeaturesInfo.js';
 import './iceHackMenu.js';
 import './plugins/alguienClient.js';

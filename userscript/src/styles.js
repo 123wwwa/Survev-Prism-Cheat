@@ -6,7 +6,7 @@ document.head.append(fontAwesome);
 
 const styles = document.createElement('style');
 styles.innerHTML = `
-.krity-overlay{
+.surver-injector-overlay{
     position: absolute;
     top: 128px;
     left: 0px;
@@ -18,7 +18,7 @@ styles.innerHTML = `
     z-index: 1;
 }
 
-.krity-title{
+.surver-injector-title{
     text-align: center;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -29,7 +29,7 @@ styles.innerHTML = `
     pointer-events: None;
 }
 
-.krity-control{
+.surver-injector-control{
     text-align: center;
     margin-top: 3px;
     margin-bottom: 3px;

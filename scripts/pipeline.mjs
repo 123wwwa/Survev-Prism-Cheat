@@ -18,7 +18,7 @@ const dist = resolve(root, 'dist');
 const gitExe = process.env.GIT_BIN || (process.platform === 'win32' && existsSync('C:/Program Files/Git/cmd/git.exe')
   ? 'C:/Program Files/Git/cmd/git.exe' : 'git');
 const mode = process.argv[2] ?? 'build';
-if (!['check', 'build', 'update', 'deploy', 'watch'].includes(mode)) throw new Error('Usage: pipeline.mjs check|build|update|deploy|watch');
+if (!['check', 'build', 'update', 'deploy', 'watch', 'userscript'].includes(mode)) throw new Error('Usage: pipeline.mjs check|build|update|deploy|watch|userscript');
 const log = message => console.log(`[${new Date().toISOString()}] ${message}`);
 
 function run(executable, args, cwd = root, capture = false) {
@@ -52,9 +52,23 @@ async function git(args, cwd = root, capture = true) {
   }
   return run(gitExe, args, cwd, capture);
 }
-const pnpm = args => process.platform === 'win32'
-  ? run('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', resolve(root, 'scripts/invoke-pnpm.ps1'), ...args], source)
-  : run('pnpm', args, source);
+const pnpm = (args, cwd = source) => process.platform === 'win32'
+  ? run('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', resolve(root, 'scripts/invoke-pnpm.ps1'), ...args], cwd)
+  : run('pnpm', args, cwd);
+
+async function buildUserscript() {
+  const directory = resolve(root, 'userscript');
+  log('Building userscript (including local source changes)...');
+  await pnpm(['install', '--frozen-lockfile', '--ignore-scripts'], directory);
+  await pnpm(['run', 'build'], directory);
+  const output = resolve(directory, 'dist/injector.user.js');
+  const data = await readFile(output, 'utf8');
+  if (!data.startsWith('// ==UserScript==') || !data.includes('// ==/UserScript==')) {
+    throw new Error('Userscript build is missing its installation metadata.');
+  }
+  await run(process.execPath, ['--check', output], root, true);
+  log(`Userscript built: ${output}`);
+}
 async function readJson(path) {
   try { return JSON.parse(await readFile(path, 'utf8')); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -244,11 +258,15 @@ async function checkUpdates() {
 
 async function cycle() {
   if (mode === 'check') return checkUpdates();
+  // Always rebuild the installable userscript, even when upstream/CDN is unchanged.
+  // Fail before publication if local userscript edits do not build.
+  await buildUserscript();
+  if (mode === 'userscript') return;
   const revision = await syncSource();
   const hash = await inputHash();
   const remote = mode === 'build' ? null : await preparePublish();
   if (remote && matchesBuild(remote.manifest, revision, hash)) {
-    log(`Unchanged: ${revision.slice(0, 12)}. No build or push needed.`);
+    log(`CDN unchanged: ${revision.slice(0, 12)}. No app/shared build or push needed; userscript was rebuilt.`);
     await recordPublication(remote.sha);
     return;
   }

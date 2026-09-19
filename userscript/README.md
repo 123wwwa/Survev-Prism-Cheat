@@ -1,0 +1,15 @@
+# surver-injector 0.1
+
+The userscript currently matches `http://localhost/*` and `https://localhost/*` only. Build it with `pnpm install --frozen-lockfile` and `pnpm run build`, then install `dist/injector.user.js` in your userscript manager. Run `pnpm test` for the server-transfer tests; the real-artifact test requires the parent project's `dist/app.js` build.
+
+`src/injecting.js` loads `app.js` and `shared.js` from this repository's jsDelivr `cdn` branch. It also downloads the original page's app with `GM.xmlHttpRequest`. `src/serverTransfer.js` extracts the literal server array indexed inside the original `getRegionList()` method. It accepts double quotes, single quotes, backticks without interpolation, and boolean literals `true`, `false`, `!0`, and `!1`. It does not execute the original source or hardcode hosts or the number of regions.
+
+Before creating the injected app blob, it replaces the empty PingTest array with the extracted servers, exposes that array as `window.servers`, and replaces `getRegionList()` with deduplication over the same list. Missing, ambiguous, or unsupported patterns stop injection and log an error. HTTP errors also stop injection. Existing app patches are already in the CDN file and are not applied again.
+
+`src/atlasTransfer.js` also copies the original app's high/low sprite atlas JSON into the injected app. Both the image filenames and the corresponding sprite frame coordinates are transferred together; changing only a filename can produce incorrect sprites. Image URLs are resolved against the page's base URI. This avoids requesting image hashes from our separate build that do not exist on the game host. Only static JSON string literals are decoded, without evaluating the downloaded JavaScript. Missing or ambiguous atlas data stops injection. The injector does not upload images or alter the published app/shared files.
+
+The current import layout must contain exactly two app dependencies (runtime first, shared second) and one shared dependency (runtime). Runtime imports resolve to the original localhost runtime URL; the app's shared import resolves to the injected shared blob. This does not guarantee compatibility across different upstream versions or export aliases. Branch CDN caches can also retain older files; both URL constants can be pinned to the same publication commit when testing.
+
+The localhost test page must prevent its original app module from executing while preserving its script element/URL for discovery. The injector runs at `document-end`; it cannot undo a module that already ran. Existing `@webRequest` patterns only cover `app-*.js` and `shared-*.js`, not arbitrary hash names, and extension support varies. Do not treat those patterns as verified blocking for a hashed localhost build. Original-module blocking and full in-browser gameplay have not been validated by the extraction/build tests.
+
+Userscript request metadata follows the [Tampermonkey API documentation](https://www.tampermonkey.net/documentation.php#GM_xmlhttpRequest): `GM.xmlHttpRequest` is granted, with connections to the current host and `cdn.jsdelivr.net` allowed.

@@ -1,4 +1,4 @@
-param([ValidateSet('login', 'check', 'build', 'update', 'deploy', 'watch', 'test')][string]$Mode = 'check')
+param([ValidateSet('login', 'check', 'build', 'update', 'deploy', 'watch', 'userscript', 'test')][string]$Mode = 'check')
 $ErrorActionPreference = 'Stop'
 if ($Mode -eq 'login') {
     $gitPath = if ($env:GIT_BIN) { $env:GIT_BIN }

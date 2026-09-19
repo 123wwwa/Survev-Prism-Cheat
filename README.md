@@ -9,12 +9,15 @@ Run these commands in PowerShell from the project directory.
 ```powershell
 .\run.cmd login    # Authorize Git Credential Manager before the first local push
 .\run.cmd check    # Check the upstream commit, local build, and public publication status
-.\run.cmd build    # Update upstream and extract app.js and shared.js without publishing
-.\run.cmd update   # Check for changes, build if needed, and push to the cdn branch
+.\run.cmd build    # Build the userscript and upstream app/shared without publishing
+.\run.cmd update   # Build the userscript, then update/publish app/shared if needed
+.\run.cmd userscript # Build only the installable userscript, without checking upstream
 .\run.cmd test
 ```
 
 `deploy` is an alias for `update`. If Node is on your PATH, you can also use `node scripts/pipeline.mjs check` or `node scripts/pipeline.mjs update`. The optional `watch` command repeats the update once a day while the process is running, but the daily GitHub Actions workflow is sufficient on its own. No background watcher starts automatically.
+
+`build`, `update`, `deploy`, and each `watch` cycle always build `userscript/dist/injector.user.js` first, including local userscript changes. Dependencies are installed from `userscript/pnpm-lock.yaml` with lifecycle scripts disabled. A userscript build failure stops the command before CDN publication. An unchanged upstream commit skips only the app/shared build and push; the userscript still rebuilds. Install the resulting `.user.js` file in your browser to apply changes. The userscript is a local output and is not added to the CDN branch. `check` remains read-only.
 
 `run.cmd` calls `powershell -NoProfile -ExecutionPolicy Bypass -File run.ps1`. The execution policy override applies only to that process and does not change your user or system policy. Use `.\run.cmd` if PowerShell blocks `.\run.ps1`. Enforced organizational Group Policy takes precedence.
 

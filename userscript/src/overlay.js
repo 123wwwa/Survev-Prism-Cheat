@@ -2,11 +2,11 @@ import { version } from './constants.js';
 import { state } from './vars.js';
 
 const overlay = document.createElement('div');
-overlay.className = 'krity-overlay';
+overlay.className = 'surver-injector-overlay';
 
-const krityTitle = document.createElement('h3');
-krityTitle.className = 'krity-title';
-krityTitle.innerText = `KrityHack ${version}`;
+const injectorTitle = document.createElement('h3');
+injectorTitle.className = 'surver-injector-title';
+injectorTitle.innerText = `surver-injector ${version}`;
 
 export const aimbotDot = document.createElement('div')
 aimbotDot.className = 'aimbotDot';
@@ -28,7 +28,7 @@ export function updateOverlay() {
         const text = `${name} ${optionalText}`;
 
         const line = document.createElement('p');
-        line.className = 'krity-control';
+        line.className = 'surver-injector-control';
         line.style.opacity = isEnabled ? 1 : 0.5;
         line.textContent = text;
         overlay.appendChild(line);
@@ -41,5 +41,5 @@ export function overlayToggle(){
 }
 
 document.querySelector('#ui-game').append(overlay);
-document.querySelector('#ui-top-left').insertBefore(krityTitle, document.querySelector('#ui-top-left').firstChild);
+document.querySelector('#ui-top-left').insertBefore(injectorTitle, document.querySelector('#ui-top-left').firstChild);
 document.querySelector('#ui-game').append(aimbotDot);

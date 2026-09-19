@@ -99,7 +99,7 @@ const headerText = createElement('div', {
     textAlign: 'left',
     padding: '10px 20px',
     lineHeight: '100%'
-}, `KrityHack v${version}`);
+}, `surver-injector v${version}`);
 headerSection.appendChild(headerText);
 
 // Создание содержимого

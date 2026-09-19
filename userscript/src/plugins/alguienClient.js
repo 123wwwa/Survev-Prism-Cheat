@@ -245,7 +245,7 @@ class GameMod {
 
 
         const menu = document.createElement("div");
-        menu.id = "KrityHack";
+        menu.id = "surver-injector";
         Object.assign(menu.style, {
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           padding: "15px",
@@ -301,26 +301,14 @@ class GameMod {
       
         const githubLink = createSocialLink("");
         githubLink.style.backgroundColor = "#0c1117";
-        githubLink.href = "https://github.com/Drino955/survev-krityhack";
-        githubLink.innerHTML = `<i class="fa-brands fa-github"></i> KrityHack`;
+        githubLink.href = "https://github.com/123wwwa/survev-injector";
+        githubLink.innerHTML = `<i class="fa-brands fa-github"></i> surver-injector`;
         menu.append(githubLink);
         
-        const telegramLink = createSocialLink("");
-        telegramLink.style.backgroundColor = "#00a8e6";
-        telegramLink.href = "https://t.me/krityteam";
-        telegramLink.innerHTML = `<i class="fa-brands fa-telegram-plane"></i> KrityTeam`;
-        menu.append(telegramLink);
-
-        const discordLink = createSocialLink("");
-        discordLink.style.backgroundColor = "#5865F2";
-        discordLink.href = "https://discord.gg/FUkaMnbgjK";
-        discordLink.innerHTML = `<i class="fa-brands fa-discord"></i> Krity Community`;
-        menu.append(discordLink);
-
         const additionalDescription = document.createElement("p");
         additionalDescription.className = "news-paragraph";
         additionalDescription.style.fontSize = "14px";
-        additionalDescription.innerHTML = `Your support helps us develop the project and provide better updates!`
+        additionalDescription.innerHTML = `Patched client modules with original server settings and sprite atlases.`
         menu.append(additionalDescription);
 
         const leftColumn = document.querySelector('#left-column');
@@ -335,12 +323,12 @@ class GameMod {
     initRules() {
         const newsBlock = document.querySelector("#news-block");
         newsBlock.innerHTML = `
-<h3 class="news-header">KrityHack v${version}</h3>
+<h3 class="news-header">surver-injector v${version}</h3>
 <div id="news-current">
-<small class="news-date">January 13, 2025</small>
+<small class="news-date">Version 0.1</small>
                       
-<h2>How to use the cheat in the game 🚀</h2>
-<p class="news-paragraph">After installing the cheat, you can use the following features and hotkeys:</p>
+<h2>surver-injector controls</h2>
+<p class="news-paragraph">Available controls and settings:</p>
 
 <h3>Hotkeys:</h3>
 <ul>
@@ -371,7 +359,7 @@ class GameMod {
     <li>The map is color-coded: white circle - Mosin, gold container - SV98, etc.</li>
 </ul>
 
-<p class="news-paragraph">For more details, visit the <a href="https://github.com/Drino955/survev-krityhack">GitHub page</a> and join our <a href="https://t.me/krityteam">Telegram group</a> or <a href="https://discord.gg/FUkaMnbgjK">Discord</a>.</p></div>`;
+<p class="news-paragraph">Project details and updates: <a href="https://github.com/123wwwa/survev-injector">surver-injector on GitHub</a>.</p></div>`;
     
     
     }

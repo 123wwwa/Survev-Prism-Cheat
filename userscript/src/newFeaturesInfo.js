@@ -6,17 +6,10 @@ const newFeaturesShown = GM_getValue(newFeaturesKey, false);
 
 if (!newFeaturesShown) {
     const message = `
-        <strong style="font-size:20px;display:block;">🎉 What's New:</strong><br>
-        - 🌐 Script now works on all survev forks<br>
-        - 🕹️ Added a cheats menu that activates with the ESC key<br>
-        - 🔫 New "UseOneGun" feature, you can lock the weapon and shoot only from it using autoswitch. When you have a shotgun and a rifle, and the enemy is far away, it is useful to lock the rifle and shoot at them.<br>
-        - 📈 Increased objects on the map<br>
-        - 🔦 Fixed bugs with the flashlight(laser a.k.a blue/grey wide lines), it will no longer remain on the map<br>
-        - 🛡️ Protection against installing the wrong Tampermonkey extension<br>
-        - 🛠️ AimBot works by default on downed players<br>
-        - 🛠️ Refactored code (useful for developers)<br>
-        - 🚀 Added runtime code injection to avoid DMCA bans on platforms like GitHub and GreasyFork<br><br>
-        📢 Subscribe to our <a href="https://t.me/krityteam" target="_blank">Telegram channel</a> and group, as GitHub and GreasyFork have banned us, and the Discord server might be next. Telegram is a safer platform for this kind of content and cheats. Plus, the author loves Telegram.<br>
+        <strong style="font-size:20px;display:block;">surver-injector v${version}</strong><br>
+        Loads patched app and shared modules from jsDelivr.<br>
+        Keeps the original server settings and sprite atlas data.<br>
+        Open the settings menu with ESC.<br>
     `;
 
     const overlay = document.createElement('div');
