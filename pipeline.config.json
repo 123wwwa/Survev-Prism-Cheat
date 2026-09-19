@@ -4,5 +4,5 @@
   "publishRepository": "https://github.com/123wwwa/survev-injector.git",
   "publishBranch": "cdn",
   "pollSeconds": 86400,
-  "fileName": "survev-readable.js"
+  "fileNames": { "app": "app.js", "shared": "shared.js" }
 }

@@ -137,31 +137,38 @@ async function build(revision) {
   await pnpm(['install', '--frozen-lockfile', '--filter', '@survev/client...', '--filter', '@survev/shared...', '--filter', 'survev']);
   await run(process.execPath, [resolve(root, 'scripts/build-client.mjs'), source, buildDir]);
   const report = JSON.parse(await readFile(resolve(buildDir, 'build-report.json'), 'utf8'));
-  const artifactPath = resolve(buildDir, report.readableEntry);
-  if (!artifactPath.startsWith(buildDir + (process.platform === 'win32' ? '\\' : '/'))) {
-    throw new Error('Build report points outside the build directory.');
+  const artifacts = {};
+  const buffers = {};
+  for (const name of ['app', 'shared']) {
+    const artifactPath = resolve(buildDir, report.artifacts[name].readableEntry);
+    if (!artifactPath.startsWith(buildDir + (process.platform === 'win32' ? '\\' : '/'))) {
+      throw new Error('Build report points outside the build directory.');
+    }
+    const data = await readFile(artifactPath);
+    validateArtifact(data);
+    await run(process.execPath, ['--check', artifactPath], root, true);
+    buffers[name] = data;
+    artifacts[name] = { file: config.fileNames[name], bytes: data.length, sha256: sha256(data),
+      originalFile: report.artifacts[name].entry, latestUrl: cdnUrl(config, config.publishBranch, config.fileNames[name]) };
   }
-  const data = await readFile(artifactPath);
-  validateArtifact(data);
-  await run(process.execPath, ['--check', artifactPath], root, true);
   const manifest = {
+    schemaVersion: 2,
     upstreamRepository: config.upstreamRepository,
     upstreamCommit: revision,
     inputHash: await inputHash(),
     builtAt: new Date().toISOString(),
-    file: config.fileName,
-    bytes: data.length,
-    sha256: sha256(data),
+    artifacts,
     sourceUrl: `https://github.com/${githubSlug(config.upstreamRepository)}/tree/${revision}`,
-    latestUrl: cdnUrl(config, config.publishBranch),
     build: report,
-    publicationMode: 'readable-game-original-production-imports',
+    publicationMode: 'readable-app-and-shared-original-production-imports',
   };
-  await atomicWrite(resolve(dist, config.fileName), data);
+  // Validate both outputs before replacing either publication artifact.
+  for (const name of ['app', 'shared']) await atomicWrite(resolve(dist, config.fileNames[name]), buffers[name]);
   await copyFile(resolve(source, 'LICENSE'), resolve(dist, 'LICENSE'));
   await copyFile(resolve(buildDir, 'THIRD_PARTY_LICENSES.md'), resolve(dist, 'THIRD_PARTY_LICENSES.md'));
   await writeJson(resolve(dist, 'manifest.json'), manifest);
-  log(`Built ${config.fileName}: ${(data.length / 1_000_000).toFixed(2)} MB`);
+  if (existsSync(resolve(dist, 'survev-readable.js'))) await unlink(resolve(dist, 'survev-readable.js'));
+  for (const artifact of Object.values(artifacts)) log(`Built ${artifact.file}: ${(artifact.bytes / 1_000_000).toFixed(2)} MB`);
   return manifest;
 }
 
@@ -170,14 +177,16 @@ async function publish(manifest, remote) {
     // Push remains fast-forward only; concurrent publication is retried next cycle.
     await git(['merge', '--ff-only', remote.sha], publishDir);
   }
-  for (const file of [config.fileName, 'manifest.json', 'LICENSE', 'THIRD_PARTY_LICENSES.md']) {
+  for (const file of [...Object.values(config.fileNames), 'manifest.json', 'LICENSE', 'THIRD_PARTY_LICENSES.md']) {
     await copyFile(resolve(dist, file), resolve(publishDir, file));
   }
   await writeFile(resolve(publishDir, 'README.md'),
     `# Survev client build\n\nSource: ${manifest.sourceUrl}\n\n` +
     `Build scripts: https://github.com/${githubSlug(config.publishRepository)}\n\n` +
-    `Unminified game entry JS only. Its relative imports are preserved. Shared JS, HTML, CSS, images and a game server are NOT included.\n`);
-  await git(['add', '--', config.fileName, 'manifest.json', 'LICENSE', 'THIRD_PARTY_LICENSES.md', 'README.md'], publishDir);
+    `Readable app.js and shared.js from the same production build. Original hashed imports and export aliases are preserved. Runtime chunks, HTML, CSS, images and a game server are NOT included.\n`);
+  // Migrate the previous managed artifact name; do not remove other files.
+  await git(['rm', '--ignore-unmatch', '--', 'survev-readable.js'], publishDir);
+  await git(['add', '--', ...Object.values(config.fileNames), 'manifest.json', 'LICENSE', 'THIRD_PARTY_LICENSES.md', 'README.md'], publishDir);
   if (await git(['diff', '--cached', '--name-only'], publishDir)) {
     await git(['-c', 'user.name=survev-injector', '-c', 'user.email=survev-injector@users.noreply.github.com',
       'commit', '-m', `Build survev ${manifest.upstreamCommit.slice(0, 12)}`], publishDir);
@@ -187,12 +196,16 @@ async function publish(manifest, remote) {
 }
 
 async function recordPublication(revision) {
-  const state = { publicationCommit: revision, immutableUrl: cdnUrl(config, revision),
-    latestUrl: cdnUrl(config, config.publishBranch), recordedAt: new Date().toISOString() };
+  const urls = Object.fromEntries(Object.entries(config.fileNames).map(([name, file]) => [name, {
+    immutableUrl: cdnUrl(config, revision, file), latestUrl: cdnUrl(config, config.publishBranch, file),
+  }]));
+  const state = { publicationCommit: revision, artifacts: urls, recordedAt: new Date().toISOString() };
   await writeJson(resolve(stateDir, 'published.json'), state);
   log(`GitHub commit: ${revision}`);
-  log(`jsDelivr branch URL (12-hour cache): ${state.latestUrl}`);
-  log(`jsDelivr immutable URL: ${state.immutableUrl}`);
+  for (const [name, links] of Object.entries(urls)) {
+    log(`${name} jsDelivr branch URL (12-hour cache): ${links.latestUrl}`);
+    log(`${name} jsDelivr immutable URL: ${links.immutableUrl}`);
+  }
 }
 
 async function checkUpdates() {
@@ -225,8 +238,12 @@ async function cycle() {
   }
   let manifest = await readJson(resolve(dist, 'manifest.json'));
   let validLocal = false;
-  if (matchesBuild(manifest, revision, hash) && existsSync(resolve(dist, config.fileName))) {
-    validLocal = sha256(await readFile(resolve(dist, config.fileName))) === manifest.sha256;
+  if (matchesBuild(manifest, revision, hash)) {
+    validLocal = true;
+    for (const [name, file] of Object.entries(config.fileNames)) {
+      if (manifest.artifacts?.[name]?.file !== file || !existsSync(resolve(dist, file)) ||
+          sha256(await readFile(resolve(dist, file))) !== manifest.artifacts[name].sha256) validLocal = false;
+    }
   }
   if (!validLocal) manifest = await build(revision);
   else log(`Reusing verified local build ${revision.slice(0, 12)}`);

@@ -7,6 +7,13 @@ export function selectGameEntry(chunks, htmlPath) {
   if (entries.length !== 1) throw new Error('Could not identify exactly one game HTML entry; refusing ambiguous publication.');
   return entries[0];
 }
+export function selectSharedChunk(chunks, game, sourceRoot) {
+  const anchor = `${sourceRoot.replaceAll('\\', '/')}/shared/gameConfig.ts`;
+  const candidates = chunks.filter(chunk => !chunk.isEntry && game.imports.includes(chunk.fileName) &&
+    chunk.moduleIds?.some(id => id.replaceAll('\\', '/') === anchor));
+  if (candidates.length !== 1) throw new Error('Could not identify exactly one shared game dependency; review upstream chunk splitting.');
+  return candidates[0];
+}
 export function restoreChunkHashes(code, chunks) {
   const hashes = new Map();
   for (const chunk of chunks) {
@@ -39,7 +46,8 @@ export function validateConfig(config) {
     if (!/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(branch)) throw new Error('Use a simple branch name.');
   }
   if (config.publishBranch !== 'cdn') throw new Error('Publishing is restricted to the dedicated cdn branch.');
-  if (!/^[A-Za-z0-9_-]+\.js$/.test(config.fileName)) throw new Error('Invalid JavaScript filename.');
+  const names = [config.fileNames?.app, config.fileNames?.shared];
+  if (names.some(name => typeof name !== 'string' || !/^[A-Za-z0-9_-]+\.js$/.test(name)) || new Set(names).size !== 2) throw new Error('Expected distinct app/shared JavaScript filenames.');
   if (!Number.isInteger(config.pollSeconds) || config.pollSeconds < 15) throw new Error('pollSeconds must be at least 15.');
   return config;
 }
@@ -51,6 +59,6 @@ export function validateArtifact(data) {
   // Conservative decimal limit for the jsDelivr GitHub endpoint.
   if (data.length > 20_000_000) throw new Error('Artifact exceeds jsDelivr\'s 20 MB GitHub file limit.');
 }
-export function cdnUrl(config, revision, file = config.fileName) {
+export function cdnUrl(config, revision, file = config.fileNames.app) {
   return `https://cdn.jsdelivr.net/gh/${githubSlug(config.publishRepository)}@${revision}/${file}`;
 }

@@ -1,6 +1,6 @@
 # survev-injector
 
-Builds the upstream `survev/survev` project in production mode, extracts **the game JavaScript entry before identifier minification**, and publishes it to this repository's `cdn` branch. jsDelivr serves the public GitHub file directly; no separate CDN upload or API key is required.
+Builds the upstream `survev/survev` project in production mode, extracts **the game entry and its shared chunk before identifier minification** as `app.js` and `shared.js`, and publishes both to this repository's `cdn` branch. jsDelivr serves the public GitHub files directly; no separate CDN upload or API key is required.
 
 ## Manual commands
 
@@ -9,7 +9,7 @@ Run these commands in PowerShell from the project directory.
 ```powershell
 .\run.cmd login    # Authorize Git Credential Manager before the first local push
 .\run.cmd check    # Check the upstream commit, local build, and public publication status
-.\run.cmd build    # Update upstream and extract the game JS without publishing
+.\run.cmd build    # Update upstream and extract app.js and shared.js without publishing
 .\run.cmd update   # Check for changes, build if needed, and push to the cdn branch
 .\run.cmd test
 ```
@@ -30,7 +30,7 @@ The workflow uses `ubuntu-24.04`, Node.js 24, and action versions that run on No
 
 The upstream source and Vite configuration files remain unchanged. Production entry points, shared chunks, CSS and image processing, obfuscation plugins, and hashed filenames are preserved. The pipeline does not apply `minify: false` to the entire build.
 
-The game entry code is captured during Rolldown's `renderChunk` stage. The original build then completes Oxc minification and filename hashing normally. Internal hash placeholders in the captured code are replaced with **the filenames finalized by that same production build**. Imported export aliases remain unchanged.
+The app and shared code are captured during Rolldown's `renderChunk` stage. The shared chunk is identified as the game's direct dependency containing upstream `shared/gameConfig.ts`, rather than by a hardcoded hash or file size. The runtime helper and statistics entry are excluded; ambiguous selection stops the build. The original build then completes Oxc minification and filename hashing normally. Internal hash placeholders in the captured code are replaced with **the filenames finalized by that same production build**. Import paths and exported aliases remain unchanged in both extracted files.
 
 ```js
 import { a as __toESM } from "./B0Z9INg1.js";
@@ -43,18 +43,22 @@ Filenames from an existing website, such as `Cbg9k6wS.js`, are not hardcoded. Ma
 ## Files and CDN access
 
 - `vendor/survev/`: Managed upstream checkout, excluded from this project's Git history. Local modifications stop automatic updates to protect your changes.
-- `.pipeline/build/`: Full upstream production output, plus the separately extracted `readable-game.js`.
-- `dist/survev-readable.js`: The single game JS file selected for publication.
-- `dist/manifest.json`: Upstream commit, build time, SHA-256, byte size, original game filename, and shared JS dependency paths.
+- `.pipeline/build/`: Full upstream production output, plus the separately extracted `readable-app.js` and `readable-shared.js`.
+- `dist/app.js`: Readable game entry, previously published as `survev-readable.js`.
+- `dist/shared.js`: Readable shared chunk corresponding to the game's original hashed shared dependency.
+- `dist/manifest.json`: Upstream commit, build time, and per-file SHA-256, byte size, original filename, and JS dependency paths.
 - `client-config.hjson`: Public client configuration, including server regions. Copied into the upstream local configuration file on each update cycle.
 - `.pipeline/published.json`: Publication commit and jsDelivr URLs. This does not indicate that CDN propagation has been verified.
 
-Publication includes the game JS and its supporting `manifest.json`, `LICENSE`, `THIRD_PARTY_LICENSES.md`, and `README.md`. Shared JS, statistics JS, images, CSS, and HTML are intentionally excluded. The CDN file cannot run the game on its own; the consuming environment must provide the shared JS from the same build and the remaining resources.
+Publication includes `app.js`, `shared.js`, and the supporting `manifest.json`, `LICENSE`, `THIRD_PARTY_LICENSES.md`, and `README.md`. Both JavaScript files are validated before publication and committed together. The old managed `survev-readable.js` is removed during migration. Runtime helper JS, statistics JS, images, CSS, and HTML are intentionally excluded.
 
-Stable URL:
+The names `app.js` and `shared.js` are publication names only. For example, `app.js` still imports `./BvmdDwTY.js` when that is the original production filename; it is not rewritten to `./shared.js`. The consuming environment must map/provide these original paths and the remaining resources. The two CDN files alone are not a standalone game.
+
+Stable URLs:
 
 ```text
-https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/survev-readable.js
+https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/app.js
+https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/shared.js
 ```
 
 A GitHub push makes the file available for jsDelivr to serve. **Branch URLs have a default CDN cache duration of 12 hours**, independent of the daily GitHub update schedule. Browser caching also applies. The pipeline does not automatically purge caches or wait for CDN responses, so CDN delays cannot turn a successful Git push into a failed publication. To address a specific version, replace `@cdn` with **the publishing repository's commit SHA**, not the upstream survev commit. Use the filename shown above: requesting `.min.js` may cause jsDelivr to generate a minified version.

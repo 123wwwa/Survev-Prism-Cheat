@@ -1,13 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { validateConfig, githubSlug, cdnUrl, matchesBuild, validateArtifact, sha256, selectGameEntry, restoreChunkHashes } from '../scripts/lib.mjs';
+import { validateConfig, githubSlug, cdnUrl, matchesBuild, validateArtifact, sha256, selectGameEntry, selectSharedChunk, restoreChunkHashes } from '../scripts/lib.mjs';
 
 const config = JSON.parse(await readFile(new URL('../pipeline.config.json', import.meta.url)));
 test('publish destination is restricted to a dedicated branch and a simple JS filename', () => {
   assert.equal(validateConfig(config), config);
   assert.throws(() => validateConfig({ ...config, publishBranch: 'main' }));
-  assert.throws(() => validateConfig({ ...config, fileName: '../private.js' }));
+  assert.throws(() => validateConfig({ ...config, fileNames: { app: '../private.js', shared: 'shared.js' } }));
+  assert.throws(() => validateConfig({ ...config, fileNames: { app: 'app.js', shared: 'app.js' } }));
   assert.throws(() => validateConfig({ ...config, publishRepository: 'https://user:secret@github.com/a/b' }));
   assert.throws(() => validateConfig({ ...config, upstreamBranch: '--upload-pack=evil' }));
 });
@@ -25,7 +26,8 @@ test('empty or oversized JS is rejected before publication', () => {
 });
 test('CDN links preserve file extension and distinguish latest from immutable version', () => {
   assert.equal(githubSlug(config.publishRepository), '123wwwa/survev-injector');
-  assert.equal(cdnUrl(config, 'abc123'), 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@abc123/survev-readable.js');
+  assert.equal(cdnUrl(config, 'abc123'), 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@abc123/app.js');
+  assert.equal(cdnUrl(config, 'abc123', config.fileNames.shared), 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@abc123/shared.js');
   assert.match(cdnUrl(config, 'cdn', 'manifest.json'), /@cdn\/manifest\.json$/);
 });
 test('artifact integrity changes when any byte changes', () => {
@@ -46,4 +48,13 @@ test('readable game imports retain the exact original production dependency file
     'import { a as GameConfig } from "./Cbg9k6wS.js";');
   assert.throws(() => restoreChunkHashes(before, []), /Unresolved/);
   assert.throws(() => restoreChunkHashes(before, [{ preliminaryFileName: 'js/!~{001}~.js', fileName: 'renamed/shared.js' }]), /naming pattern/);
+});
+test('shared selection follows the game dependency and module identity, excluding runtime and stats', () => {
+  const shared = { isEntry: false, fileName: 'js/new-hash.js', moduleIds: ['C:\\repo\\shared\\gameConfig.ts'] };
+  const runtime = { isEntry: false, fileName: 'js/runtime.js', moduleIds: ['\0rolldown/runtime.js'] };
+  const game = { imports: [shared.fileName, runtime.fileName] };
+  const stats = { ...shared, isEntry: true, fileName: 'stats.js' };
+  assert.equal(selectSharedChunk([runtime, stats, shared], game, 'C:/repo'), shared);
+  assert.throws(() => selectSharedChunk([runtime, stats], game, 'C:/repo'), /exactly one/);
+  assert.throws(() => selectSharedChunk([shared, { ...shared }], game, 'C:/repo'), /exactly one/);
 });

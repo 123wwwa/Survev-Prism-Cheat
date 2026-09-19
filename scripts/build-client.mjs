@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
-import { selectGameEntry, restoreChunkHashes, sha256 } from './lib.mjs';
+import { selectGameEntry, selectSharedChunk, restoreChunkHashes, sha256 } from './lib.mjs';
 
 // Runs in a separate process: upstream config changes are never held in an import cache.
 const source = resolve(process.argv[2]);
@@ -21,7 +21,7 @@ const loaded = await loadConfigFromFile(
 );
 if (!loaded) throw new Error('Upstream Vite config could not be loaded.');
 const config = loaded.config;
-let readableGame;
+const captured = new Map();
 await build({
   ...config,
   configFile: false,
@@ -30,7 +30,7 @@ await build({
   plugins: [
     ...(config.plugins ?? []),
     {
-      name: 'capture-game-before-native-minification',
+      name: 'capture-app-and-shared-before-native-minification',
       enforce: 'post',
       configResolved(resolved) {
         if (resolved.build.minify !== 'oxc') throw new Error('The upstream minifier changed; review the capture adapter.');
@@ -38,9 +38,7 @@ await build({
       renderChunk: {
         order: 'post',
         handler(code, chunk) {
-          if (chunk.isEntry && chunk.facadeModuleId?.replaceAll('\\', '/') === resolve(client, 'index.html').replaceAll('\\', '/')) {
-            readableGame = code;
-          }
+          captured.set(chunk.fileName, code);
           // Observe only: the original production chunks must remain untouched.
           return null;
         },
@@ -48,15 +46,19 @@ await build({
       generateBundle: { order: 'post', handler(_, bundle) {
         const chunks = Object.values(bundle).filter(item => item.type === 'chunk');
         const game = selectGameEntry(chunks, resolve(client, 'index.html'));
-        if (!readableGame) throw new Error('The game entry was not captured before minification.');
-        const readableFile = 'readable-game.js';
-        if (bundle[readableFile]) throw new Error('Readable output filename conflicts with upstream output.');
-        this.emitFile({ type: 'asset', fileName: readableFile, source: restoreChunkHashes(readableGame, chunks) });
+        const shared = selectSharedChunk(chunks, game, source);
+        const artifacts = {};
+        for (const [name, chunk] of Object.entries({ app: game, shared })) {
+          const code = captured.get(chunk.preliminaryFileName);
+          if (!code) throw new Error(`${name} was not captured before minification.`);
+          const readableFile = `readable-${name}.js`;
+          if (bundle[readableFile]) throw new Error('Readable output filename conflicts with upstream output.');
+          this.emitFile({ type: 'asset', fileName: readableFile, source: restoreChunkHashes(code, chunks) });
+          artifacts[name] = { entry: chunk.fileName, readableEntry: readableFile,
+            imports: chunk.imports, dynamicImports: chunk.dynamicImports };
+        }
         this.emitFile({ type: 'asset', fileName: 'build-report.json', source: JSON.stringify({
-          entry: game.fileName,
-          readableEntry: readableFile,
-          imports: game.imports,
-          dynamicImports: game.dynamicImports,
+          artifacts,
           generatedJavaScript: chunks.map(item => item.fileName),
           productionHashes: Object.fromEntries(chunks.map(item => [item.fileName, sha256(item.code)])),
         }, null, 2) });
