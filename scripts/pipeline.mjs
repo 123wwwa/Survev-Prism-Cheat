@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { sha256, validateConfig, validateArtifact, matchesBuild, githubSlug, cdnUrl } from './lib.mjs';
 import { patchSharedScript } from './shared-patches.mjs';
+import { patchAppScript } from './app-patches.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const config = validateConfig(JSON.parse(await readFile(resolve(root, 'pipeline.config.json'), 'utf8')));
@@ -85,7 +86,7 @@ async function syncSource() {
 
 async function inputHash() {
   const files = ['pipeline.config.json', 'client-config.hjson', 'scripts/build-client.mjs', 'scripts/canvas-paths.cjs',
-    'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/shared-patches.mjs', 'scripts/invoke-pnpm.ps1'];
+    'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/shared-patches.mjs', 'scripts/app-patches.mjs', 'scripts/invoke-pnpm.ps1'];
   const normalized = async path => Buffer.from((await readFile(path, 'utf8')).replaceAll('\r\n', '\n'));
   const contents = await Promise.all(files.map(file => normalized(resolve(root, file))));
   // Also observe locally supplied client build configuration without publishing it.
@@ -141,6 +142,7 @@ async function build(revision) {
   const artifacts = {};
   const buffers = {};
   let sharedPatches = [];
+  let appPatches = [];
   for (const name of ['app', 'shared']) {
     const artifactPath = resolve(buildDir, report.artifacts[name].readableEntry);
     if (!artifactPath.startsWith(buildDir + (process.platform === 'win32' ? '\\' : '/'))) {
@@ -148,13 +150,14 @@ async function build(revision) {
     }
     let data = await readFile(artifactPath);
     let validationPath = artifactPath;
-    if (name === 'shared') {
-      const patched = patchSharedScript(data.toString('utf8'));
+    {
+      const patched = (name === 'shared' ? patchSharedScript : patchAppScript)(data.toString('utf8'));
       data = Buffer.from(patched.code);
-      sharedPatches = patched.applied;
-      validationPath = resolve(buildDir, 'patched-shared.mjs');
+      if (name === 'shared') sharedPatches = patched.applied;
+      else appPatches = patched.applied;
+      validationPath = resolve(buildDir, `patched-${name}.mjs`);
       await writeFile(validationPath, data);
-      log(`Shared patches applied: ${sharedPatches.join(', ')}`);
+      log(`${name} patches applied: ${patched.applied.join(', ')}`);
     }
     validateArtifact(data);
     await run(process.execPath, ['--check', validationPath], root, true);
@@ -170,6 +173,7 @@ async function build(revision) {
     builtAt: new Date().toISOString(),
     artifacts,
     sharedPatches,
+    appPatches,
     sourceUrl: `https://github.com/${githubSlug(config.upstreamRepository)}/tree/${revision}`,
     build: report,
     publicationMode: 'readable-app-and-shared-original-production-imports',
