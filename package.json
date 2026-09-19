@@ -1,0 +1,12 @@
+{
+  "name": "survev-injector",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/pipeline.mjs build",
+    "deploy": "node scripts/pipeline.mjs deploy",
+    "watch": "node scripts/pipeline.mjs watch",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "engines": { "node": ">=22.18.0" }
+}

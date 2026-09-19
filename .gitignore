@@ -1,0 +1,8 @@
+vendor/
+upstream/
+.pipeline/
+.pnpm-store/
+dist/
+node_modules/
+.env
+*.log

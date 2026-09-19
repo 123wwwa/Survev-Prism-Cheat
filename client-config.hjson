@@ -1,0 +1,4 @@
+{
+  // Public client build settings. Add regions here when targeting your server.
+  database: { enabled: false }
+}

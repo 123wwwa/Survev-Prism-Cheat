@@ -1,0 +1,2 @@
+& pnpm @args
+exit $LASTEXITCODE
