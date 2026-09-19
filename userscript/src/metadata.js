@@ -7,10 +7,10 @@ export const metadata = `// ==UserScript==
 // @license      GPL3
 // @match        http://localhost/*
 // @match        https://localhost/*
+// @match        https://survev.io/*
 // @icon         https://www.google.com/s2/favicons?domain=survev.io
 // @run-at       document-end
-// @webRequest   [{"selector":"*app-*.js","action":"cancel"}]
-// @webRequest   [{"selector":"*shared-*.js","action":"cancel"}]
+// @upstream-webRequest
 // @grant        GM_xmlhttpRequest
 // @grant        GM.xmlHttpRequest
 // @connect      self
