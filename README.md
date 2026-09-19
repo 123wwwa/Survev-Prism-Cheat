@@ -1,70 +1,72 @@
 # survev-injector
 
-`survev/survev` 원본의 production 빌드를 수행하고, **변수명 축약 직전의 게임 JS 진입 파일 하나**를 추출해 이 저장소의 `cdn` 브랜치에 게시합니다. jsDelivr는 공개 GitHub 파일을 제공하므로 별도 업로드/API 키는 필요하지 않습니다.
+Builds the upstream `survev/survev` project in production mode, extracts **the game JavaScript entry before identifier minification**, and publishes it to this repository's `cdn` branch. jsDelivr serves the public GitHub file directly; no separate CDN upload or API key is required.
 
-## 수동 명령
+## Manual commands
 
-프로젝트 폴더의 PowerShell에서 실행합니다.
+Run these commands in PowerShell from the project directory.
 
 ```powershell
-.\run.ps1 check    # 원본 최신 커밋과 로컬 빌드/공개 게시 상태만 확인
-.\run.ps1 build    # 원본 업데이트 + 게임 JS 추출, 게시하지 않음
-.\run.ps1 update   # 변경 확인 → 필요할 때 빌드 → GitHub cdn 브랜치에 push
-.\run.ps1 test
+.\run.cmd login    # Authorize Git Credential Manager before the first local push
+.\run.cmd check    # Check the upstream commit, local build, and public publication status
+.\run.cmd build    # Update upstream and extract the game JS without publishing
+.\run.cmd update   # Check for changes, build if needed, and push to the cdn branch
+.\run.cmd test
 ```
 
-`deploy`는 `update`와 같은 명령입니다. Node가 PATH에 있으면 `node scripts/pipeline.mjs check` 또는 `node scripts/pipeline.mjs update`도 가능합니다. 필요할 경우 `watch`로 PC가 켜져 있는 동안 하루 간격으로 반복할 수 있지만, GitHub Actions의 일일 실행만으로도 충분합니다. 이 프로젝트는 백그라운드 감시 프로세스를 자동 시작하지 않습니다.
+`deploy` is an alias for `update`. If Node is on your PATH, you can also use `node scripts/pipeline.mjs check` or `node scripts/pipeline.mjs update`. The optional `watch` command repeats the update once a day while the process is running, but the daily GitHub Actions workflow is sufficient on its own. No background watcher starts automatically.
 
-실행 정책이 막으면 `powershell -NoProfile -ExecutionPolicy Bypass -File .\run.ps1 update`처럼 해당 프로세스에만 실행 정책을 지정할 수 있습니다.
+`run.cmd` calls `powershell -NoProfile -ExecutionPolicy Bypass -File run.ps1`. The execution policy override applies only to that process and does not change your user or system policy. Use `.\run.cmd` if PowerShell blocks `.\run.ps1`. Enforced organizational Group Policy takes precedence.
 
-Node.js 22.18+ (24 권장), pnpm, Git이 필요합니다. `run.ps1`은 PATH에 Node/pnpm이 없으면 현재 사용자의 Codex 번들 런타임을 찾아 사용합니다. Codex가 없는 PC에는 별도 설치가 필요합니다. 로컬 push는 Git Credential Manager 등 기존 Git 로그인을 사용합니다. 인증 실패 시 대화창을 무한히 기다리지 않고 오류를 반환합니다.
+Requires Node.js 22.18+ (24 recommended), pnpm, and Git. If Node or pnpm is missing from PATH, `run.ps1` looks for the current user's bundled Codex runtime. Install the tools separately on machines without that runtime. Local pushes use your existing Git authentication, such as Git Credential Manager. Authentication failures return an error instead of waiting indefinitely for a prompt.
 
-## 자동 실행
+## Scheduled updates
 
-GitHub Actions의 `Update client CDN`이 **매일 한국 시간 09:17**에 원본 변경을 확인합니다. GitHub 사정에 따라 실제 실행은 지연될 수 있습니다. 수동 실행은 Actions → Update client CDN → Run workflow를 사용합니다. 기본 브랜치는 `main`입니다.
+The `Update client CDN` GitHub Actions workflow checks upstream **daily at 09:17 Asia/Seoul (00:17 UTC)**. GitHub may delay scheduled runs. To trigger it manually, use **Actions → Update client CDN → Run workflow**. The default branch is `main`.
 
-실행 환경은 `ubuntu-24.04`, Node.js 24입니다. Actions도 Node.js 24를 사용하는 버전을 지정했습니다. 워크플로의 일회용 GitHub 토큰은 Git 게시에 사용하며, 원본의 빌드 프로세스/패키지 설치 스크립트에는 넘기지 않습니다. 코드 push만으로 자동 배포하지 않고 일일 스케줄 또는 수동 실행으로 갱신합니다.
+The workflow uses `ubuntu-24.04`, Node.js 24, and action versions that run on Node.js 24. Its temporary GitHub token is used for Git publication and is not passed to upstream build processes or package installation scripts. Updates run on the daily schedule or by manual dispatch, not on every code push.
 
-## 원본 구조 및 import 보존
+## Preserving the upstream build and imports
 
-원본 소스와 Vite 설정 파일은 수정하지 않습니다. 원본의 production 진입점, 공통 청크 분할, CSS/이미지 처리, 난독화 플러그인 및 해시 파일명 생성은 그대로 둡니다. 전체 빌드에 `minify: false`를 적용하지 않습니다.
+The upstream source and Vite configuration files remain unchanged. Production entry points, shared chunks, CSS and image processing, obfuscation plugins, and hashed filenames are preserved. The pipeline does not apply `minify: false` to the entire build.
 
-Rolldown의 `renderChunk` 단계에서 게임 진입 파일을 관찰하고 코드를 따로 보관합니다. 원래 빌드는 이후 Oxc 축약과 해시 확정을 정상 수행합니다. 보관한 게임 코드의 내부 해시 자리표시자만 **그 production 빌드에서 확정된 파일명**으로 치환해 읽을 수 있는 JS를 만듭니다. import의 export 별칭도 바꾸지 않습니다.
+The game entry code is captured during Rolldown's `renderChunk` stage. The original build then completes Oxc minification and filename hashing normally. Internal hash placeholders in the captured code are replaced with **the filenames finalized by that same production build**. Imported export aliases remain unchanged.
 
 ```js
 import { a as __toESM } from "./B0Z9INg1.js";
-import { U as GameConfig /* ... */ } from "./공통청크해시.js";
+import { U as GameConfig /* ... */ } from "./shared-chunk-hash.js";
 var AliveCountsMsg = class { /* ... */ };
 ```
 
-기존 웹사이트의 `Cbg9k6wS.js` 같은 문자열을 하드코딩하는 것은 아닙니다. 이미 서비스 중인 사이트와 동일한 해시를 얻으려면 해당 배포의 소스 커밋, 설정, 의존성, 난독화 결과 등이 일치해야 합니다. 원본 난독화 플러그인에는 난수 사용도 있으므로 서로 다른 빌드의 해시가 같다고 보장할 수 없습니다. 이 도구는 **이번 production 빌드와 추출 JS의 의존 파일명이 정확히 같음**을 보장합니다. 원본 난독화 플러그인이 이미 바꾼 속성 이름을 복원하지는 않습니다.
+Filenames from an existing website, such as `Cbg9k6wS.js`, are not hardcoded. Matching a deployed site's hashes requires matching its source commit, configuration, dependencies, obfuscation output, and other build inputs. The upstream obfuscation plugin also uses randomness, so separate builds are not guaranteed to produce identical hashes. This tool preserves **the exact dependency filenames from its own production build** in the extracted JS. It does not restore property names already changed by the upstream obfuscation plugin.
 
-## 파일과 CDN
+## Files and CDN access
 
-- `vendor/survev/`: 자동 관리하는 원본 checkout. 개인 프로젝트 Git에는 포함하지 않습니다. 직접 수정하면 자동 업데이트를 멈추어 내용을 보호합니다.
-- `.pipeline/build/`: 원본 production 결과물 전체와 별도로 추출한 `readable-game.js`.
-- `dist/survev-readable.js`: 최종 게시할 게임 JS 하나.
-- `dist/manifest.json`: 원본 커밋, 빌드 시각, SHA-256, 바이트 수, 원래 게임 파일명 및 공통 JS 의존 경로.
-- `client-config.hjson`: 공개 클라이언트 설정. 서버 regions 등을 여기에 설정합니다. 매 주기 원본의 로컬 설정 파일에 복사합니다.
-- `.pipeline/published.json`: GitHub 게시 커밋과 jsDelivr 주소. CDN 반영 검증 완료를 의미하지는 않습니다.
+- `vendor/survev/`: Managed upstream checkout, excluded from this project's Git history. Local modifications stop automatic updates to protect your changes.
+- `.pipeline/build/`: Full upstream production output, plus the separately extracted `readable-game.js`.
+- `dist/survev-readable.js`: The single game JS file selected for publication.
+- `dist/manifest.json`: Upstream commit, build time, SHA-256, byte size, original game filename, and shared JS dependency paths.
+- `client-config.hjson`: Public client configuration, including server regions. Copied into the upstream local configuration file on each update cycle.
+- `.pipeline/published.json`: Publication commit and jsDelivr URLs. This does not indicate that CDN propagation has been verified.
 
-게시 대상은 게임 JS 하나와 출처/검증용 `manifest.json`, `LICENSE`, `THIRD_PARTY_LICENSES.md`, `README.md`입니다. 사용자 선택에 따라 공통 JS·통계 JS·이미지·CSS·HTML은 게시하지 않습니다. 따라서 CDN의 이 파일 하나로 게임이 독립 실행되지는 않습니다. 사용 환경에서 같은 빌드의 공통 JS와 나머지 자원을 제공해야 합니다.
+Publication includes the game JS and its supporting `manifest.json`, `LICENSE`, `THIRD_PARTY_LICENSES.md`, and `README.md`. Shared JS, statistics JS, images, CSS, and HTML are intentionally excluded. The CDN file cannot run the game on its own; the consuming environment must provide the shared JS from the same build and the remaining resources.
 
-고정 주소:
+Stable URL:
 
 ```text
 https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/survev-readable.js
 ```
 
-GitHub push만 하면 jsDelivr에서 제공할 수 있습니다. **브랜치 URL의 기본 CDN 캐시는 12시간**이며 GitHub의 하루 1회 업데이트 주기와는 별개입니다. 브라우저 캐시도 별도로 적용됩니다. 자동 purge나 CDN 응답을 기다리는 단계를 넣지 않아 CDN 지연 때문에 Git 게시 성공이 실패로 처리되지 않습니다. 즉시 특정 버전을 지정하려면 `@cdn`을 **게시 저장소 커밋 SHA**로 바꿉니다. 원본 survev 커밋과는 다릅니다. `.min.js`를 요청하면 jsDelivr가 축약본을 만들 수 있으므로 위 이름을 그대로 사용합니다.
+A GitHub push makes the file available for jsDelivr to serve. **Branch URLs have a default CDN cache duration of 12 hours**, independent of the daily GitHub update schedule. Browser caching also applies. The pipeline does not automatically purge caches or wait for CDN responses, so CDN delays cannot turn a successful Git push into a failed publication. To address a specific version, replace `@cdn` with **the publishing repository's commit SHA**, not the upstream survev commit. Use the filename shown above: requesting `.min.js` may cause jsDelivr to generate a minified version.
 
-## 실패 원인과 복구
+## Troubleshooting and recovery
 
-- `Public GitHub repository lookup returned HTTP 404`는 저장소 주소가 틀렸거나 공개 접근이 되지 않는다는 뜻입니다. 이 프로젝트의 확인된 배포 차단 원인입니다. Node/Ubuntu 사용 중단 경고와는 별개입니다. jsDelivr는 Private 저장소를 읽을 수 없습니다. GitHub Settings → General → Change visibility에서 Public으로 전환하거나 `pipeline.config.json`에 다른 공개 저장소를 지정한 뒤 `update`를 다시 실행합니다.
-- 빌드 실패/게임 진입점 식별 실패/미해결 해시/문법 오류/20 MB 초과 시 게시하지 않습니다. 마지막 정상 게시물은 그대로 남습니다.
-- `cdn`에 force push하지 않습니다. 동시 게시 충돌은 다음 실행에서 원격 상태를 다시 확인합니다. 개인 프로젝트 main에는 배포 스크립트가 push하지 않습니다.
-- 강제 종료 후 `.pipeline/pipeline.lock`이 남으면 그 PID가 종료된 것을 확인한 뒤 해당 잠금 파일만 제거합니다.
-- `.pipeline/publish`에 미완료 변경이 있으면 내용을 확인해야 합니다. 성공적으로 게시된 파일은 원격 `cdn`에 남아 있습니다.
-- Windows 한글 경로의 node-canvas 파일 열기 문제는 보조 코드가 동일 파일의 바이트를 넘겨 처리합니다. 원본/의존성 파일은 수정하지 않습니다.
+- `Cannot prompt because user interactivity has been disabled` or `could not read Username` means Git has no usable publishing credential. Run `.\run.cmd login`, open the displayed GitHub device URL, enter the displayed code, and authorize Git Credential Manager. Keep the terminal open until it reports success, then rerun `.\run.cmd update`. Signing in to the GitHub website or GitHub Desktop alone does not necessarily authenticate command-line Git. Do not paste tokens into this repository or chat. GitHub Actions uses its own temporary token and does not need this local login.
+- `Public GitHub repository lookup returned HTTP 404` means the repository URL is incorrect or the repository is not publicly accessible. This was the confirmed publication blocker, separate from Node.js or Ubuntu deprecation warnings. jsDelivr cannot read private repositories. Set the repository to **Public** under **GitHub Settings → General → Change visibility**, or configure another public repository in `pipeline.config.json`, then rerun `update`.
+- Build failures, ambiguous game entry selection, unresolved hashes, syntax errors, or artifacts larger than 20 MB stop publication. The last successful publication remains available.
+- The pipeline never force-pushes to `cdn`. After a concurrent publication conflict, the next run checks the remote state again. The deployment script does not push to the project's `main` branch.
+- If a forced shutdown leaves `.pipeline/pipeline.lock`, confirm that its recorded PID is no longer running before removing that lock file.
+- Inspect unfinished changes in `.pipeline/publish` before continuing. Successfully published files remain on the remote `cdn` branch.
+- A compatibility helper handles node-canvas file-opening issues with Korean paths on Windows by passing the same file bytes directly. It does not modify upstream or dependency files.
 
-참고: [jsDelivr 캐시 정책](https://github.com/jsdelivr/jsdelivr#caching), [원본 프로젝트](https://github.com/survev/survev).
+References: [jsDelivr caching policy](https://github.com/jsdelivr/jsdelivr#caching), [upstream project](https://github.com/survev/survev).

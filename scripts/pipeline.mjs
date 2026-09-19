@@ -104,9 +104,11 @@ async function preparePublish() {
   const response = await fetch(`https://api.github.com/repos/${githubSlug(config.publishRepository)}`, {
     headers: { 'User-Agent': 'survev-injector' }, signal: AbortSignal.timeout(20_000),
   });
+  // Drain error responses as well, allowing the HTTP connection to close cleanly.
+  const repository = await response.json();
   if (response.status === 404) throw new Error(`Publishing repository is not publicly accessible: https://github.com/${githubSlug(config.publishRepository)}. jsDelivr cannot serve a private repository. Set Settings > General > Change visibility > Public (or configure an existing public repository), then rerun update.`);
   if (!response.ok) throw new Error(`Public GitHub repository lookup returned HTTP ${response.status}. Check API rate limits.`);
-  if ((await response.json()).private !== false) throw new Error('jsDelivr requires a public publishing repository.');
+  if (repository.private !== false) throw new Error('jsDelivr requires a public publishing repository.');
   if (!existsSync(resolve(publishDir, '.git/config'))) {
     await mkdir(publishDir, { recursive: true });
     await git(['init', '--initial-branch', config.publishBranch], publishDir);
@@ -259,6 +261,11 @@ try {
     if (mode !== 'watch' || stopping) break;
     await delay(config.pollSeconds * 1000, undefined, { signal: stopSleep.signal }).catch(() => {});
   } while (!stopping);
+} catch (error) {
+  console.error(`[pipeline] ${error.message}`);
+  // Let pending HTTP handles close normally instead of terminating through an
+  // uncaught top-level rejection (which can trigger a libuv assertion on Windows).
+  process.exitCode = 1;
 } finally {
   await lock.close();
   await unlink(lockPath);

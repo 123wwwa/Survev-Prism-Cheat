@@ -1,5 +1,22 @@
-param([ValidateSet('check', 'build', 'update', 'deploy', 'watch', 'test')][string]$Mode = 'check')
+param([ValidateSet('login', 'check', 'build', 'update', 'deploy', 'watch', 'test')][string]$Mode = 'check')
 $ErrorActionPreference = 'Stop'
+if ($Mode -eq 'login') {
+    $gitPath = if ($env:GIT_BIN) { $env:GIT_BIN }
+        elseif (Test-Path -LiteralPath 'C:\Program Files\Git\cmd\git.exe') { 'C:\Program Files\Git\cmd\git.exe' }
+        else { (Get-Command git -ErrorAction Stop).Source }
+    $settings = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'pipeline.config.json') -Raw | ConvertFrom-Json
+    if ($settings.publishRepository -notmatch '^https://github\.com/([\w.-]+)/[\w.-]+$') {
+        throw 'Expected a GitHub HTTPS publishing repository in pipeline.config.json.'
+    }
+    $githubOwner = $Matches[1]
+    $env:GCM_INTERACTIVE = 'true'
+    $env:GIT_TERMINAL_PROMPT = '1'
+    Write-Host 'Complete the GitHub device authorization shown below. Keep this terminal open until login finishes.'
+    & $gitPath credential-manager github login --username $githubOwner --device --no-ui
+    $loginResult = $LASTEXITCODE
+    if ($loginResult -eq 0) { Write-Host 'GitHub login completed. Run .\run.cmd update to retry publication.' }
+    exit $loginResult
+}
 $runtimeRoot = Join-Path $env:USERPROFILE '.cache\codex-runtimes\codex-primary-runtime\dependencies'
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     $bundledNode = Join-Path $runtimeRoot 'node\bin\node.exe'
