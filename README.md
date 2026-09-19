@@ -42,6 +42,10 @@ Filenames from an existing website, such as `Cbg9k6wS.js`, are not hardcoded. Ma
 
 ## Files and CDN access
 
+Before publication, `scripts/shared-patches.mjs` uses regular expressions on the readable shared output to insert five assignments: `window.bullets`, `window.explosions`, `window.guns`, `window.throwable`, and `window.objects`. These reference the existing bullet base definitions, explosion definitions, gun base definitions, throwable definitions, and map obstacle definitions (the table starting with `barrel_01`), respectively. They are available after those declarations execute in the browser. Base tables are exposed as requested; derived tables may contain additional entries or copied values.
+
+Only `window.<name> = ` is inserted before each object initializer. Local variables, object contents, imports, exports, and original production output remain unchanged. Each pattern must match exactly once; missing, duplicate, or already patched targets stop publication. The patched file is syntax-checked, and its final bytes are used for manifest hashes. Patch edits also invalidate the build cache. `manifest.json` records the applied patch names.
+
 - `vendor/survev/`: Managed upstream checkout, excluded from this project's Git history. Local modifications stop automatic updates to protect your changes.
 - `.pipeline/build/`: Full upstream production output, plus the separately extracted `readable-app.js` and `readable-shared.js`.
 - `dist/app.js`: Readable game entry, previously published as `survev-readable.js`.

@@ -5,6 +5,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { sha256, validateConfig, validateArtifact, matchesBuild, githubSlug, cdnUrl } from './lib.mjs';
+import { patchSharedScript } from './shared-patches.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const config = validateConfig(JSON.parse(await readFile(resolve(root, 'pipeline.config.json'), 'utf8')));
@@ -84,7 +85,7 @@ async function syncSource() {
 
 async function inputHash() {
   const files = ['pipeline.config.json', 'client-config.hjson', 'scripts/build-client.mjs', 'scripts/canvas-paths.cjs',
-    'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/invoke-pnpm.ps1'];
+    'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/shared-patches.mjs', 'scripts/invoke-pnpm.ps1'];
   const normalized = async path => Buffer.from((await readFile(path, 'utf8')).replaceAll('\r\n', '\n'));
   const contents = await Promise.all(files.map(file => normalized(resolve(root, file))));
   // Also observe locally supplied client build configuration without publishing it.
@@ -139,14 +140,24 @@ async function build(revision) {
   const report = JSON.parse(await readFile(resolve(buildDir, 'build-report.json'), 'utf8'));
   const artifacts = {};
   const buffers = {};
+  let sharedPatches = [];
   for (const name of ['app', 'shared']) {
     const artifactPath = resolve(buildDir, report.artifacts[name].readableEntry);
     if (!artifactPath.startsWith(buildDir + (process.platform === 'win32' ? '\\' : '/'))) {
       throw new Error('Build report points outside the build directory.');
     }
-    const data = await readFile(artifactPath);
+    let data = await readFile(artifactPath);
+    let validationPath = artifactPath;
+    if (name === 'shared') {
+      const patched = patchSharedScript(data.toString('utf8'));
+      data = Buffer.from(patched.code);
+      sharedPatches = patched.applied;
+      validationPath = resolve(buildDir, 'patched-shared.mjs');
+      await writeFile(validationPath, data);
+      log(`Shared patches applied: ${sharedPatches.join(', ')}`);
+    }
     validateArtifact(data);
-    await run(process.execPath, ['--check', artifactPath], root, true);
+    await run(process.execPath, ['--check', validationPath], root, true);
     buffers[name] = data;
     artifacts[name] = { file: config.fileNames[name], bytes: data.length, sha256: sha256(data),
       originalFile: report.artifacts[name].entry, latestUrl: cdnUrl(config, config.publishBranch, config.fileNames[name]) };
@@ -158,6 +169,7 @@ async function build(revision) {
     inputHash: await inputHash(),
     builtAt: new Date().toISOString(),
     artifacts,
+    sharedPatches,
     sourceUrl: `https://github.com/${githubSlug(config.upstreamRepository)}/tree/${revision}`,
     build: report,
     publicationMode: 'readable-app-and-shared-original-production-imports',
