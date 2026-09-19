@@ -3998,55 +3998,55 @@ var AudioManager = class {
 //#endregion
 //#region src/camera.ts
 var Camera = class {
-	DYz = v2.create(0, 0);
-	aeFMbq = 16;
-	wDPk = 1.5;
-	qmJJ = 1.5;
-	FRLvNz = 1;
-	pfqvCm = 1;
-	VPwax = true;
-	NOqVxL = 0;
-	mvF = true;
-	yGQQN = false;
-	MQZX = 0;
-	Mwm() {
-		return this.aeFMbq * this.wDPk;
+	ZjWPV = v2.create(0, 0);
+	Fxr = 16;
+	Azt = 1.5;
+	GKZnr = 1.5;
+	vza = 1;
+	qyNlS = 1;
+	LwD = true;
+	qnU = 0;
+	Fvurv = true;
+	SeEmW = false;
+	QPCz = 0;
+	sLJP() {
+		return this.Fxr * this.Azt;
 	}
-	hQJHH(point) {
+	cGOJ(point) {
 		return {
-			x: this.FRLvNz * .5 + (point.x - this.DYz.x) * this.Mwm(),
-			y: this.pfqvCm * .5 - (point.y - this.DYz.y) * this.Mwm()
+			x: this.vza * .5 + (point.x - this.ZjWPV.x) * this.sLJP(),
+			y: this.qyNlS * .5 - (point.y - this.ZjWPV.y) * this.sLJP()
 		};
 	}
-	QEbk(screen) {
+	HZFax(screen) {
 		return {
-			x: this.DYz.x + (screen.x - this.FRLvNz * .5) / this.Mwm(),
-			y: this.DYz.y + (this.pfqvCm * .5 - screen.y) / this.Mwm()
+			x: this.ZjWPV.x + (screen.x - this.vza * .5) / this.sLJP(),
+			y: this.ZjWPV.y + (this.qyNlS * .5 - screen.y) / this.sLJP()
 		};
 	}
-	iZyh(p) {
-		return p * this.wDPk;
+	wyfSb(p) {
+		return p * this.Azt;
 	}
-	WvLUno(s) {
-		return s * this.Mwm();
+	uKF(s) {
+		return s * this.sLJP();
 	}
-	qsQC(en) {
-		this.VPwax = en;
+	bzFJUk(en) {
+		this.LwD = en;
 	}
-	RfBnka(en) {
-		this.mvF = en;
+	LNCKfL(en) {
+		this.Fvurv = en;
 	}
-	bxGYc(en) {
-		this.yGQQN = en;
+	cvX(en) {
+		this.SeEmW = en;
 	}
-	CMMJ(pos, intensity) {
-		const dist = v2.length(v2.sub(this.DYz, pos));
+	cMHf(pos, intensity) {
+		const dist = v2.length(v2.sub(this.ZjWPV, pos));
 		const newInt = math.delerp(dist, 40, 10) * intensity;
-		this.NOqVxL = Math.max(this.NOqVxL, newInt);
+		this.qnU = Math.max(this.qnU, newInt);
 	}
-	HOJLMs() {
-		if (this.VPwax) this.DYz = v2.add(this.DYz, v2.randomUnit(this.NOqVxL));
-		this.NOqVxL = 0;
+	cZbxA() {
+		if (this.LwD) this.ZjWPV = v2.add(this.ZjWPV, v2.randomUnit(this.qnU));
+		this.qnU = 0;
 	}
 };
 
@@ -4311,7 +4311,7 @@ var DebugHUD = class {
 			graph.toggleGraph(cfg.enabled && graphCfg.showGraph);
 		}
 	}
-	cjhuwW(dt, game) {
+	Yekvpo(dt, game) {
 		if (!this.container.visible) return;
 		const cfg = this.hudConfig();
 		if (cfg.fps.show || cfg.fps.showGraph) {
@@ -4326,8 +4326,8 @@ var DebugHUD = class {
 		}
 		for (let i = 0; i < this.infoLines.length; i++) this.infoLines[i].visible = false;
 		if (cfg.position) {
-			const activePlayer = game.kMnOxn;
-			this.addLine(`Pos:     X: ${activePlayer.DYz.x.toFixed(2)}   Y: ${activePlayer.DYz.y.toFixed(2)}`);
+			const activePlayer = game.Swyhb;
+			this.addLine(`Pos:     X: ${activePlayer.ZjWPV.x.toFixed(2)}   Y: ${activePlayer.ZjWPV.y.toFixed(2)}`);
 		}
 		if (cfg.objectPools) {
 			this.addLine("-- Objects     (Active / Allocated)");
@@ -4336,26 +4336,26 @@ var DebugHUD = class {
 				this.addLine(`${name}: ${active.toString().padStart(pad)} / ${allocated.toString().padStart(4)}`);
 			};
 			const addPool = (name, pool) => {
-				addCount(name, pool.FZB, pool.JkAzo().length);
+				addCount(name, pool.FSAxN, pool.oiC().length);
 			};
-			addPool("Players", game.Ukox.playerPool);
-			addPool("Loot", game.khxzK.lootPool);
-			addPool("Projectiles", game.Hrn.projectilePool);
-			addPool("Obstacles", game.YtEod.IIXrt);
-			addPool("Buildings", game.YtEod.SlMkf);
-			addPool("Structures", game.YtEod.VPszM);
-			addPool("Decals", game.gAcd.decalPool);
-			addPool("Dead Bodies", game.ZBZdUD.deadBodyPool);
-			addPool("Smoke", game.nTA.ejOQig);
-			addPool("Airdrops", game.OTOYC.airdropPool);
-			const activeParticles = game.cBoRYu.particles.filter((p) => p.active).length;
-			addCount("Particles", activeParticles, game.cBoRYu.particles.length);
-			const activeBullets = game.XZgq.bullets.filter((b) => b.alive).length;
-			addCount("Bullets", activeBullets, game.XZgq.bullets.length);
-			const activeExplosions = game.mfu.explosions.filter((e) => e.active).length;
-			addCount("Explosions", activeExplosions, game.mfu.explosions.length);
-			const activePlanes = game.DHh.planes.filter((p) => p.active).length;
-			addCount("Planes", activePlanes, game.DHh.planes.length);
+			addPool("Players", game.wZvID.playerPool);
+			addPool("Loot", game.ZWIxq.lootPool);
+			addPool("Projectiles", game.yJeqdp.projectilePool);
+			addPool("Obstacles", game.nQglJ.SeeWtA);
+			addPool("Buildings", game.nQglJ.Qaggj);
+			addPool("Structures", game.nQglJ.qRkh);
+			addPool("Decals", game.JhRT.decalPool);
+			addPool("Dead Bodies", game.JhRbrs.deadBodyPool);
+			addPool("Smoke", game.Qdhm.EGEa);
+			addPool("Airdrops", game.rtU.airdropPool);
+			const activeParticles = game.pfgq.particles.filter((p) => p.active).length;
+			addCount("Particles", activeParticles, game.pfgq.particles.length);
+			const activeBullets = game.jESsaX.bullets.filter((b) => b.alive).length;
+			addCount("Bullets", activeBullets, game.jESsaX.bullets.length);
+			const activeExplosions = game.hlwMC.explosions.filter((e) => e.active).length;
+			addCount("Explosions", activeExplosions, game.hlwMC.explosions.length);
+			const activePlanes = game.HdJ.planes.filter((p) => p.active).length;
+			addCount("Planes", activePlanes, game.HdJ.planes.length);
 		}
 		this.updateLayout();
 	}
@@ -4410,7 +4410,7 @@ var DebugLines = class {
 	addCircle(pos, rad, color, fill) {}
 	addAabb(min, max, color, fill) {}
 	addCollider(col, color, fill) {}
-	tsCE(camera, gfx) {}
+	LeqxUm(camera, gfx) {}
 	flush() {
 		this.shapes = [];
 	}
@@ -4573,7 +4573,7 @@ var EmoteBarn = class {
 				if (this.emoteSelector.ping && !this.emoteWheelsGreyed) {
 					if (PingDefs[this.emoteSelector.ping]?.pingMap) {
 						worldPos = this.uiManager.getWorldPosFromMapPos(this.bigmapPingPos || this.emoteScreenPos, this.map, this.camera);
-						worldPos ||= this.camera.QEbk(this.emoteScreenPos);
+						worldPos ||= this.camera.HZFax(this.emoteScreenPos);
 						worldPos.x = math.clamp(worldPos.x, 0, this.map.width);
 						worldPos.y = math.clamp(worldPos.y, 0, this.map.height);
 						this.sendPing({
@@ -4582,7 +4582,7 @@ var EmoteBarn = class {
 						});
 					}
 				} else if (this.emoteSelector.emote && !this.emoteWheelsGreyed) {
-					worldPos = this.activePlayer.DYz;
+					worldPos = this.activePlayer.ZjWPV;
 					this.sendEmote({
 						type: this.emoteSelector.emote,
 						pos: worldPos
@@ -4597,7 +4597,7 @@ var EmoteBarn = class {
 			if (this.activePlayer) {
 				let worldPos;
 				if (this.emoteSelector.emote && !this.emoteWheelsGreyed) {
-					worldPos = this.activePlayer.DYz;
+					worldPos = this.activePlayer.ZjWPV;
 					this.sendEmote({
 						type: this.emoteSelector.emote,
 						pos: worldPos
@@ -4620,13 +4620,13 @@ var EmoteBarn = class {
 					x: e.originalEvent.changedTouches[0].pageX,
 					y: e.originalEvent.changedTouches[0].pageY
 				};
-				this.emoteScreenPos = v2.create(this.camera.FRLvNz / 2, this.camera.pfqvCm / 2);
+				this.emoteScreenPos = v2.create(this.camera.vza / 2, this.camera.qyNlS / 2);
 				this.pingMouseTriggered = true;
 			});
 			this.emoteButtonElem.css("pointer-events", "auto");
 			this.emoteButtonElem.on("touchstart", (event) => {
 				event.stopPropagation();
-				this.emoteScreenPos = v2.create(this.camera.FRLvNz / 2, this.camera.pfqvCm / 2);
+				this.emoteScreenPos = v2.create(this.camera.vza / 2, this.camera.qyNlS / 2);
 				this.emoteMouseTriggered = true;
 			});
 			this.emoteElems.on("touchstart", (e) => {
@@ -4821,7 +4821,7 @@ var EmoteBarn = class {
 		this.indContainer.addChild(this.airstrikeIndicator.indContainer);
 		this.pingIndicators.push({ ping: this.airstrikeIndicator });
 	}
-	GQnyl() {
+	bQihh() {
 		if (device.touch) {
 			(0, import_jquery.default)(document).off("touchstart", this.onTouchStart);
 			this.emoteButtonElem.off("touchstart");
@@ -4985,7 +4985,7 @@ var EmoteBarn = class {
 		this.emoteCounter++;
 		if (this.emoteCounter >= GameConfig.player.emoteThreshold) this.emoteHardTicker = this.emoteHardTicker > 0 ? this.emoteHardTicker : GameConfig.player.emoteHardCooldown * 1.5;
 	}
-	cjhuwW(dt, localId, player, teamMode, deadBodyBarn, map, renderer, input, inputBinds, spectating) {
+	Yekvpo(dt, localId, player, teamMode, deadBodyBarn, map, renderer, input, inputBinds, spectating) {
 		const playerBarn = this.playerBarn;
 		const camera = this.camera;
 		let mousePos = v2.create(input.mousePos.x, input.mousePos.y);
@@ -5022,11 +5022,11 @@ var EmoteBarn = class {
 			if (this.emoteMouseTriggered) this.triggerEmote();
 		}
 		this.activePlayer = player;
-		if ((localId != player.__id || !!player.Lzl.viv) && !this.disable) {
-			this.GQnyl();
+		if ((localId != player.__id || !!player.dmuI.UBStD) && !this.disable) {
+			this.bQihh();
 			this.disable = true;
 		}
-		const perkModeDisable = map.perkMode && !player.Lzl.oyXu;
+		const perkModeDisable = map.perkMode && !player.dmuI.xQcwzI;
 		if (!this.disable && !perkModeDisable) {
 			this.wheelKeyTriggered = this.pingKeyTriggered || this.emoteMouseTriggered;
 			this.emoteSoftTicker -= dt;
@@ -5047,7 +5047,7 @@ var EmoteBarn = class {
 				this.displayWheel(this.parentDisplayed, true);
 				this.wheelDisplayed = true;
 				this.displayedSelectors = this.pingMouseTriggered ? this.teamPingSelectors : this.emoteWheelSelectors;
-				this.worldPos = camera.QEbk(this.emoteScreenPos);
+				this.worldPos = camera.HZFax(this.emoteScreenPos);
 			}
 			if (this.wheelDisplayed) {
 				this.emoteTimeoutTicker += dt;
@@ -5072,7 +5072,7 @@ var EmoteBarn = class {
 						const distToCenter = v2.length(vB);
 						const angleB = vectorToDegreeAngle(vB);
 						const distMinLength = 35;
-						const equippedWeapon = player.njNsW.JSc[player.njNsW.wYgmwH];
+						const equippedWeapon = player.pcpKf.eMCJu[player.pcpKf.deXRIW];
 						const weapDef = GameObjectDefs.typeToDefSafe(equippedWeapon.type);
 						let ammoType = "";
 						if (weapDef && weapDef.ammo) ammoType = weapDef.ammo;
@@ -5138,8 +5138,8 @@ var EmoteBarn = class {
 				let targetPos = v2.create(0, 0);
 				let targetLayer = 0;
 				const targetPlayer = playerBarn.getPlayerById(emote.playerId);
-				if (targetPlayer && !targetPlayer.Lzl.viv) {
-					targetPos = v2.copy(targetPlayer.jBwVh);
+				if (targetPlayer && !targetPlayer.dmuI.UBStD) {
+					targetPos = v2.copy(targetPlayer.fygBMT);
 					targetLayer = targetPlayer.layer;
 					hasTarget = true;
 				}
@@ -5168,10 +5168,10 @@ var EmoteBarn = class {
 				} else emote.alive = false;
 			}
 		}
-		const camExtents = v2.create(camera.FRLvNz * .5 / camera.Mwm(), camera.pfqvCm * .5 / camera.Mwm());
+		const camExtents = v2.create(camera.vza * .5 / camera.sLJP(), camera.qyNlS * .5 / camera.sLJP());
 		const camAabb = {
-			min: v2.sub(camera.DYz, camExtents),
-			max: v2.add(camera.DYz, camExtents)
+			min: v2.sub(camera.ZjWPV, camExtents),
+			max: v2.add(camera.ZjWPV, camExtents)
 		};
 		const groupId = playerBarn.getPlayerInfo(player.__id).groupId;
 		const groupInfo = playerBarn.getGroupInfo(groupId);
@@ -5194,22 +5194,22 @@ var EmoteBarn = class {
 				indicator.fadeOut -= indicator.life > 0 ? 0 : dt;
 				if (indicator.fadeOut > 0) {
 					const indicatorPos = indicator.pos;
-					const dir = v2.normalizeSafe(v2.sub(indicatorPos, camera.DYz), v2.create(1, 0));
-					const edge = coldet.intersectRayAabb(camera.DYz, dir, camAabb.min, camAabb.max);
+					const dir = v2.normalizeSafe(v2.sub(indicatorPos, camera.ZjWPV), v2.create(1, 0));
+					const edge = coldet.intersectRayAabb(camera.ZjWPV, dir, camAabb.min, camAabb.max);
 					const rot = Math.atan2(dir.y, -dir.x) + Math.PI * .5;
-					const screenEdge = camera.hQJHH(edge);
+					const screenEdge = camera.cGOJ(edge);
 					const onscreen = coldet.testCircleAabb(indicatorPos, GameConfig.player.radius, camAabb.min, camAabb.max);
-					const borderScale = camera.iZyh(indicator.borderSprite.baseScale);
-					const pingScale = camera.iZyh(indicator.pingSprite.baseScale);
+					const borderScale = camera.wyfSb(indicator.borderSprite.baseScale);
+					const pingScale = camera.wyfSb(indicator.pingSprite.baseScale);
 					borderSprite.scale.set(borderScale, borderScale);
 					pingSprite.scale.set(pingScale, pingScale);
 					if (playerStatus?.dead) continue;
 					const off = 64;
 					hideIndicator = indicator.fadeOut < 0;
-					const leftConstrain = onscreen ? camera.hQJHH(indicatorPos).x : math.clamp(screenEdge.x, off, camera.FRLvNz - off);
-					const topConstrain = onscreen ? camera.hQJHH(indicatorPos).y : math.clamp(screenEdge.y, off, camera.pfqvCm - off);
-					const left = camera.hQJHH(indicatorPos).x;
-					const top = camera.hQJHH(indicatorPos).y;
+					const leftConstrain = onscreen ? camera.cGOJ(indicatorPos).x : math.clamp(screenEdge.x, off, camera.vza - off);
+					const topConstrain = onscreen ? camera.cGOJ(indicatorPos).y : math.clamp(screenEdge.y, off, camera.qyNlS - off);
+					const left = camera.cGOJ(indicatorPos).x;
+					const top = camera.cGOJ(indicatorPos).y;
 					pingSprite.position.x = left;
 					pingSprite.position.y = top;
 					borderSprite.position.x = left;
@@ -5221,7 +5221,7 @@ var EmoteBarn = class {
 					indSpriteInner.position.y = topConstrain;
 					const pulseAlpha = borderSprite.alpha <= 0 ? 1 : borderSprite.alpha - dt;
 					borderSprite.alpha = pulseAlpha;
-					const pulseScale = camera.iZyh(indicator.borderSprite.baseScale * (2 - pulseAlpha));
+					const pulseScale = camera.wyfSb(indicator.borderSprite.baseScale * (2 - pulseAlpha));
 					borderSprite.scale.set(pulseScale, pulseScale);
 					indSpriteInner.alpha = onscreen ? 0 : pulseAlpha;
 					if (indicator.fadeIn > 0) {
@@ -5285,7 +5285,7 @@ var EmoteBarn = class {
 			imageElem.css("background-image", `url(${imgUrl})`);
 		}
 	}
-	tsCE(camera) {
+	LeqxUm(camera) {
 		for (let i = 0; i < this.emotes.length; i++) {
 			const emote = this.emotes[i];
 			emote.container.visible = emote.alive;
@@ -5296,9 +5296,9 @@ var EmoteBarn = class {
 					scale = math.easeOutElastic(normLifeIn);
 				} else if (emote.life > 0) scale = 1;
 				else if (emote.lifeOut > 0) scale = emote.lifeOut / this.emoteLifeOut;
-				const pos = v2.add(emote.pos, v2.mul(emote.posOffset, 1 / math.clamp(camera.wDPk, .75, 1)));
-				const screenPos = camera.hQJHH(pos);
-				const screenScale = scale * emote.baseScale * math.clamp(camera.wDPk, .9, 1.75);
+				const pos = v2.add(emote.pos, v2.mul(emote.posOffset, 1 / math.clamp(camera.Azt, .75, 1)));
+				const screenPos = camera.cGOJ(pos);
+				const screenScale = scale * emote.baseScale * math.clamp(camera.Azt, .9, 1.75);
 				emote.container.position.set(screenPos.x, screenPos.y);
 				emote.container.scale.set(screenScale, screenScale);
 			}
@@ -5449,7 +5449,7 @@ var Gas = class {
 		};
 		this.gasRenderer = new GasRenderer(canvasMode, 16711680);
 	}
-	GQnyl() {
+	bQihh() {
 		this.gasRenderer.free();
 	}
 	resize() {
@@ -5484,13 +5484,13 @@ var Gas = class {
 		this.circleNew.pos = v2.copy(data.posNew);
 		this.circleNew.rad = data.radNew;
 	}
-	tsCE(dt, camera) {
+	LeqxUm(dt, camera) {
 		this.interpolationT += dt;
 		let interpT = 1;
-		if (camera.mvF) interpT = math.clamp(this.interpolationT / camera.MQZX, 0, 1);
+		if (camera.Fvurv) interpT = math.clamp(this.interpolationT / camera.QPCz, 0, 1);
 		const circle = this.getCircle(interpT);
-		const pos = camera.hQJHH(circle.pos);
-		const scale = camera.WvLUno(circle.rad);
+		const pos = camera.cGOJ(circle.pos);
+		const scale = camera.uKF(circle.rad);
 		this.gasRenderer.render(pos, scale, this.isActive());
 	}
 };
@@ -5550,7 +5550,7 @@ var InputHandler = class {
 			e.preventDefault();
 		}, false);
 	}
-	GQnyl() {
+	bQihh() {
 		this.touches = [];
 		this.touchIdCounter = 0;
 	}
@@ -6603,7 +6603,7 @@ var Building = class {
 	bounds;
 	ceiling;
 	surfaces;
-	TVs() {
+	iqudJb() {
 		this.isNew = false;
 		this.residue = null;
 		this.ceilingDead = false;
@@ -6616,7 +6616,7 @@ var Building = class {
 		this.puzzleSolved = false;
 		this.soundEmitterTicker = 0;
 	}
-	GQnyl() {
+	bQihh() {
 		for (let i = 0; i < this.sprites.length; i++) {
 			const t = this.sprites[i];
 			t.active = false;
@@ -6645,7 +6645,7 @@ var Building = class {
 		});
 		return sprite;
 	}
-	WHOMj(data, fullUpdate, isNew, ctx) {
+	upFr(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			this.type = data.type;
 			this.pos = v2.copy(data.pos);
@@ -6783,17 +6783,17 @@ var Building = class {
 			}
 		}
 	}
-	cjhuwW(dt, map, particleBarn, audioManager, activePlayer, renderer, camera, debug) {
+	Yekvpo(dt, map, particleBarn, audioManager, activePlayer, renderer, camera, debug) {
 		if (this.hasPuzzle) {
 			const def = MapObjectDefs.typeToDef(this.type, "building");
 			if (this.puzzleErrSeqModified && (this.puzzleErrSeqModified = false, !this.isNew)) {
 				let nearestObj = this;
-				let nearestDist = v2.length(v2.sub(activePlayer.DYz, nearestObj.pos));
-				const obstacles = map.IIXrt.JkAzo();
+				let nearestDist = v2.length(v2.sub(activePlayer.ZjWPV, nearestObj.pos));
+				const obstacles = map.SeeWtA.oiC();
 				for (let i = 0; i < obstacles.length; i++) {
 					const o = obstacles[i];
 					if (o.active && o.isPuzzlePiece && o.parentBuildingId == this.__id) {
-						const dist = v2.length(v2.sub(activePlayer.DYz, o.pos));
+						const dist = v2.length(v2.sub(activePlayer.ZjWPV, o.pos));
 						if (dist < nearestDist) {
 							nearestObj = o;
 							nearestDist = dist;
@@ -6843,7 +6843,7 @@ var Building = class {
 		let canSeeInside = false;
 		for (let i = 0; i < this.ceiling.zoomRegions.length; i++) {
 			const zoomIn = this.ceiling.zoomRegions[i].zoomIn;
-			if (zoomIn && (this.layer == activePlayer.layer || activePlayer.layer & 2) && collisionHelpers.scanCollider(zoomIn, map.IIXrt.JkAzo(), activePlayer.DYz, activePlayer.layer, .5, vision.width * 2, vision.dist, 5, debug.buildings?.ceiling, debugLines)) {
+			if (zoomIn && (this.layer == activePlayer.layer || activePlayer.layer & 2) && collisionHelpers.scanCollider(zoomIn, map.SeeWtA.oiC(), activePlayer.ZjWPV, activePlayer.layer, .5, vision.width * 2, vision.dist, 5, debug.buildings?.ceiling, debugLines)) {
 				canSeeInside = true;
 				break;
 			}
@@ -6868,7 +6868,7 @@ var Building = class {
 					startSilent: true
 				});
 				if (soundEmitter.instance) {
-					const diff = v2.sub(camera.DYz, soundEmitter.pos);
+					const diff = v2.sub(camera.ZjWPV, soundEmitter.pos);
 					const dist = v2.length(diff);
 					const distT = math.remap(dist, soundEmitter.range.min, soundEmitter.range.max, 1, 0);
 					const volumeFalloff = Math.pow(distT, soundEmitter.falloff);
@@ -6926,8 +6926,8 @@ var Building = class {
 		});
 	}
 	positionSprite(sprite, alpha, camera) {
-		const screenPos = camera.hQJHH(v2.add(this.pos, sprite.posOffset));
-		const screenScale = camera.iZyh(this.scale * sprite.defScale);
+		const screenPos = camera.cGOJ(v2.add(this.pos, sprite.posOffset));
+		const screenScale = camera.wyfSb(this.scale * sprite.defScale);
 		sprite.position.set(screenPos.x, screenPos.y);
 		sprite.scale.set(screenScale, screenScale);
 		if (sprite.mirrorY) sprite.scale.y *= -1;
@@ -6941,58 +6941,58 @@ var Building = class {
 //#endregion
 //#region src/objects/objectPool.ts
 var Pool = class {
-	fmJIO = [];
-	FZB = 0;
-	qBbv;
+	Mhxbh = [];
+	FSAxN = 0;
+	kTIeI;
 	constructor(classFn) {
-		this.qBbv = { type: classFn };
+		this.kTIeI = { type: classFn };
 		assert(classFn !== void 0);
 	}
-	IQoV() {
+	mCmRKi() {
 		let obj = null;
-		for (let i = 0; i < this.fmJIO.length; i++) if (!this.fmJIO[i].active) {
-			obj = this.fmJIO[i];
+		for (let i = 0; i < this.Mhxbh.length; i++) if (!this.Mhxbh[i].active) {
+			obj = this.Mhxbh[i];
 			break;
 		}
 		if (!obj) {
-			obj = new this.qBbv.type();
-			this.fmJIO.push(obj);
+			obj = new this.kTIeI.type();
+			this.Mhxbh.push(obj);
 		}
 		obj.active = true;
-		obj.TVs();
-		this.FZB++;
+		obj.iqudJb();
+		this.FSAxN++;
 		return obj;
 	}
-	GQnyl(obj) {
-		obj.GQnyl();
+	bQihh(obj) {
+		obj.bQihh();
 		obj.active = false;
-		this.FZB--;
-		if (this.fmJIO.length > 128 && this.FZB < this.fmJIO.length / 2) {
+		this.FSAxN--;
+		if (this.Mhxbh.length > 128 && this.FSAxN < this.Mhxbh.length / 2) {
 			const compact = [];
-			for (let i = 0; i < this.fmJIO.length; i++) if (this.fmJIO[i].active) compact.push(this.fmJIO[i]);
-			this.fmJIO = compact;
+			for (let i = 0; i < this.Mhxbh.length; i++) if (this.Mhxbh[i].active) compact.push(this.Mhxbh[i]);
+			this.Mhxbh = compact;
 		}
 	}
-	JkAzo() {
-		return this.fmJIO;
+	oiC() {
+		return this.Mhxbh;
 	}
 };
 var Creator = class {
-	UIvR = {};
-	vnBZLZ = {};
-	UuDY = 0;
-	Uysr(type, pool) {
-		this.vnBZLZ[type] = pool;
+	Mrm = {};
+	MkHuJu = {};
+	BvknG = 0;
+	yCf(type, pool) {
+		this.MkHuJu[type] = pool;
 	}
-	WbDHeJ(id) {
-		return this.UIvR[id];
+	fzU(id) {
+		return this.Mrm[id];
 	}
-	auLQQs(id, s) {
-		const obj = this.WbDHeJ(id);
+	QaFoGk(id, s) {
+		const obj = this.fzU(id);
 		if (!obj) {
 			const err = {
 				id,
-				ids: Object.keys(this.UIvR),
+				ids: Object.keys(this.Mrm),
 				stream: [...s.view.view]
 			};
 			errorLogManager.logError("getTypeById", err);
@@ -7001,36 +7001,36 @@ var Creator = class {
 		}
 		return obj.__type;
 	}
-	ctJHB(type, id, data, ctx) {
-		let obj = this.WbDHeJ(id);
+	POx(type, id, data, ctx) {
+		let obj = this.fzU(id);
 		let isNew = false;
 		if (obj === void 0) {
-			obj = this.vnBZLZ[type].IQoV();
+			obj = this.MkHuJu[type].mCmRKi();
 			obj.__id = id;
 			obj.__type = type;
-			this.UIvR[id] = obj;
-			this.UuDY++;
+			this.Mrm[id] = obj;
+			this.BvknG++;
 			isNew = true;
 		}
-		obj.WHOMj(data, true, isNew, ctx);
+		obj.upFr(data, true, isNew, ctx);
 		return obj;
 	}
-	UDKzS(id, data, ctx) {
-		const obj = this.WbDHeJ(id);
-		if (obj) obj.WHOMj(data, false, false, ctx);
+	AbehyG(id, data, ctx) {
+		const obj = this.fzU(id);
+		if (obj) obj.upFr(data, false, false, ctx);
 		else {
 			errorLogManager.storeGeneric("objectPoolErr", "updateObjPart");
 			console.error("updateObjPart, missing object", id);
 		}
 	}
-	DHpan(id) {
-		const obj = this.WbDHeJ(id);
+	gdE(id) {
+		const obj = this.fzU(id);
 		if (obj === void 0) {
 			console.error("deleteObj, missing object", id);
 			errorLogManager.storeGeneric("objectPoolErr", "deleteObj");
 		} else {
-			this.vnBZLZ[obj.__type].GQnyl(obj);
-			delete this.UIvR[id];
+			this.MkHuJu[obj.__type].bQihh(obj);
+			delete this.Mrm[id];
 		}
 	}
 };
@@ -7079,14 +7079,14 @@ var Obstacle = class {
 		this.sprite.anchor.set(.5, .5);
 		this.sprite.visible = false;
 	}
-	TVs() {
+	iqudJb() {
 		this.isNew = false;
 		this.smokeEmitter = null;
 		this.sprite.visible = false;
 		this.img = "";
 		this.visualPosOld = v2.create(0, 0);
 	}
-	GQnyl() {
+	bQihh() {
 		this.sprite.visible = false;
 		this.sprite.parent?.removeChild(this.sprite);
 		if (this.door?.casingSprite) {
@@ -7098,7 +7098,7 @@ var Obstacle = class {
 			this.smokeEmitter = null;
 		}
 	}
-	WHOMj(data, fullUpdate, isNew, ctx) {
+	upFr(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			this.type = data.type;
 			this.layer = data.layer;
@@ -7233,7 +7233,7 @@ var Obstacle = class {
 	}
 	getInteraction(player) {
 		if (this.isButton && this.button.canUse) {
-			if (this.button.roleToPromote && this.button.roleToPromote === player.Lzl.oyXu) return null;
+			if (this.button.roleToPromote && this.button.roleToPromote === player.dmuI.xQcwzI) return null;
 			return {
 				rad: this.button.interactionRad,
 				action: this.button.interactionText,
@@ -7371,23 +7371,23 @@ var Obstacle = class {
 	}
 	render(dt, camera, debug, layer) {
 		let pos = this.isDoor ? this.door.interpPos : this.pos;
-		if (this.isSkin && camera.mvF) {
+		if (this.isSkin && camera.Fvurv) {
 			this.posInterpTicker += dt;
-			const posT = math.clamp(this.posInterpTicker / camera.MQZX, 0, 1);
+			const posT = math.clamp(this.posInterpTicker / camera.QPCz, 0, 1);
 			pos = v2.lerp(posT, this.visualPosOld, this.pos);
 		}
 		const rot = this.isDoor ? this.door.interpRot : this.rot;
 		const scale = this.scale;
-		const screenPos = camera.hQJHH(pos);
-		const screenScale = camera.iZyh(scale * this.imgScale);
+		const screenPos = camera.cGOJ(pos);
+		const screenScale = camera.wyfSb(scale * this.imgScale);
 		this.sprite.position.set(screenPos.x, screenPos.y);
 		this.sprite.scale.set(screenScale, screenScale);
 		if (this.imgMirrorY) this.sprite.scale.y *= -1;
 		if (this.imgMirrorX) this.sprite.scale.x *= -1;
 		this.sprite.rotation = -rot + this.imgRot;
 		if (this.isDoor && this.door?.casingSprite) {
-			const casingPos = camera.hQJHH(v2.add(this.door.closedPos, this.door.casingSprite.posOffset));
-			const casingScale = camera.iZyh(scale * this.door.casingSprite.imgScale);
+			const casingPos = camera.cGOJ(v2.add(this.door.closedPos, this.door.casingSprite.posOffset));
+			const casingScale = camera.wyfSb(scale * this.door.casingSprite.imgScale);
 			this.door.casingSprite.position.set(casingPos.x, casingPos.y);
 			this.door.casingSprite.scale.set(casingScale, casingScale);
 			this.door.casingSprite.rotation = -rot;
@@ -7415,11 +7415,11 @@ var Structure = class {
 	layers;
 	stairs;
 	mask;
-	TVs() {
+	iqudJb() {
 		this.soundTransitionT = 0;
 	}
-	GQnyl() {}
-	WHOMj(data, fullUpdate, isNew, ctx) {
+	bQihh() {}
+	upFr(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			this.type = data.type;
 			this.layer = 0;
@@ -7476,8 +7476,8 @@ var Structure = class {
 	updateInteriorSounds(dt, map, activePlayer, ambience) {
 		const def = MapObjectDefs.typeToDef(this.type, "structure");
 		assert(def.interiorSound);
-		collider.createCircle(activePlayer.DYz, .001);
-		map.SlMkf.JkAzo();
+		collider.createCircle(activePlayer.ZjWPV, .001);
+		map.Qaggj.oiC();
 		const building0 = this.layers.length > 0 ? map.getBuildingById(this.layers[0].objId) : null;
 		const building1 = this.layers.length > 1 ? map.getBuildingById(this.layers[1].objId) : null;
 		const maxDist = def.interiorSound.outsideMaxDist !== void 0 ? def.interiorSound.outsideMaxDist : 10;
@@ -7487,7 +7487,7 @@ var Structure = class {
 		let weight1 = 0;
 		if (activePlayer.layer != 1) {
 			if (building0) {
-				const dist = building0.getDistanceToBuilding(activePlayer.DYz, maxDist);
+				const dist = building0.getDistanceToBuilding(activePlayer.ZjWPV, maxDist);
 				const weight = math.remap(dist, maxDist, 0, 0, 1);
 				const onStairs = activePlayer.layer & 2;
 				const visionT = building0.ceiling.fadeAlpha;
@@ -7495,7 +7495,7 @@ var Structure = class {
 				weight1 = weight * visionT * (onStairs ? undergroundVol : outsideVol);
 			}
 		} else if (building1) {
-			const dist = building1.getDistanceToBuilding(activePlayer.DYz, maxDist);
+			const dist = building1.getDistanceToBuilding(activePlayer.ZjWPV, maxDist);
 			const weight = math.remap(dist, maxDist, 0, 0, 1);
 			weight0 = 0;
 			weight1 = weight * undergroundVol;
@@ -7574,9 +7574,9 @@ var Map = class {
 	};
 	mapLoaded = false;
 	mapTexture = null;
-	IIXrt = new Pool(Obstacle);
-	SlMkf = new Pool(Building);
-	VPszM = new Pool(Structure);
+	SeeWtA = new Pool(Obstacle);
+	Qaggj = new Pool(Building);
+	qRkh = new Pool(Structure);
 	deadObstacleIds = [];
 	deadCeilingIds = [];
 	solvedPuzzleIds = [];
@@ -7586,9 +7586,9 @@ var Map = class {
 	constructor(decalBarn) {
 		this.decalBarn = decalBarn;
 	}
-	GQnyl() {
-		const buildings = this.SlMkf.JkAzo();
-		for (let i = 0; i < buildings.length; i++) buildings[i].GQnyl();
+	bQihh() {
+		const buildings = this.Qaggj.oiC();
+		for (let i = 0; i < buildings.length; i++) buildings[i].bQihh();
 		this.mapTexture?.destroy(true);
 		this.display.ground.destroy({ children: true });
 		this.cameraEmitter?.stop();
@@ -7627,7 +7627,7 @@ var Map = class {
 			});
 		}
 		this.display.ground.clear();
-		this.renderTerrain(this.display.ground, 2 / camera.aeFMbq, canvasMode, false);
+		this.renderTerrain(this.display.ground, 2 / camera.Fxr, canvasMode, false);
 	}
 	getMapDef() {
 		if (!this.mapLoaded) throw new Error("Map not loaded!");
@@ -7636,8 +7636,8 @@ var Map = class {
 	getMapTexture() {
 		return this.mapTexture;
 	}
-	cjhuwW(dt, activePlayer, playerBarn, particleBarn, audioManager, ambience, renderer, camera, _smokeParticles, debug) {
-		const obstacles = this.IIXrt.JkAzo();
+	Yekvpo(dt, activePlayer, playerBarn, particleBarn, audioManager, ambience, renderer, camera, _smokeParticles, debug) {
+		const obstacles = this.SeeWtA.oiC();
 		for (let i = 0; i < obstacles.length; i++) {
 			const obstacle = obstacles[i];
 			if (obstacle.active) {
@@ -7645,15 +7645,15 @@ var Map = class {
 				obstacle.render(dt, camera, debug, activePlayer.layer);
 			}
 		}
-		const buildings = this.SlMkf.JkAzo();
+		const buildings = this.Qaggj.oiC();
 		for (let i = 0; i < buildings.length; i++) {
 			const building = buildings[i];
 			if (building.active) {
-				building.cjhuwW(dt, this, particleBarn, audioManager, activePlayer, renderer, camera, debug);
+				building.Yekvpo(dt, this, particleBarn, audioManager, activePlayer, renderer, camera, debug);
 				building.render(camera, debug, activePlayer.layer);
 			}
 		}
-		for (let structures = this.VPszM.JkAzo(), x = 0; x < structures.length; x++) {
+		for (let structures = this.qRkh.oiC(), x = 0; x < structures.length; x++) {
 			const structure = structures[x];
 			if (structure.active) {
 				structure.update(dt, this, activePlayer, ambience);
@@ -7661,10 +7661,10 @@ var Map = class {
 			}
 		}
 		if (this.cameraEmitter) {
-			this.cameraEmitter.pos = v2.copy(camera.DYz);
+			this.cameraEmitter.pos = v2.copy(camera.ZjWPV);
 			this.cameraEmitter.enabled = true;
 			const maxRadius = 120;
-			const camRadius = activePlayer.iJb() * 2.5;
+			const camRadius = activePlayer.IQPNF() * 2.5;
 			this.cameraEmitter.radius = math.min(camRadius, maxRadius);
 			const radius = this.cameraEmitter.radius;
 			const ratio = radius * radius / 14400;
@@ -7772,9 +7772,9 @@ var Map = class {
 			}
 		}
 	}
-	tsCE(camera) {
-		const p0 = camera.hQJHH(v2.create(0, 0));
-		const p1 = camera.hQJHH(v2.create(1, 1));
+	LeqxUm(camera) {
+		const p0 = camera.cGOJ(v2.create(0, 0));
+		const p1 = camera.cGOJ(v2.create(1, 1));
 		const s = v2.sub(p1, p0);
 		this.display.ground.position.set(p0.x, p0.y);
 		this.display.ground.scale.set(s.x, s.y);
@@ -7939,7 +7939,7 @@ var Map = class {
 				data
 			};
 		};
-		const decals = this.decalBarn.decalPool.JkAzo();
+		const decals = this.decalBarn.decalPool.oiC();
 		for (let i = 0; i < decals.length; i++) {
 			const decal = decals[i];
 			if (decal.active && decal.surface && util.sameLayer(decal.layer, layer) && collider.intersectCircle(decal.collider, pos, 1e-4)) return groundSurface(decal.surface.type, decal.surface.data);
@@ -7947,7 +7947,7 @@ var Map = class {
 		let surface = null;
 		let zIdx = 0;
 		const onStairs = layer & 2;
-		const buildings = this.SlMkf.JkAzo();
+		const buildings = this.Qaggj.oiC();
 		for (let i = 0; i < buildings.length; i++) {
 			const building = buildings[i];
 			if (building.active && building.zIdx >= zIdx && (building.layer == layer || !!onStairs) && (building.layer != 1 || !onStairs)) for (let i = 0; i < building.surfaces.length; i++) {
@@ -7977,7 +7977,7 @@ var Map = class {
 		return math.distToPolygon(pos, this.terrain.shore);
 	}
 	insideStructureStairs(collision) {
-		const structures = this.VPszM.JkAzo();
+		const structures = this.qRkh.oiC();
 		for (let i = 0; i < structures.length; i++) {
 			const structure = structures[i];
 			if (structure.active && structure.insideStairs(collision)) return true;
@@ -7985,7 +7985,7 @@ var Map = class {
 		return false;
 	}
 	getBuildingById(objId) {
-		const buildings = this.SlMkf.JkAzo();
+		const buildings = this.Qaggj.oiC();
 		for (let i = 0; i < buildings.length; i++) {
 			const building = buildings[i];
 			if (building.active && building.__id == objId) return building;
@@ -7993,7 +7993,7 @@ var Map = class {
 		return null;
 	}
 	insideStructureMask(collision) {
-		const structures = this.VPszM.JkAzo();
+		const structures = this.qRkh.oiC();
 		for (let i = 0; i < structures.length; i++) {
 			const structure = structures[i];
 			if (structure.active && structure.insideMask(collision)) return true;
@@ -8001,7 +8001,7 @@ var Map = class {
 		return false;
 	}
 	insideBuildingCeiling(collision, checkVisible) {
-		const buildings = this.SlMkf.JkAzo();
+		const buildings = this.Qaggj.oiC();
 		for (let i = 0; i < buildings.length; i++) {
 			const building = buildings[i];
 			if (building.active && (!checkVisible || building.ceiling.visionTicker > 0 && !building.ceilingDead) && building.isInsideCeiling(collision)) return true;
@@ -8030,7 +8030,7 @@ var AirDrop = class {
 		this.sprite.anchor.set(.5, .5);
 		this.sprite.visible = false;
 	}
-	TVs() {
+	iqudJb() {
 		this.playedLandFx = false;
 		this.landed = false;
 		this.fallInstance = null;
@@ -8040,12 +8040,12 @@ var AirDrop = class {
 		this.isNew = false;
 		this.fallTicker = 0;
 	}
-	GQnyl() {
+	bQihh() {
 		this.fallInstance?.stop();
 		this.fallInstance = null;
 		this.sprite.visible = false;
 	}
-	WHOMj(data, fullUpdate, isNew, ctx) {
+	upFr(data, fullUpdate, isNew, ctx) {
 		if (isNew) {
 			this.isNew = true;
 			this.fallTicker = data.fallT * GameConfig.airdrop.fallTime;
@@ -8058,12 +8058,12 @@ var AirDrop = class {
 };
 var AirdropBarn = class {
 	airdropPool = new Pool(AirDrop);
-	GQnyl() {
-		const airdrops = this.airdropPool.JkAzo();
-		for (let i = 0; i < airdrops.length; i++) airdrops[i].GQnyl();
+	bQihh() {
+		const airdrops = this.airdropPool.oiC();
+		for (let i = 0; i < airdrops.length; i++) airdrops[i].bQihh();
 	}
-	cjhuwW(dt, activePlayer, camera, map, particleBarn, renderer, audioManager) {
-		const airdrops = this.airdropPool.JkAzo();
+	Yekvpo(dt, activePlayer, camera, map, particleBarn, renderer, audioManager) {
+		const airdrops = this.airdropPool.oiC();
 		for (let i = 0; i < airdrops.length; i++) {
 			const airdrop = airdrops[i];
 			if (!airdrop.active) continue;
@@ -8121,8 +8121,8 @@ var AirdropBarn = class {
 			} else airdrop.soundUpdateThrottle -= dt;
 			airdrop.rad = math.lerp((1 - fallT) ** 1.1, 5, 12);
 			renderer.addPIXIObj(airdrop.sprite, layer, 1500, airdrop.__id);
-			const screenPos = camera.hQJHH(airdrop.pos);
-			const screenScale = camera.iZyh(2 * airdrop.rad / camera.aeFMbq);
+			const screenPos = camera.cGOJ(airdrop.pos);
+			const screenScale = camera.wyfSb(2 * airdrop.rad / camera.Fxr);
 			airdrop.sprite.position.set(screenPos.x, screenPos.y);
 			airdrop.sprite.scale.set(screenScale, screenScale);
 			airdrop.sprite.tint = 16776960;
@@ -8222,8 +8222,8 @@ var BulletBarn = class {
 		b.container.visible = true;
 		renderer.addPIXIObj(b.container, b.layer, 20);
 	}
-	cjhuwW(dt, playerBarn, map, camera, activePlayer, renderer, particleBarn, audioManager) {
-		const players = playerBarn.playerPool.JkAzo();
+	Yekvpo(dt, playerBarn, map, camera, activePlayer, renderer, particleBarn, audioManager) {
+		const players = playerBarn.playerPool.oiC();
 		for (let i = 0; i < this.bullets.length; i++) {
 			const b = this.bullets[i];
 			if (b.collided) {
@@ -8243,7 +8243,7 @@ var BulletBarn = class {
 					particleBarn.addParticle("boost_basic", b.layer, b.pos, b.dir, void 0, void 0, void 0, void 0, Color$1.shared.setValue(b.bulletTrail.tint).toNumber());
 					b.particleTicker = util.random(0, .1);
 				}
-				if (!activePlayer.Lzl.viv && util.sameAudioLayer(activePlayer.layer, b.layer) && v2.length(v2.sub(camera.DYz, b.pos)) < 7.5 && !b.whizHeard && b.playerId != activePlayer.__id) {
+				if (!activePlayer.dmuI.UBStD && util.sameAudioLayer(activePlayer.layer, b.layer) && v2.length(v2.sub(camera.ZjWPV, b.pos)) < 7.5 && !b.whizHeard && b.playerId != activePlayer.__id) {
 					audioManager.playGroup("bullet_whiz", {
 						soundPos: b.pos,
 						fallOff: 4
@@ -8255,7 +8255,7 @@ var BulletBarn = class {
 					b.bulletTrail.alpha = math.max(b.tracerAlphaMin, b.bulletTrail.alpha * rate);
 				}
 				const colObjs = [];
-				const obstacles = map.IIXrt.JkAzo();
+				const obstacles = map.SeeWtA.oiC();
 				for (let j = 0; j < obstacles.length; j++) {
 					const obstacle = obstacles[j];
 					if (!!obstacle.active && !obstacle.dead && !!util.sameLayer(obstacle.layer, b.layer) && obstacle.height >= GameConfig.bullet.height && (b.reflectCount <= 0 || obstacle.__id != b.reflectObjId)) {
@@ -8271,12 +8271,12 @@ var BulletBarn = class {
 				}
 				for (let j = 0; j < players.length; j++) {
 					const player = players[j];
-					if (player.active && !player.Lzl.viv && (util.sameLayer(player.Lzl.lNrns, b.layer) || player.Lzl.lNrns & 2) && (player.__id != b.playerId || b.damageSelf)) {
+					if (player.active && !player.dmuI.UBStD && (util.sameLayer(player.dmuI.xEsG, b.layer) || player.dmuI.xEsG & 2) && (player.__id != b.playerId || b.damageSelf)) {
 						let panCollision = null;
-						if (player.UgGGL()) {
-							const panSeg = player.XmPbo();
-							const oldSegment = math.transformSegment(panSeg.p0, panSeg.p1, player.nzSh, player.NdBwD);
-							const newSegment = math.transformSegment(panSeg.p0, panSeg.p1, player.DYz, player.yixBk);
+						if (player.cYw()) {
+							const panSeg = player.drktvF();
+							const oldSegment = math.transformSegment(panSeg.p0, panSeg.p1, player.oEUWh, player.CpXyPC);
+							const newSegment = math.transformSegment(panSeg.p0, panSeg.p1, player.ZjWPV, player.sjb);
 							const newIntersection = coldet.intersectSegmentSegment(posOld, b.pos, oldSegment.p0, oldSegment.p1);
 							const finalIntersection = coldet.intersectSegmentSegment(posOld, b.pos, newSegment.p0, newSegment.p1) || newIntersection;
 							if (finalIntersection) {
@@ -8287,7 +8287,7 @@ var BulletBarn = class {
 								};
 							}
 						}
-						const collision = coldet.intersectSegmentCircle(posOld, b.pos, player.DYz, player.ZnCPya);
+						const collision = coldet.intersectSegmentCircle(posOld, b.pos, player.ZjWPV, player.GocPpC);
 						if (collision && (!panCollision || v2.length(v2.sub(collision.point, b.startPos)) < v2.length(v2.sub(panCollision.point, b.startPos)))) {
 							colObjs.push({
 								type: "player",
@@ -8297,7 +8297,7 @@ var BulletBarn = class {
 								layer: player.layer,
 								collidable: true
 							});
-							if (player.YeD("steelskin")) colObjs.push({
+							if (player.omBZmx("steelskin")) colObjs.push({
 								type: "pan",
 								point: v2.add(collision.point, v2.mul(collision.normal, .1)),
 								normal: collision.normal,
@@ -8323,7 +8323,7 @@ var BulletBarn = class {
 				});
 				let shooterDead = false;
 				const shooter = playerBarn.getPlayerById(b.playerId);
-				if (shooter && (shooter.Lzl.viv || shooter.Lzl.JEyaBW)) shooterDead = true;
+				if (shooter && (shooter.dmuI.UBStD || shooter.dmuI.Bll)) shooterDead = true;
 				let hit = false;
 				for (let j = 0; j < colObjs.length; j++) {
 					const col = colObjs[j];
@@ -8334,15 +8334,15 @@ var BulletBarn = class {
 					} else if (col.type == "player") {
 						if (!shooterDead) {
 							const collidedPlayer = col.player;
-							if (map.turkeyMode && shooter?.YeD("turkey_shoot")) {
+							if (map.turkeyMode && shooter?.omBZmx("turkey_shoot")) {
 								const vel = v2.randomUnit(util.random(3, 6));
-								particleBarn.addParticle("turkeyFeathersHit", collidedPlayer.layer, collidedPlayer.DYz, vel);
+								particleBarn.addParticle("turkeyFeathersHit", collidedPlayer.layer, collidedPlayer.ZjWPV, vel);
 							}
-							const diff = v2.sub(col.point, collidedPlayer?.DYz);
+							const diff = v2.sub(col.point, collidedPlayer?.ZjWPV);
 							diff.y *= -1;
-							particleBarn.addParticle("bloodSplat", collidedPlayer.layer, v2.mul(diff, camera.aeFMbq), v2.create(0, 0), 1, 1, collidedPlayer.container);
+							particleBarn.addParticle("bloodSplat", collidedPlayer.layer, v2.mul(diff, camera.Fxr), v2.create(0, 0), 1, 1, collidedPlayer.container);
 							audioManager.playGroup("player_bullet_hit", {
-								soundPos: collidedPlayer.DYz,
+								soundPos: collidedPlayer.ZjWPV,
 								fallOff: 1,
 								layer: collidedPlayer.layer,
 								filter: "muffled"
@@ -8359,7 +8359,7 @@ var BulletBarn = class {
 					}
 				}
 				if (!(b.layer & 2)) {
-					const structures = map.VPszM.JkAzo();
+					const structures = map.qRkh.oiC();
 					let targetLayer = b.layer;
 					for (let j = 0; j < structures.length; j++) {
 						const struct = structures[j];
@@ -8396,20 +8396,20 @@ var BulletBarn = class {
 	createBulletHit(playerBarn, targetId, audioManager) {
 		const player = playerBarn.getPlayerById(targetId);
 		if (player) audioManager.playGroup("player_bullet_hit", {
-			soundPos: player.DYz,
+			soundPos: player.ZjWPV,
 			fallOff: 1,
 			layer: player.layer,
 			filter: "muffled"
 		});
 	}
-	tsCE(camera) {
+	LeqxUm(camera) {
 		for (let i = 0; i < this.bullets.length; i++) {
 			const b = this.bullets[i];
 			if (b.alive || b.collided) {
 				const dist = v2.length(v2.sub(b.pos, b.startPos));
-				const screenPos = camera.hQJHH(b.pos);
+				const screenPos = camera.cGOJ(b.pos);
 				b.container.position.set(screenPos.x, screenPos.y);
-				const screenScale = camera.iZyh(1);
+				const screenScale = camera.wyfSb(1);
 				const trailLength = math.min(b.tracerLength * 15, dist / 2);
 				b.container.scale.set(screenScale * trailLength * b.scale, screenScale);
 			}
@@ -8459,11 +8459,11 @@ var DeadBody = class {
 		this.nameText.tint = util.rgbToInt(util.hsvToRgb(0, 0, .5));
 		this.container.addChild(this.nameText);
 	}
-	TVs() {}
-	GQnyl() {
+	iqudJb() {}
+	bQihh() {
 		this.container.visible = false;
 	}
-	WHOMj(data, fullUpdate, isNew, _ctx) {
+	upFr(data, fullUpdate, isNew, _ctx) {
 		this.pos = v2.copy(data.pos);
 		if (fullUpdate) {
 			this.layer = data.layer;
@@ -8477,8 +8477,8 @@ var DeadBody = class {
 };
 var DeadBodyBarn = class {
 	deadBodyPool = new Pool(DeadBody);
-	cjhuwW(_dt, playerBarn, activePlayer, map, camera, renderer) {
-		const deadBodies = this.deadBodyPool.JkAzo();
+	Yekvpo(_dt, playerBarn, activePlayer, map, camera, renderer) {
+		const deadBodies = this.deadBodyPool.oiC();
 		for (let i = 0; i < deadBodies.length; i++) {
 			const d = deadBodies[i];
 			if (d.active) {
@@ -8495,15 +8495,15 @@ var DeadBodyBarn = class {
 					zOrd += 100;
 				}
 				renderer.addPIXIObj(d.container, layer, zOrd, d.__id);
-				const screenPos = camera.hQJHH(d.pos);
-				const screenScale = camera.iZyh(1);
+				const screenPos = camera.cGOJ(d.pos);
+				const screenScale = camera.wyfSb(1);
 				d.container.position.set(screenPos.x, screenPos.y);
 				d.container.scale.set(screenScale, screenScale);
 			}
 		}
 	}
 	getDeadBodyById(playerId) {
-		const deadBodies = this.deadBodyPool.JkAzo();
+		const deadBodies = this.deadBodyPool.oiC();
 		for (let i = 0; i < deadBodies.length; i++) {
 			const d = deadBodies[i];
 			if (d.active && d.playerId == playerId) return d;
@@ -8533,17 +8533,17 @@ var Decal = class {
 	goreKills;
 	collider;
 	surface;
-	TVs() {
+	iqudJb() {
 		this.isNew = false;
 		this.goreT = 0;
 	}
-	GQnyl() {
+	bQihh() {
 		if (this.decalRender) {
 			this.decalRender.free();
 			this.decalRender = null;
 		}
 	}
-	WHOMj(data, fullUpdate, isNew, ctx) {
+	upFr(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			const def = MapObjectDefs.typeToDef(data.type, "decal");
 			this.type = data.type;
@@ -8664,8 +8664,8 @@ var DecalRender = class {
 				this.flickerCooldown -= dt;
 			}
 		}
-		const screenPos = camera.hQJHH(this.pos);
-		const screenScale = camera.iZyh(this.scale * this.imgScale);
+		const screenPos = camera.cGOJ(this.pos);
+		const screenScale = camera.wyfSb(this.scale * this.imgScale);
 		this.sprite.position.set(screenPos.x, screenPos.y);
 		this.sprite.scale.set(screenScale, screenScale);
 		this.sprite.rotation = -this.rot;
@@ -8691,8 +8691,8 @@ var DecalBarn = class {
 		}
 		return decalRender;
 	}
-	cjhuwW(dt, camera, renderer) {
-		const decals = this.decalPool.JkAzo();
+	Yekvpo(dt, camera, renderer) {
+		const decals = this.decalPool.oiC();
 		for (let i = 0; i < decals.length; i++) {
 			const decal = decals[i];
 			if (decal.active) decal.update(dt);
@@ -8702,7 +8702,7 @@ var DecalBarn = class {
 			if (decalRender.active) decalRender.update(dt, camera, renderer);
 		}
 	}
-	tsCE(_camera, _debug, _layer) {}
+	LeqxUm(_camera, _debug, _layer) {}
 };
 
 //#endregion
@@ -8732,15 +8732,15 @@ var PhysicsParticle = class {
 		this.pos = v2.add(this.pos, v2.mul(this.vel, dt));
 		this.vel = v2.mul(this.vel, 1 / (1 + dt * 5));
 		const colliders = [];
-		const obstacles = map.IIXrt.JkAzo();
+		const obstacles = map.SeeWtA.oiC();
 		for (let i = 0; i < obstacles.length; i++) {
 			const obstacle = obstacles[i];
 			if (obstacle.active && !obstacle.dead && util.sameLayer(this.layer, obstacle.layer)) colliders.push(obstacle.collider);
 		}
-		const players = playerBarn.playerPool.JkAzo();
+		const players = playerBarn.playerPool.oiC();
 		for (let i = 0; i < players.length; i++) {
 			const player = players[i];
-			if (player.active && !player.Lzl.viv && util.sameLayer(this.layer, player.layer)) colliders.push(collider.createCircle(player.DYz, player.ZnCPya));
+			if (player.active && !player.dmuI.UBStD && util.sameLayer(this.layer, player.layer)) colliders.push(collider.createCircle(player.ZjWPV, player.GocPpC));
 		}
 		const cols = [];
 		for (let i = 0; i < colliders.length; i++) {
@@ -8853,7 +8853,7 @@ var Explosion = class {
 		this.ticker += dt;
 		const shakeT = math.min(this.ticker / def.shakeDur, 1);
 		const shakeInt = math.lerp(shakeT, def.shakeStr, 0);
-		camera.CMMJ(this.pos, shakeInt);
+		camera.cMHf(this.pos, shakeInt);
 		if (this.ticker >= this.lifetime) this.active = false;
 	}
 };
@@ -8891,7 +8891,7 @@ var ExplosionBarn = class {
 		}
 		return p;
 	}
-	cjhuwW(dt, map, playerBarn, camera, particleBarn, audioManager, debug) {
+	Yekvpo(dt, map, playerBarn, camera, particleBarn, audioManager, debug) {
 		for (let i = 0; i < this.explosions.length; i++) {
 			const e = this.explosions[i];
 			if (e.active) {
@@ -9334,7 +9334,7 @@ var FlareBarn = class {
 		b.flareContainer.visible = true;
 		b.trailContainer.visible = true;
 	}
-	cjhuwW(dt, map, activePlayer, renderer) {
+	Yekvpo(dt, map, activePlayer, renderer) {
 		for (let h = 0; h < this.bullets.length; h++) {
 			const d = this.bullets[h];
 			if (d.collided) {
@@ -9373,13 +9373,13 @@ var FlareBarn = class {
 			}
 		}
 	}
-	tsCE(camera) {
+	LeqxUm(camera) {
 		for (let i = 0; i < this.bullets.length; i++) {
 			const b = this.bullets[i];
 			if (b.alive || b.collided) {
-				const screenPos = camera.hQJHH(b.pos);
+				const screenPos = camera.cGOJ(b.pos);
 				b.flareContainer.position.set(screenPos.x, screenPos.y);
-				const screenScale = camera.iZyh(1);
+				const screenScale = camera.wyfSb(1);
 				b.flareContainer.scale.set(screenScale * b.flareScale, screenScale * b.flareScale);
 				const dist = v2.length(v2.sub(b.pos, b.startPos));
 				b.trailContainer.position.set(screenPos.x, screenPos.y);
@@ -9420,18 +9420,18 @@ var Loot = class {
 		this.sprite.scale.set(.8, .8);
 		this.container.addChild(this.sprite);
 	}
-	TVs() {
+	iqudJb() {
 		this.updatedData = false;
 		this.visualPosOld = v2.create(0, 0);
 	}
-	GQnyl() {
+	bQihh() {
 		this.container.visible = false;
 		if (this.emitter) {
 			this.emitter.stop();
 			this.emitter = null;
 		}
 	}
-	WHOMj(data, fullUpdate, isNew, ctx) {
+	upFr(data, fullUpdate, isNew, ctx) {
 		this.updatedData = true;
 		if (!v2.eq(data.pos, this.visualPosOld)) {
 			this.visualPosOld = v2.copy(isNew ? data.pos : this.pos);
@@ -9477,17 +9477,17 @@ var Loot = class {
 var LootBarn = class {
 	lootPool = new Pool(Loot);
 	closestLoot = null;
-	cjhuwW(dt, activePlayer, map, audioManager, camera, debug) {
+	Yekvpo(dt, activePlayer, map, audioManager, camera, debug) {
 		this.closestLoot = null;
 		let closestDist = Number.MAX_VALUE;
-		const loots = this.lootPool.JkAzo();
+		const loots = this.lootPool.oiC();
 		for (let i = 0; i < loots.length; i++) {
 			const loot = loots[i];
 			if (loot.active) {
-				if (util.sameLayer(loot.layer, activePlayer.layer) && !activePlayer.Lzl.viv && (loot.ownerId == 0 || loot.ownerId == activePlayer.__id)) {
+				if (util.sameLayer(loot.layer, activePlayer.layer) && !activePlayer.dmuI.UBStD && (loot.ownerId == 0 || loot.ownerId == activePlayer.__id)) {
 					const pos = loot.pos;
-					const rad = device.touch ? activePlayer.ZnCPya + loot.rad * GameConfig.player.touchLootRadMult : loot.rad;
-					const toPlayer = v2.sub(activePlayer.DYz, pos);
+					const rad = device.touch ? activePlayer.GocPpC + loot.rad * GameConfig.player.touchLootRadMult : loot.rad;
+					const toPlayer = v2.sub(activePlayer.ZjWPV, pos);
 					const distSq = v2.lengthSqr(toPlayer);
 					if (distSq < rad * rad && distSq < closestDist) {
 						closestDist = distSq;
@@ -9513,13 +9513,13 @@ var LootBarn = class {
 				const scaleIn = math.delerp(loot.ticker, 0, 1);
 				const scale = math.easeOutElastic(scaleIn, .75);
 				let pos = loot.pos;
-				if (camera.mvF) {
+				if (camera.Fvurv) {
 					loot.posInterpTicker += dt;
-					const posT = math.clamp(loot.posInterpTicker / camera.MQZX, 0, 1);
+					const posT = math.clamp(loot.posInterpTicker / camera.QPCz, 0, 1);
 					pos = v2.lerp(posT, loot.visualPosOld, loot.pos);
 				}
-				const screenPos = camera.hQJHH(pos);
-				const screenScale = camera.iZyh(loot.imgScale * scale);
+				const screenPos = camera.cGOJ(pos);
+				const screenScale = camera.wyfSb(loot.imgScale * scale);
 				loot.container.position.set(screenPos.x, screenPos.y);
 				loot.container.scale.set(screenScale, screenScale);
 			}
@@ -9692,7 +9692,7 @@ var ParticleBarn = class {
 	onMapLoad(map) {
 		this.valueAdjust = map.getMapDef().biome.valueAdjust;
 	}
-	GQnyl() {
+	bQihh() {
 		for (let i = 0; i < this.particles.length; i++) {
 			const sprite = this.particles[i].sprite;
 			sprite.parent?.removeChild(sprite);
@@ -9733,7 +9733,7 @@ var ParticleBarn = class {
 		emitter.init(type, options);
 		return emitter;
 	}
-	cjhuwW(dt, camera) {
+	Yekvpo(dt, camera) {
 		for (let i = 0; i < this.emitters.length; i++) {
 			const e = this.emitters[i];
 			if (e.active && e.enabled) {
@@ -9771,12 +9771,12 @@ var ParticleBarn = class {
 				p.rot += p.rotVel * dt;
 				if (p.scaleUseExp) p.scale += dt * p.scaleExp;
 				if (p.alphaUseExp) p.alpha = math.max(p.alpha + dt * p.alphaExp, 0);
-				const pos = p.hasParent ? p.pos : camera.hQJHH(p.pos);
+				const pos = p.hasParent ? p.pos : camera.cGOJ(p.pos);
 				let scale = p.scaleUseExp ? p.scale : math.remap(t, p.def.scale.lerp?.min, p.def.scale.lerp?.max, p.scale, p.scaleEnd);
 				let alpha = p.alphaUseExp ? p.alpha : math.remap(t, p.def.alpha.lerp.min, p.def.alpha.lerp.max, p.alpha, p.alphaEnd);
 				if (p.alphaIn && t < p.def.alphaIn.lerp.max) alpha = math.remap(t, p.def.alphaIn.lerp.min, p.def.alphaIn.lerp.max, p.alphaInStart, p.alphaInEnd);
 				if (p.emitterIdx >= 0) alpha *= this.emitters[p.emitterIdx].alpha;
-				if (!p.hasParent) scale = camera.iZyh(scale);
+				if (!p.hasParent) scale = camera.wyfSb(scale);
 				p.sprite.position.set(pos.x, pos.y);
 				p.sprite.scale.set(scale, scale);
 				p.sprite.rotation = p.rot;
@@ -13231,7 +13231,7 @@ var Plane = class {
 		this.sprite.anchor.set(.5, .5);
 		this.sprite.visible = false;
 	}
-	TVs(data, map) {
+	iqudJb(data, map) {
 		this.id = data.id;
 		this.pos = v2.copy(data.pos);
 		this.planeDir = v2.copy(data.planeDir);
@@ -13258,7 +13258,7 @@ var Plane = class {
 		this.sprite.visible = true;
 		this.sprite.rotation = Math.atan2(this.planeDir.x, this.planeDir.y);
 	}
-	GQnyl(audioManager) {
+	bQihh(audioManager) {
 		if (this.spriteUpdateTime >= planeElevateTime) {
 			if (this.soundInstance) {
 				audioManager.stopSound(this.soundInstance);
@@ -13283,7 +13283,7 @@ var AirstrikeZone = class {
 		this.container = container;
 		container.addChild(this.gfx);
 	}
-	TVs(pos, rad, duration) {
+	iqudJb(pos, rad, duration) {
 		this.active = true;
 		this.pos = v2.copy(pos);
 		this.rad = rad;
@@ -13293,7 +13293,7 @@ var AirstrikeZone = class {
 		this.renderRad = 0;
 		this.gfx.visible = true;
 	}
-	cjhuwW(dt) {
+	Yekvpo(dt) {
 		this.ticker += dt;
 		this.gfx.visible = true;
 		if (this.ticker >= this.duration) {
@@ -13329,8 +13329,8 @@ var PlaneBarn = class {
 	constructor(audioManager) {
 		this.audioManager = audioManager;
 	}
-	GQnyl() {
-		for (let i = 0; i < this.planes.length; i++) this.planes[i].GQnyl(this.audioManager);
+	bQihh() {
+		for (let i = 0; i < this.planes.length; i++) this.planes[i].bQihh(this.audioManager);
 	}
 	updatePlanes(planeData, map) {
 		for (let i = 0; i < this.planes.length; i++) this.planes[i].dirty = true;
@@ -13351,7 +13351,7 @@ var PlaneBarn = class {
 		}
 		for (let i = 0; i < this.planes.length; i++) {
 			const p = this.planes[i];
-			if (p.active && p.dirty) p.GQnyl(this.audioManager);
+			if (p.active && p.dirty) p.bQihh(this.audioManager);
 		}
 	}
 	addPlane(data, map) {
@@ -13364,7 +13364,7 @@ var PlaneBarn = class {
 			p = new Plane();
 			this.planes.push(p);
 		}
-		p.TVs(data, map);
+		p.iqudJb(data, map);
 		return p;
 	}
 	createAirstrikeZone(data) {
@@ -13377,10 +13377,10 @@ var PlaneBarn = class {
 			zone = new AirstrikeZone(this.airstrikeZoneContainer);
 			this.airstrikeZones.push(zone);
 		}
-		zone.TVs(data.pos, data.rad, data.duration);
+		zone.iqudJb(data.pos, data.rad, data.duration);
 		return zone;
 	}
-	cjhuwW(dt, camera, activePlayer, map, renderer) {
+	Yekvpo(dt, camera, activePlayer, map, renderer) {
 		for (let i = 0; i < this.planes.length; i++) {
 			const p = this.planes[i];
 			if (p.active) {
@@ -13404,7 +13404,7 @@ var PlaneBarn = class {
 						p.soundUpdateThrottle = .1;
 					} else p.soundUpdateThrottle -= dt;
 				} else {
-					const distToPlane = v2.length(v2.sub(activePlayer.DYz, p.pos));
+					const distToPlane = v2.length(v2.sub(activePlayer.ZjWPV, p.pos));
 					const maxRange = p.config.soundRangeMax * p.config.soundRangeMult;
 					let offset = 0;
 					if (p.type == GameConfig.Plane.Airstrike) {
@@ -13426,9 +13426,9 @@ var PlaneBarn = class {
 					});
 				}
 				renderer.addPIXIObj(p.sprite, layer, 1501, p.id);
-				const screenPos = camera.hQJHH(p.pos);
-				const screenScale = camera.iZyh(p.rad / camera.aeFMbq);
-				const activePlayerIndoors = map.insideBuildingCeiling(collider.createCircle(activePlayer.DYz, .01), true);
+				const screenPos = camera.cGOJ(p.pos);
+				const screenScale = camera.wyfSb(p.rad / camera.Fxr);
+				const activePlayerIndoors = map.insideBuildingCeiling(collider.createCircle(activePlayer.ZjWPV, .01), true);
 				let alphaTarget = p.alpha;
 				if (activePlayer.layer == 1) alphaTarget = 0;
 				else if (activePlayerIndoors || activePlayer.layer & 1) alphaTarget = .15;
@@ -13442,7 +13442,7 @@ var PlaneBarn = class {
 		}
 		for (let i = 0; i < this.airstrikeZones.length; i++) {
 			const zone = this.airstrikeZones[i];
-			if (zone.active) zone.cjhuwW(dt);
+			if (zone.active) zone.Yekvpo(dt);
 		}
 	}
 	renderAirstrikeZones(uiManager, map) {
@@ -14201,15 +14201,15 @@ var Projectile = class {
 		this.sprite.anchor.set(.5, .5);
 		this.container.addChild(this.sprite);
 	}
-	TVs() {
+	iqudJb() {
 		this.visualPosOld = v2.create(0, 0);
 		this.posInterpTicker = 0;
 	}
-	GQnyl() {
+	bQihh() {
 		this.container.visible = false;
 		if (this.strobeSprite) this.strobeSprite.visible = false;
 	}
-	WHOMj(data, fullUpdate, isNew, ctx) {
+	upFr(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			const itemDef = GameObjectDefs.typeToDef(data.type, "throwable");
 			this.layer = data.layer;
@@ -14276,8 +14276,8 @@ var groundSounds = {
 };
 var ProjectileBarn = class {
 	projectilePool = new Pool(Projectile);
-	cjhuwW(dt, particleBarn, audioManager, activePlayer, map, renderer, camera) {
-		const projectiles = this.projectilePool.JkAzo();
+	Yekvpo(dt, particleBarn, audioManager, activePlayer, map, renderer, camera) {
+		const projectiles = this.projectilePool.oiC();
 		for (let i = 0; i < projectiles.length; i++) {
 			const p = projectiles[i];
 			if (p.active) {
@@ -14295,7 +14295,7 @@ var ProjectileBarn = class {
 					pen: 0
 				};
 				const projCollider = collider.createCircle(p.pos, p.rad);
-				const obstacles = map.IIXrt.JkAzo();
+				const obstacles = map.SeeWtA.oiC();
 				for (let j = 0; j < obstacles.length; j++) {
 					const o = obstacles[j];
 					if (o.active && !o.dead && util.sameLayer(o.layer, p.layer)) {
@@ -14383,13 +14383,13 @@ var ProjectileBarn = class {
 				renderer.addPIXIObj(p.container, layer, zOrd);
 				const scale = p.imgScale * math.remap(p.posZ, 0, GameConfig.projectile.maxHeight, 1, 4.75);
 				let pos = p.pos;
-				if (camera.mvF) {
+				if (camera.Fvurv) {
 					p.posInterpTicker += dt;
-					const posT = math.clamp(p.posInterpTicker / camera.MQZX, 0, 1);
+					const posT = math.clamp(p.posInterpTicker / camera.QPCz, 0, 1);
 					pos = v2.lerp(posT, p.visualPosOld, p.pos);
 				}
-				const screenPos = camera.hQJHH(pos);
-				const screenScale = camera.iZyh(scale);
+				const screenPos = camera.cGOJ(pos);
+				const screenScale = camera.wyfSb(scale);
 				p.container.position.set(screenPos.x, screenPos.y);
 				p.container.scale.set(screenScale, screenScale);
 			}
@@ -14441,7 +14441,7 @@ var ShotBarn = class {
 		shot.apRounds = bullet.apRounds;
 		shot.highVelocity = bullet.highVelocity;
 	}
-	cjhuwW(dt, activePlayerId, playerBarn, particleBarn, audioManager) {
+	Yekvpo(dt, activePlayerId, playerBarn, particleBarn, audioManager) {
 		for (let i = 0; i < this.shots.length; i++) {
 			const shot = this.shots[i];
 			if (shot.active) {
@@ -14498,7 +14498,7 @@ var ShotBarn = class {
 					});
 					if (player) {
 						if (player.__id == activePlayerId && weaponDef.fireMode == "single" && weaponDef.pullDelay) {
-							const soundName = player.njNsW.JSc[player.njNsW.wYgmwH].ammo > 0 ? weaponDef.sound.cycle : weaponDef.sound.pull;
+							const soundName = player.pcpKf.eMCJu[player.pcpKf.deXRIW].ammo > 0 ? weaponDef.sound.cycle : weaponDef.sound.pull;
 							audioManager.stopSound(player.cycleSoundInstance);
 							player.cycleSoundInstance = audioManager.playSound(soundName);
 						}
@@ -14511,7 +14511,7 @@ var ShotBarn = class {
 				shot.ticker += dt;
 				if (shot.ticker >= shot.pullDelay) {
 					const player = playerBarn.getPlayerById(shot.playerId);
-					if (player && !player.Lzl.viv && player.Lzl.bNBm == shot.weaponType && weaponDef.caseTiming == "shoot") createCasingParticle(shot.weaponType, Math.PI / 2 * -1, 1, player.Lzl.DYz, player.Lzl.yixBk, player.renderLayer, player.renderZOrd + 1, particleBarn);
+					if (player && !player.dmuI.UBStD && player.dmuI.YWmDc == shot.weaponType && weaponDef.caseTiming == "shoot") createCasingParticle(shot.weaponType, Math.PI / 2 * -1, 1, player.dmuI.ZjWPV, player.dmuI.sjb, player.renderLayer, player.renderZOrd + 1, particleBarn);
 					shot.active = false;
 				}
 			}
@@ -14690,20 +14690,20 @@ var Player = class {
 	renderLayer = 0;
 	renderZOrd = 18;
 	renderZIdx = 0;
-	OMVUBX;
-	Lzl;
-	njNsW;
+	gUjDUW;
+	dmuI;
+	pcpKf;
 	throwableStatePrev;
-	ZnCPya = GameConfig.player.radius;
-	tPRC;
-	DYz = v2.create(0, 0);
-	nzSh = v2.create(0, 0);
-	yixBk = v2.create(1, 0);
-	NdBwD = v2.create(1, 0);
-	jBwVh = v2.create(0, 0);
-	jUET = v2.create(0, 0);
-	mMttvM = v2.create(0, 0);
-	RWVrwn = v2.create(0, 0);
+	GocPpC = GameConfig.player.radius;
+	WhhR;
+	ZjWPV = v2.create(0, 0);
+	oEUWh = v2.create(0, 0);
+	sjb = v2.create(1, 0);
+	CpXyPC = v2.create(1, 0);
+	fygBMT = v2.create(0, 0);
+	Hdj = v2.create(0, 0);
+	qfzZ = v2.create(0, 0);
+	QYb = v2.create(0, 0);
 	posInterpTicker = 0;
 	dirInterpolationTicker = 0;
 	layer = 0;
@@ -14756,15 +14756,15 @@ var Player = class {
 			});
 		}
 		this.throwableStatePrev = this.throwableState;
-		this.tPRC = this.ZnCPya;
-		this.jBwVh = v2.create(0, 0);
-		this.jUET = v2.create(0, 0);
-		this.mMttvM = v2.create(0, 0);
-		this.RWVrwn = v2.create(0, 0);
+		this.WhhR = this.GocPpC;
+		this.fygBMT = v2.create(0, 0);
+		this.Hdj = v2.create(0, 0);
+		this.qfzZ = v2.create(0, 0);
+		this.QYb = v2.create(0, 0);
 		this.posInterpTicker = 0;
 		this.dirInterpolationTicker = 0;
 	}
-	TVs() {
+	iqudJb() {
 		this.isNew = false;
 		this.wasInsideObstacle = false;
 		this.insideObstacleType = "";
@@ -14772,7 +14772,7 @@ var Player = class {
 		this.lastSwapIdx = -1;
 		this.hasteSeq = -1;
 		this.actionSoundInstance = null;
-		this.OMVUBX = {
+		this.gUjDUW = {
 			type: Action.None,
 			seq: -1,
 			seqOld: -1,
@@ -14784,47 +14784,47 @@ var Player = class {
 			throttleCount: 0,
 			throttleTicker: 0
 		};
-		this.Lzl = {
-			DYz: v2.create(0, 0),
-			yixBk: v2.create(1, 0),
-			ihHe: "",
-			rrNjaS: "",
-			xRwn: "",
-			LtTHi: "",
-			bNBm: "fists",
-			lNrns: 0,
-			viv: false,
-			JEyaBW: false,
-			agQu: Anim.None,
-			rTs: 0,
-			iMr: Action.None,
-			Swv: 0,
-			RtGTdU: false,
-			jmcee: false,
-			dLs: false,
-			cgdk: false,
-			YxjKuC: 0,
-			xoUjsx: "",
-			jJVm: HasteType.None,
-			nrUvh: 0,
-			kWef: "",
-			YJcr: 1,
-			oyXu: "",
-			mGh: []
+		this.dmuI = {
+			ZjWPV: v2.create(0, 0),
+			sjb: v2.create(1, 0),
+			yCEsZ: "",
+			dvFO: "",
+			fpi: "",
+			tIim: "",
+			YWmDc: "fists",
+			xEsG: 0,
+			UBStD: false,
+			Bll: false,
+			tZlVuA: Anim.None,
+			bZfF: 0,
+			gzX: Action.None,
+			dJZ: 0,
+			YVs: false,
+			AGWnbS: false,
+			nBz: false,
+			LHV: false,
+			ZGLQ: 0,
+			NvBV: "",
+			ddYk: HasteType.None,
+			Tbp: 0,
+			CDSDX: "",
+			VNuwtj: 1,
+			xQcwzI: "",
+			qQfxTP: []
 		};
-		this.njNsW = {
-			UGF: GameConfig.player.health,
-			wDPk: 0,
-			CZYWck: 0,
-			AGaN: "",
-			wYgmwH: 0,
-			zYQnpm: {},
-			JSc: [],
-			ixq: 0
+		this.pcpKf = {
+			UqHL: GameConfig.player.health,
+			Azt: 0,
+			SpK: 0,
+			lSDBrC: "",
+			deXRIW: 0,
+			AdwHT: {},
+			eMCJu: [],
+			PKbdfc: 0
 		};
 		this.playAnim(Anim.None, -1);
 	}
-	GQnyl() {
+	bQihh() {
 		this.container.visible = false;
 		this.auraContainer.visible = false;
 		for (const emitter of this.useItemEmitters) emitter.stop();
@@ -14842,129 +14842,129 @@ var Player = class {
 			this.adrenalineEmitter = null;
 		}
 	}
-	WHOMj(data, fullUpdate, isNew, _ctx) {
-		if (!v2.eq(data.pos, this.jUET)) {
-			this.jUET = v2.copy(isNew ? data.pos : this.DYz);
+	upFr(data, fullUpdate, isNew, _ctx) {
+		if (!v2.eq(data.pos, this.Hdj)) {
+			this.Hdj = v2.copy(isNew ? data.pos : this.ZjWPV);
 			this.posInterpTicker = 0;
 		}
-		if (!v2.eq(data.dir, this.RWVrwn)) {
-			this.RWVrwn = v2.copy(isNew ? data.dir : this.yixBk);
+		if (!v2.eq(data.dir, this.QYb)) {
+			this.QYb = v2.copy(isNew ? data.dir : this.sjb);
 			this.dirInterpolationTicker = 0;
 		}
-		this.Lzl.DYz = v2.copy(data.pos);
-		this.Lzl.yixBk = v2.copy(data.dir);
+		this.dmuI.ZjWPV = v2.copy(data.pos);
+		this.dmuI.sjb = v2.copy(data.dir);
 		if (fullUpdate) {
-			this.Lzl.ihHe = data.outfit;
-			this.Lzl.rrNjaS = data.backpack;
-			this.Lzl.xRwn = data.helmet;
-			this.Lzl.LtTHi = data.chest;
-			this.Lzl.bNBm = data.activeWeapon;
-			this.Lzl.lNrns = data.layer;
-			this.Lzl.viv = data.dead;
-			this.Lzl.JEyaBW = data.downed;
-			this.Lzl.agQu = data.animType;
-			this.Lzl.rTs = data.animSeq;
-			this.Lzl.iMr = data.actionType;
-			this.Lzl.Swv = data.actionSeq;
-			this.Lzl.RtGTdU = data.wearingPan;
-			this.Lzl.jmcee = data.healEffect;
-			this.Lzl.dLs = data.lastStandEffect;
-			this.Lzl.cgdk = data.frozen;
-			this.Lzl.YxjKuC = data.frozenOri;
-			if (this.Lzl.xoUjsx !== data.frozenType) this.updateFrozenImage = true;
-			this.Lzl.xoUjsx = data.frozenType;
-			this.Lzl.jJVm = data.hasteType;
-			this.Lzl.nrUvh = data.hasteSeq;
-			this.Lzl.kWef = data.actionItem;
-			this.Lzl.YJcr = data.scale;
-			this.Lzl.oyXu = data.role;
-			if (!!isNew || !perksEqual(this.Lzl.mGh, data.perks)) this.perksDirty = true;
-			this.Lzl.mGh = data.perks;
+			this.dmuI.yCEsZ = data.outfit;
+			this.dmuI.dvFO = data.backpack;
+			this.dmuI.fpi = data.helmet;
+			this.dmuI.tIim = data.chest;
+			this.dmuI.YWmDc = data.activeWeapon;
+			this.dmuI.xEsG = data.layer;
+			this.dmuI.UBStD = data.dead;
+			this.dmuI.Bll = data.downed;
+			this.dmuI.tZlVuA = data.animType;
+			this.dmuI.bZfF = data.animSeq;
+			this.dmuI.gzX = data.actionType;
+			this.dmuI.dJZ = data.actionSeq;
+			this.dmuI.YVs = data.wearingPan;
+			this.dmuI.AGWnbS = data.healEffect;
+			this.dmuI.nBz = data.lastStandEffect;
+			this.dmuI.LHV = data.frozen;
+			this.dmuI.ZGLQ = data.frozenOri;
+			if (this.dmuI.NvBV !== data.frozenType) this.updateFrozenImage = true;
+			this.dmuI.NvBV = data.frozenType;
+			this.dmuI.ddYk = data.hasteType;
+			this.dmuI.Tbp = data.hasteSeq;
+			this.dmuI.CDSDX = data.actionItem;
+			this.dmuI.VNuwtj = data.scale;
+			this.dmuI.xQcwzI = data.role;
+			if (!!isNew || !perksEqual(this.dmuI.qQfxTP, data.perks)) this.perksDirty = true;
+			this.dmuI.qQfxTP = data.perks;
 			if (data.animSeq != this.anim.seq) this.playAnim(data.animType, data.animSeq);
-			this.OMVUBX.type = data.actionType;
-			this.OMVUBX.seq = data.actionSeq;
-			this.OMVUBX.item = data.actionItem;
+			this.gUjDUW.type = data.actionType;
+			this.gUjDUW.seq = data.actionSeq;
+			this.gUjDUW.item = data.actionItem;
 			this.visualsDirty = true;
 		}
 		if (isNew) {
 			this.isNew = true;
-			this.renderLayer = this.Lzl.lNrns;
+			this.renderLayer = this.dmuI.xEsG;
 			this.renderZOrd = 18;
 			this.renderZIdx = this.__id;
 		}
 	}
-	yekL(data) {
-		const scopeOld = this.njNsW.AGaN;
-		if (data.healthDirty) this.njNsW.UGF = data.health;
-		if (data.boostDirty) this.njNsW.CZYWck = data.boost;
+	iBqT(data) {
+		const scopeOld = this.pcpKf.lSDBrC;
+		if (data.healthDirty) this.pcpKf.UqHL = data.health;
+		if (data.boostDirty) this.pcpKf.SpK = data.boost;
 		if (data.zoomDirty) {
-			this.njNsW.wDPk = data.zoom;
+			this.pcpKf.Azt = data.zoom;
 			this.zoomFast = false;
 		}
 		if (data.actionDirty) {
-			this.OMVUBX.time = data.action.time;
-			this.OMVUBX.duration = data.action.duration;
-			this.OMVUBX.targetId = data.action.targetId;
+			this.gUjDUW.time = data.action.time;
+			this.gUjDUW.duration = data.action.duration;
+			this.gUjDUW.targetId = data.action.targetId;
 		}
 		if (data.inventoryDirty) {
-			this.njNsW.AGaN = data.scope;
-			this.njNsW.zYQnpm = {};
-			for (const item in GameConfig.bagSizes) if (GameConfig.bagSizes.hasOwnProperty(item)) this.njNsW.zYQnpm[item] = data.inventory[item];
+			this.pcpKf.lSDBrC = data.scope;
+			this.pcpKf.AdwHT = {};
+			for (const item in GameConfig.bagSizes) if (GameConfig.bagSizes.hasOwnProperty(item)) this.pcpKf.AdwHT[item] = data.inventory[item];
 		}
 		if (data.weapsDirty) {
-			this.njNsW.wYgmwH = data.curWeapIdx;
-			this.njNsW.JSc = [];
+			this.pcpKf.deXRIW = data.curWeapIdx;
+			this.pcpKf.eMCJu = [];
 			for (let i = 0; i < GameConfig.WeaponSlot.Count; i++) {
 				const w = {
 					type: data.weapons[i].type,
 					ammo: data.weapons[i].ammo
 				};
-				this.njNsW.JSc.push(w);
+				this.pcpKf.eMCJu.push(w);
 			}
 		}
-		if (data.spectatorCountDirty) this.njNsW.ixq = data.spectatorCount;
-		if (this.njNsW.AGaN != scopeOld) this.zoomFast = true;
+		if (data.spectatorCountDirty) this.pcpKf.PKbdfc = data.spectatorCount;
+		if (this.pcpKf.lSDBrC != scopeOld) this.zoomFast = true;
 	}
-	iJb() {
-		let zoom = this.njNsW.wDPk;
+	IQPNF() {
+		let zoom = this.pcpKf.Azt;
 		if (device.mobile) {
 			const stepIdx = desktopZoomRads.indexOf(zoom);
 			if (stepIdx !== -1) zoom = mobileZoomRads[stepIdx];
 		}
 		return zoom;
 	}
-	Vlfu() {
-		if (this.Lzl.xRwn) return GameObjectDefs.typeToDef(this.Lzl.xRwn, "helmet").level;
+	SdP() {
+		if (this.dmuI.fpi) return GameObjectDefs.typeToDef(this.dmuI.fpi, "helmet").level;
 		return 0;
 	}
-	jHCJ() {
-		if (this.Lzl.LtTHi) return GameObjectDefs.typeToDef(this.Lzl.LtTHi, "chest").level;
+	CKLF() {
+		if (this.dmuI.tIim) return GameObjectDefs.typeToDef(this.dmuI.tIim, "chest").level;
 		return 0;
 	}
-	oPq() {
-		return GameObjectDefs.typeToDef(this.Lzl.rrNjaS, "backpack").level;
+	MOq() {
+		return GameObjectDefs.typeToDef(this.dmuI.dvFO, "backpack").level;
 	}
-	ulfB() {
-		return GameObjectDefs.typeToDef(this.Lzl.bNBm).type;
+	Qtrbul() {
+		return GameObjectDefs.typeToDef(this.dmuI.YWmDc).type;
 	}
-	kQaUM(slot) {
-		return this.njNsW.JSc[slot].type !== "";
+	yNqGdZ(slot) {
+		return this.pcpKf.eMCJu[slot].type !== "";
 	}
 	getMeleeCollider() {
-		const meleeDef = GameObjectDefs.typeToDef(this.Lzl.bNBm, "melee");
-		const ang = Math.atan2(this.yixBk.y, this.yixBk.x);
-		const off = v2.add(meleeDef.attack.offset, v2.mul(v2.create(1, 0), this.Lzl.YJcr - 1));
-		const pos = v2.add(this.DYz, v2.rotate(off, ang));
+		const meleeDef = GameObjectDefs.typeToDef(this.dmuI.YWmDc, "melee");
+		const ang = Math.atan2(this.sjb.y, this.sjb.x);
+		const off = v2.add(meleeDef.attack.offset, v2.mul(v2.create(1, 0), this.dmuI.VNuwtj - 1));
+		const pos = v2.add(this.ZjWPV, v2.rotate(off, ang));
 		const rad = meleeDef.attack.rad;
 		return collider.createCircle(pos, rad);
 	}
-	UgGGL() {
-		return this.Lzl.RtGTdU || this.Lzl.bNBm == "pan" && this.currentAnim() != Anim.Melee;
+	cYw() {
+		return this.dmuI.YVs || this.dmuI.YWmDc == "pan" && this.currentAnim() != Anim.Melee;
 	}
-	XmPbo() {
-		const panSurface = this.Lzl.RtGTdU ? "unequipped" : "equipped";
+	drktvF() {
+		const panSurface = this.dmuI.YVs ? "unequipped" : "equipped";
 		let surface = GameObjectDefs.typeToDef("pan", "melee").reflectSurface[panSurface];
-		const scale = this.Lzl.YJcr;
+		const scale = this.dmuI.VNuwtj;
 		if (scale !== 1) {
 			if (panSurface === "unequipped") surface = {
 				p0: v2.mul(surface.p0, scale),
@@ -14982,28 +14982,28 @@ var Player = class {
 		return surface;
 	}
 	canInteract(map) {
-		return !this.Lzl.viv && (!map.perkMode || this.Lzl.oyXu);
+		return !this.dmuI.UBStD && (!map.perkMode || this.dmuI.xQcwzI);
 	}
-	ilDmZF(isActivePlayer, isSpectating, ui2Manager) {
+	WcN(isActivePlayer, isSpectating, ui2Manager) {
 		for (let i = 0; i < this.perks.length; i++) this.perks[i].isNew = false;
 		if (this.perksDirty) {
 			if (isActivePlayer && !isSpectating) {
-				for (let i = 0; i < this.Lzl.mGh.length; i++) {
-					const perk = this.Lzl.mGh[i];
+				for (let i = 0; i < this.dmuI.qQfxTP.length; i++) {
+					const perk = this.dmuI.qQfxTP[i];
 					if (this.perks.findIndex((x) => {
 						return x.type == perk.type;
 					}) === -1) ui2Manager.addRareLootMessage(perk.type);
 				}
 				for (let i = 0; i < this.perks.length; i++) {
 					const perk = this.perks[i];
-					if (this.Lzl.mGh.findIndex((x) => {
+					if (this.dmuI.qQfxTP.findIndex((x) => {
 						return x.type == perk.type;
 					}) === -1) ui2Manager.removeRareLootMessage(perk.type);
 				}
 			}
 			const perks = [];
-			for (let i = 0; i < this.Lzl.mGh.length; i++) {
-				const perk = this.Lzl.mGh[i];
+			for (let i = 0; i < this.dmuI.qQfxTP.length; i++) {
+				const perk = this.dmuI.qQfxTP[i];
 				const isNew = this.perks.findIndex((x) => {
 					return x.type == perk.type;
 				}) === -1;
@@ -15015,53 +15015,53 @@ var Player = class {
 			}
 			this.perks = perks;
 			this.perkTypes = [];
-			for (let i = 0; i < this.Lzl.mGh.length; i++) this.perkTypes.push(this.Lzl.mGh[i].type);
+			for (let i = 0; i < this.dmuI.qQfxTP.length; i++) this.perkTypes.push(this.dmuI.qQfxTP[i].type);
 			this.perksDirty = false;
 		}
 	}
-	YeD(type) {
+	omBZmx(type) {
 		return this.perkTypes.includes(type);
 	}
-	cjhuwW(dt, playerBarn, map, audioManager, particleBarn, inputBinds, camera, renderer, ui2Manager, activeId, preventInput, displayingStats, isSpectating) {
-		const curWeapDef = GameObjectDefs.typeToDef(this.Lzl.bNBm);
+	Yekvpo(dt, playerBarn, map, audioManager, particleBarn, inputBinds, camera, renderer, ui2Manager, activeId, preventInput, displayingStats, isSpectating) {
+		const curWeapDef = GameObjectDefs.typeToDef(this.dmuI.YWmDc);
 		const isActivePlayer = this.__id == activeId;
 		const activePlayer = playerBarn.getPlayerById(activeId);
-		this.nzSh = v2.copy(this.DYz);
-		this.NdBwD = v2.copy(this.yixBk);
-		this.DYz = v2.copy(this.Lzl.DYz);
-		this.yixBk = v2.copy(this.Lzl.yixBk);
-		this.layer = this.Lzl.lNrns;
-		this.downed = this.Lzl.JEyaBW;
-		this.ZnCPya = this.Lzl.YJcr * GameConfig.player.radius;
-		if (camera.mvF) {
+		this.oEUWh = v2.copy(this.ZjWPV);
+		this.CpXyPC = v2.copy(this.sjb);
+		this.ZjWPV = v2.copy(this.dmuI.ZjWPV);
+		this.sjb = v2.copy(this.dmuI.sjb);
+		this.layer = this.dmuI.xEsG;
+		this.downed = this.dmuI.Bll;
+		this.GocPpC = this.dmuI.VNuwtj * GameConfig.player.radius;
+		if (camera.Fvurv) {
 			this.posInterpTicker += dt;
-			const posT = math.clamp(this.posInterpTicker / camera.MQZX, 0, 1);
-			this.jBwVh = v2.lerp(posT, this.jUET, this.DYz);
-			if (!camera.yGQQN || !isActivePlayer || isSpectating || displayingStats) {
+			const posT = math.clamp(this.posInterpTicker / camera.QPCz, 0, 1);
+			this.fygBMT = v2.lerp(posT, this.Hdj, this.ZjWPV);
+			if (!camera.SeEmW || !isActivePlayer || isSpectating || displayingStats) {
 				this.dirInterpolationTicker += dt;
-				const dirT = math.clamp(this.dirInterpolationTicker / camera.MQZX, 0, 1);
-				this.mMttvM = v2.lerp(dirT, this.RWVrwn, this.yixBk);
+				const dirT = math.clamp(this.dirInterpolationTicker / camera.QPCz, 0, 1);
+				this.qfzZ = v2.lerp(dirT, this.QYb, this.sjb);
 			}
 		} else {
-			this.jBwVh = v2.copy(this.DYz);
-			this.mMttvM = v2.copy(this.yixBk);
+			this.fygBMT = v2.copy(this.ZjWPV);
+			this.qfzZ = v2.copy(this.sjb);
 		}
-		if (!math.eqAbs(this.ZnCPya, this.tPRC)) {
-			const bodyRadDist = this.ZnCPya - this.tPRC;
+		if (!math.eqAbs(this.GocPpC, this.WhhR)) {
+			const bodyRadDist = this.GocPpC - this.WhhR;
 			let bodyRadStep = Math.abs(bodyRadDist) > 1e-4 ? bodyRadDist * dt * 6 : bodyRadDist;
 			if (this.isNew) bodyRadStep = bodyRadDist;
-			this.tPRC += bodyRadStep;
+			this.WhhR += bodyRadStep;
 			this.visualsDirty = true;
 		}
 		if (isActivePlayer) {
-			const viewEdge = camera.QEbk(v2.create(camera.FRLvNz, 0));
-			const viewExtent = v2.sub(viewEdge, camera.DYz);
-			this.viewAabb.min = v2.sub(camera.DYz, viewExtent);
-			this.viewAabb.max = v2.add(camera.DYz, viewExtent);
+			const viewEdge = camera.HZFax(v2.create(camera.vza, 0));
+			const viewExtent = v2.sub(viewEdge, camera.ZjWPV);
+			this.viewAabb.min = v2.sub(camera.ZjWPV, viewExtent);
+			this.viewAabb.max = v2.add(camera.ZjWPV, viewExtent);
 		}
-		this.ilDmZF(isActivePlayer, isSpectating, ui2Manager);
-		const weapTypeDirty = this.weapTypeOld != this.Lzl.bNBm;
-		this.weapTypeOld = this.Lzl.bNBm;
+		this.WcN(isActivePlayer, isSpectating, ui2Manager);
+		const weapTypeDirty = this.weapTypeOld != this.dmuI.YWmDc;
+		this.weapTypeOld = this.dmuI.YWmDc;
 		this.lastThrowablePickupSfxTicker -= dt;
 		this.noCeilingRevealTicker -= dt;
 		const activeGroupId = playerBarn.getPlayerInfo(activeId).groupId;
@@ -15071,18 +15071,18 @@ var Player = class {
 		this.nameText.visible = !isActivePlayer && inSameGroup;
 		let insideObstacle = null;
 		let doorErrorObstacle = null;
-		const obstacles = map.IIXrt.JkAzo();
+		const obstacles = map.SeeWtA.oiC();
 		for (let i = 0; i < obstacles.length; i++) {
 			const obstacle = obstacles[i];
-			if (obstacle.active && !obstacle.dead && obstacle.layer == this.Lzl.lNrns) {
+			if (obstacle.active && !obstacle.dead && obstacle.layer == this.dmuI.xEsG) {
 				if (obstacle.isBush) {
-					const rad = this.ZnCPya * .25;
-					if (collider.intersectCircle(obstacle.collider, this.DYz, rad)) insideObstacle = obstacle;
+					const rad = this.GocPpC * .25;
+					if (collider.intersectCircle(obstacle.collider, this.ZjWPV, rad)) insideObstacle = obstacle;
 				} else if (obstacle.isDoor) {
-					const rad = this.ZnCPya + .25;
-					const toDoor = v2.sub(obstacle.pos, this.DYz);
+					const rad = this.GocPpC + .25;
+					const toDoor = v2.sub(obstacle.pos, this.ZjWPV);
 					const doorDir = v2.rotate(v2.create(1, 0), obstacle.rot);
-					if (collider.intersectCircle(obstacle.collider, this.DYz, rad) && (obstacle.door.locked || obstacle.door.openOneWay && v2.dot(toDoor, doorDir) < 0)) doorErrorObstacle = obstacle;
+					if (collider.intersectCircle(obstacle.collider, this.ZjWPV, rad) && (obstacle.door.locked || obstacle.door.openOneWay && v2.dot(toDoor, doorDir) < 0)) doorErrorObstacle = obstacle;
 				}
 			}
 		}
@@ -15094,17 +15094,17 @@ var Player = class {
 			this.lastInsideObstacleTime = .2;
 			audioManager.playSound(obstacleDef.sound.enter, {
 				channel: "sfx",
-				soundPos: this.DYz,
+				soundPos: this.ZjWPV,
 				fallOff: 1,
 				layer: this.layer,
 				filter: "muffled"
 			});
-			const moveDir = v2.normalizeSafe(v2.sub(this.nzSh, this.DYz), v2.create(1, 0));
+			const moveDir = v2.normalizeSafe(v2.sub(this.oEUWh, this.ZjWPV), v2.create(1, 0));
 			const partDir = isInside ? 1 : -1;
 			const numParticles = Math.floor(util.random(3, 5));
 			for (let i = 0; i < numParticles; i++) {
 				const vel = v2.mul(v2.rotate(v2.mul(moveDir, partDir), (Math.random() - .5) * Math.PI / 1.5), util.random(6, 8));
-				particleBarn.addParticle(obstacleDef.hitParticle, this.layer, this.DYz, vel);
+				particleBarn.addParticle(obstacleDef.hitParticle, this.layer, this.ZjWPV, vel);
 			}
 		}
 		this.wasInsideObstacle = isInside;
@@ -15116,23 +15116,23 @@ var Player = class {
 			const doorSfx = MapObjectDefs.typeToDef(doorErrorObstacle.type, "obstacle").door.sound.error;
 			audioManager.playSound(doorSfx, {
 				channel: "sfx",
-				soundPos: this.DYz,
+				soundPos: this.ZjWPV,
 				fallOff: 1,
 				layer: this.layer,
 				filter: "muffled"
 			});
 		}
-		this.surface = map.getGroundSurface(this.DYz, this.layer);
+		this.surface = map.getGroundSurface(this.ZjWPV, this.layer);
 		const inWater = this.surface.type == "water";
 		this.updateSubmersion(dt, map);
 		this.updateFrozenState(dt);
-		if (!this.Lzl.viv) {
-			this.stepDistance += v2.length(v2.sub(this.nzSh, this.DYz));
+		if (!this.dmuI.UBStD) {
+			this.stepDistance += v2.length(v2.sub(this.oEUWh, this.ZjWPV));
 			if (this.stepDistance > 5 && inWater || inWater && !this.wasInWater) {
 				this.stepDistance = 0;
-				particleBarn.addRippleParticle(this.DYz, this.layer, this.surface.data.rippleColor);
+				particleBarn.addRippleParticle(this.ZjWPV, this.layer, this.surface.data.rippleColor);
 				audioManager.playGroup("footstep_water", {
-					soundPos: this.DYz,
+					soundPos: this.ZjWPV,
 					fallOff: 3,
 					layer: this.layer,
 					filter: "muffled"
@@ -15140,7 +15140,7 @@ var Player = class {
 			} else if (this.stepDistance > 4 && !inWater) {
 				this.stepDistance = 0;
 				audioManager.playGroup(`footstep_${this.surface.type}`, {
-					soundPos: this.DYz,
+					soundPos: this.ZjWPV,
 					fallOff: 3,
 					layer: this.layer,
 					filter: "muffled"
@@ -15149,14 +15149,14 @@ var Player = class {
 			this.wasInWater = inWater;
 		}
 		this.bleedTicker -= dt;
-		if (!this.Lzl.viv && (this.Lzl.JEyaBW && this.OMVUBX.type == Action.None || this.YeD("trick_drain")) && this.bleedTicker < 0) {
-			this.bleedTicker = this.YeD("trick_drain") ? GameConfig.player.bleedTickRate * 3 : GameConfig.player.bleedTickRate;
-			const vel = v2.rotate(v2.mul(this.yixBk, -1), (Math.random() - .5) * Math.PI / 3);
+		if (!this.dmuI.UBStD && (this.dmuI.Bll && this.gUjDUW.type == Action.None || this.omBZmx("trick_drain")) && this.bleedTicker < 0) {
+			this.bleedTicker = this.omBZmx("trick_drain") ? GameConfig.player.bleedTickRate * 3 : GameConfig.player.bleedTickRate;
+			const vel = v2.rotate(v2.mul(this.sjb, -1), (Math.random() - .5) * Math.PI / 3);
 			vel.y *= -1;
-			particleBarn.addParticle("bloodSplat", this.renderLayer, v2.create(0, 0), v2.mul(vel, camera.aeFMbq), 1, Math.random() * Math.PI * 2, this.container, this.renderZOrd + 1);
+			particleBarn.addParticle("bloodSplat", this.renderLayer, v2.create(0, 0), v2.mul(vel, camera.Fxr), 1, Math.random() * Math.PI * 2, this.container, this.renderZOrd + 1);
 			if (!displayingStats) audioManager.playSound("player_bullet_hit_02", {
 				channel: "hits",
-				soundPos: this.DYz,
+				soundPos: this.ZjWPV,
 				fallOff: 3,
 				layer: this.layer,
 				filter: "muffled"
@@ -15164,13 +15164,13 @@ var Player = class {
 		}
 		this.gunSwitchCooldown -= dt;
 		this.fireDelay -= dt;
-		if (isActivePlayer && (weapTypeDirty || this.lastSwapIdx != this.njNsW.wYgmwH)) {
+		if (isActivePlayer && (weapTypeDirty || this.lastSwapIdx != this.pcpKf.deXRIW)) {
 			const lastWeapIdx = this.lastSwapIdx;
-			this.lastSwapIdx = this.njNsW.wYgmwH;
-			const itemDef = GameObjectDefs.typeToDef(this.Lzl.bNBm);
+			this.lastSwapIdx = this.pcpKf.deXRIW;
+			const itemDef = GameObjectDefs.typeToDef(this.dmuI.YWmDc);
 			if (itemDef.type == "melee" || itemDef.type == "throwable") {
 				if (itemDef.type != "throwable" || this.lastThrowablePickupSfxTicker <= 0) {
-					const soundPos = this.isLoadoutAvatar ? camera.DYz : this.DYz;
+					const soundPos = this.isLoadoutAvatar ? camera.ZjWPV : this.ZjWPV;
 					audioManager.playSound(itemDef.sound.deploy, {
 						channel: "sfx",
 						soundPos,
@@ -15181,7 +15181,7 @@ var Player = class {
 				let switchSound = "gun_switch_01";
 				let deployFull = false;
 				if ((lastWeapIdx == 0 || lastWeapIdx == 1) && (this.lastSwapIdx == 0 || this.lastSwapIdx == 1) && this.fireDelay > 0) {
-					const lastWeapDef = GameObjectDefs.typeToDefSafe(this.njNsW.JSc[lastWeapIdx].type);
+					const lastWeapDef = GameObjectDefs.typeToDefSafe(this.pcpKf.eMCJu[lastWeapIdx].type);
 					if (itemDef && lastWeapDef && itemDef.deployGroup !== void 0 && lastWeapDef.deployGroup !== void 0 && itemDef.deployGroup == lastWeapDef.deployGroup) deployFull = true;
 				}
 				if (this.gunSwitchCooldown > 0 || deployFull) switchSound = itemDef.sound.deploy;
@@ -15192,23 +15192,23 @@ var Player = class {
 			}
 		}
 		if (!audioManager.isSoundPlaying(this.cycleSoundInstance)) this.cycleSoundInstance = null;
-		if (this.OMVUBX.seq != this.OMVUBX.seqOld && !this.isNew) {
+		if (this.gUjDUW.seq != this.gUjDUW.seqOld && !this.isNew) {
 			let playEffect = true;
-			if (!isActivePlayer && this.OMVUBX.type != Action.None) {
-				this.OMVUBX.throttleTicker = .5;
-				if (this.OMVUBX.throttleCount < 5) this.OMVUBX.throttleCount++;
+			if (!isActivePlayer && this.gUjDUW.type != Action.None) {
+				this.gUjDUW.throttleTicker = .5;
+				if (this.gUjDUW.throttleCount < 5) this.gUjDUW.throttleCount++;
 				else playEffect = false;
 			}
 			if (playEffect) this.playActionStartEffect(isActivePlayer, particleBarn, audioManager);
 		}
-		this.OMVUBX.seqOld = this.OMVUBX.seq;
+		this.gUjDUW.seqOld = this.gUjDUW.seq;
 		this.updateActionEffect(isActivePlayer, playerInfo, particleBarn, audioManager);
-		this.OMVUBX.throttleTicker -= dt;
-		if (this.OMVUBX.throttleTicker < 0 && this.OMVUBX.throttleCount > 0) {
-			this.OMVUBX.throttleCount--;
-			this.OMVUBX.throttleTicker = .25;
+		this.gUjDUW.throttleTicker -= dt;
+		if (this.gUjDUW.throttleTicker < 0 && this.gUjDUW.throttleCount > 0) {
+			this.gUjDUW.throttleCount--;
+			this.gUjDUW.throttleTicker = .25;
 		}
-		if (this.Lzl.jJVm && this.Lzl.nrUvh != this.hasteSeq) {
+		if (this.dmuI.ddYk && this.dmuI.Tbp != this.hasteSeq) {
 			const fx = {
 				[HasteType.None]: {
 					particle: "",
@@ -15226,67 +15226,67 @@ var Player = class {
 					particle: "inspire",
 					sound: "ability_stim_01"
 				}
-			}[this.Lzl.jJVm];
+			}[this.dmuI.ddYk];
 			if (!this.isNew) audioManager.playSound(fx.sound, {
 				channel: "sfx",
-				soundPos: this.DYz,
+				soundPos: this.ZjWPV,
 				fallOff: 1,
 				layer: this.layer,
 				filter: "muffled"
 			});
 			this.hasteEmitter?.stop();
 			this.hasteEmitter = particleBarn.addEmitter(fx.particle, {
-				pos: this.DYz,
+				pos: this.ZjWPV,
 				layer: this.layer
 			});
-			this.hasteSeq = this.Lzl.nrUvh;
-		} else if (!this.Lzl.jJVm && this.hasteEmitter) {
+			this.hasteSeq = this.dmuI.Tbp;
+		} else if (!this.dmuI.ddYk && this.hasteEmitter) {
 			this.hasteEmitter.stop();
 			this.hasteEmitter = null;
 		}
 		if (this.hasteEmitter) {
-			this.hasteEmitter.pos = v2.add(this.DYz, v2.create(0, .1));
+			this.hasteEmitter.pos = v2.add(this.ZjWPV, v2.create(0, .1));
 			this.hasteEmitter.layer = this.renderLayer;
 			this.hasteEmitter.zOrd = this.renderZOrd + 1;
 		}
-		if (this.Lzl.jmcee && !this.passiveHealEmitter) this.passiveHealEmitter = particleBarn.addEmitter("heal_basic", {
-			pos: this.DYz,
+		if (this.dmuI.AGWnbS && !this.passiveHealEmitter) this.passiveHealEmitter = particleBarn.addEmitter("heal_basic", {
+			pos: this.ZjWPV,
 			layer: this.layer
 		});
-		else if (!this.Lzl.jmcee && this.passiveHealEmitter) {
+		else if (!this.dmuI.AGWnbS && this.passiveHealEmitter) {
 			this.passiveHealEmitter.stop();
 			this.passiveHealEmitter = null;
 		}
 		if (this.passiveHealEmitter) {
-			this.passiveHealEmitter.pos = v2.add(this.DYz, v2.create(0, .1));
+			this.passiveHealEmitter.pos = v2.add(this.ZjWPV, v2.create(0, .1));
 			this.passiveHealEmitter.layer = this.renderLayer;
 			this.passiveHealEmitter.zOrd = this.renderZOrd + 1;
 		}
 		const adrenalineEmitter = GameObjectDefs.typeToDef(playerInfo.loadout.boost, "boost_effect").emitter;
 		const adrenalineEmitterType = Array.isArray(adrenalineEmitter) ? adrenalineEmitter[0] : adrenalineEmitter;
-		if (this.Lzl.dLs && (!this.adrenalineEmitter || this.adrenalineEmitter.type !== adrenalineEmitterType)) {
+		if (this.dmuI.nBz && (!this.adrenalineEmitter || this.adrenalineEmitter.type !== adrenalineEmitterType)) {
 			this.adrenalineEmitter?.stop();
 			this.adrenalineEmitter = particleBarn.addEmitter(adrenalineEmitterType, {
 				color: 5089023,
-				pos: this.DYz,
+				pos: this.ZjWPV,
 				layer: this.layer,
 				rateMult: .33
 			});
-		} else if (!this.Lzl.dLs && this.adrenalineEmitter) {
+		} else if (!this.dmuI.nBz && this.adrenalineEmitter) {
 			this.adrenalineEmitter.stop();
 			this.adrenalineEmitter = null;
 		}
 		if (this.adrenalineEmitter) {
-			this.adrenalineEmitter.pos = v2.add(this.DYz, v2.create(0, .1));
+			this.adrenalineEmitter.pos = v2.add(this.ZjWPV, v2.create(0, .1));
 			this.adrenalineEmitter.layer = this.renderLayer;
 			this.adrenalineEmitter.zOrd = this.renderZOrd + 1;
 		}
 		if (isActivePlayer && !isSpectating) {
-			const curWeapIdx = this.njNsW.wYgmwH;
-			const curWeap = this.njNsW.JSc[curWeapIdx];
+			const curWeapIdx = this.pcpKf.deXRIW;
+			const curWeap = this.pcpKf.eMCJu[curWeapIdx];
 			const itemDef = GameObjectDefs.typeToDef(curWeap.type);
-			if (!this.playedDryFire && this.ulfB() == "gun" && (inputBinds.isBindPressed(Input.Fire) || inputBinds.isBindDown(Input.Fire) && itemDef.fireMode == "auto") && this.OMVUBX.type == Action.None && !preventInput && !itemDef.ammoInfinite) {
-				const ammoLeft = this.njNsW.zYQnpm[itemDef.ammo] || 0;
+			if (!this.playedDryFire && this.Qtrbul() == "gun" && (inputBinds.isBindPressed(Input.Fire) || inputBinds.isBindDown(Input.Fire) && itemDef.fireMode == "auto") && this.gUjDUW.type == Action.None && !preventInput && !itemDef.ammoInfinite) {
+				const ammoLeft = this.pcpKf.AdwHT[itemDef.ammo] || 0;
 				const currentClip = curWeap.ammo;
 				if (ammoLeft == 0 && currentClip == 0) {
 					audioManager.playSound(itemDef.sound.empty);
@@ -15323,25 +15323,25 @@ var Player = class {
 		this.updateRenderLayer(isActivePlayer, activePlayer, map);
 		renderer.addPIXIObj(this.auraContainer, this.renderLayer, this.renderZOrd - 1, this.renderZIdx);
 		const auraLayerMatch = activePlayer.layer & 2 || (activePlayer.layer & 1) == 1 || (this.layer & 1) == 0;
-		this.auraContainer.visible = Boolean(!this.Lzl.viv && auraLayerMatch);
+		this.auraContainer.visible = Boolean(!this.dmuI.UBStD && auraLayerMatch);
 		renderer.addPIXIObj(this.container, this.renderLayer, this.renderZOrd, this.renderZIdx);
 		this.isNew = false;
 	}
 	render(camera, debug) {
-		const screenPos = camera.hQJHH(this.jBwVh);
-		const screenScale = camera.iZyh(1);
+		const screenPos = camera.cGOJ(this.fygBMT);
+		const screenScale = camera.wyfSb(1);
 		this.container.position.set(screenPos.x, screenPos.y);
 		this.container.scale.set(screenScale, screenScale);
-		this.container.visible = !this.Lzl.viv;
+		this.container.visible = !this.dmuI.UBStD;
 		this.auraContainer.position.set(screenPos.x, screenPos.y);
 		this.auraContainer.scale.set(screenScale, screenScale);
 	}
 	updateRenderLayer(isActivePlayer, activePlayer, map) {
-		const visualCol = collider.createCircle(this.DYz, GameConfig.player.maxVisualRadius);
+		const visualCol = collider.createCircle(this.ZjWPV, GameConfig.player.maxVisualRadius);
 		let onMask = false;
 		let onStairs = false;
 		let occluded = false;
-		const structures = map.VPszM.JkAzo();
+		const structures = map.qRkh.oiC();
 		for (let i = 0; i < structures.length; i++) {
 			const structure = structures[i];
 			if (structure.active) {
@@ -15351,10 +15351,10 @@ var Player = class {
 					if (col) {
 						onStairs = true;
 						const stairTop = v2.add(stairs.center, v2.mul(stairs.downDir, -2.5));
-						let dir = v2.sub(stairTop, this.DYz);
+						let dir = v2.sub(stairTop, this.ZjWPV);
 						const dist = v2.length(dir);
 						dir = dist > 1e-4 ? v2.div(dir, dist) : v2.create(1, 0);
-						occluded = collisionHelpers.intersectSegmentDist(map.IIXrt.JkAzo(), this.DYz, dir, dist, .5, this.layer, false) < dist;
+						occluded = collisionHelpers.intersectSegmentDist(map.SeeWtA.oiC(), this.ZjWPV, dir, dist, .5, this.layer, false) < dist;
 					}
 					if (isActivePlayer && stairs.noCeilingReveal && col && this.layer != 0) this.noCeilingRevealTicker = .25;
 				}
@@ -15371,24 +15371,24 @@ var Player = class {
 			renderLayer |= 2;
 			renderZOrd += 100;
 		}
-		const renderZIdx = this.__id + (this.Lzl.JEyaBW ? 0 : 262144) + (isActivePlayer ? 65536 : 0) + (this.ZnCPya > 1 ? 131072 : 0);
+		const renderZIdx = this.__id + (this.dmuI.Bll ? 0 : 262144) + (isActivePlayer ? 65536 : 0) + (this.GocPpC > 1 ? 131072 : 0);
 		this.renderLayer = renderLayer;
 		this.renderZOrd = renderZOrd;
 		this.renderZIdx = renderZIdx;
 	}
 	updateVisuals(playerBarn, map) {
-		const outfitDef = GameObjectDefs.typeToDef(this.Lzl.ihHe, "outfit");
+		const outfitDef = GameObjectDefs.typeToDef(this.dmuI.yCEsZ, "outfit");
 		const outfitImg = outfitDef.skinImg;
-		const bodyScale = this.tPRC / GameConfig.player.radius;
+		const bodyScale = this.WhhR / GameConfig.player.radius;
 		this.bodySprite.texture = Texture.from(outfitImg.baseSprite);
 		this.bodySprite.tint = outfitDef.ghillie ? map.getMapDef().biome.colors.playerGhillie : outfitImg.baseTint;
 		this.bodySprite.scale.set(.25, .25);
 		this.bodySprite.visible = true;
-		if (this.Lzl.cgdk && this.updateFrozenImage && this.Lzl.xoUjsx) {
-			const frozenSprites = GameObjectDefs.typeToDef(this.Lzl.xoUjsx, "explosion").frozenSprites || [];
+		if (this.dmuI.LHV && this.updateFrozenImage && this.dmuI.NvBV) {
+			const frozenSprites = GameObjectDefs.typeToDef(this.dmuI.NvBV, "explosion").frozenSprites || [];
 			if (frozenSprites.length > 0) {
 				const sprite = util.randomItem(frozenSprites);
-				const n = math.oriToRad(this.Lzl.YxjKuC) + Math.PI * .5 + (Math.random() - .5) * Math.PI * .25;
+				const n = math.oriToRad(this.dmuI.ZGLQ) + Math.PI * .5 + (Math.random() - .5) * Math.PI * .25;
 				this.bodyEffectSprite.texture = Texture.from(sprite);
 				this.bodyEffectSprite.rotation = n;
 				this.bodyEffectSprite.tint = 16777215;
@@ -15432,31 +15432,31 @@ var Player = class {
 		const footTint = outfitDef.ghillie ? map.getMapDef().biome.colors.playerGhillie : outfitImg.footTint;
 		setFootSprite(this.footLSprite, outfitImg.footSprite, footTint, this.downed);
 		setFootSprite(this.footRSprite, outfitImg.footSprite, footTint, this.downed);
-		if (this.YeD("flak_jacket") && !outfitDef.ghillie) {
+		if (this.omBZmx("flak_jacket") && !outfitDef.ghillie) {
 			this.flakSprite.texture = Texture.from("player-armor-base-01.img");
 			this.flakSprite.scale.set(.215, .215);
 			this.flakSprite.tint = 3671558;
 			this.flakSprite.alpha = .7;
 			this.flakSprite.visible = true;
 		} else this.flakSprite.visible = false;
-		if (this.Lzl.LtTHi == "" || outfitDef.ghillie) this.chestSprite.visible = false;
+		if (this.dmuI.tIim == "" || outfitDef.ghillie) this.chestSprite.visible = false;
 		else {
-			const chestSkin = GameObjectDefs.typeToDef(this.Lzl.LtTHi, "chest").skinImg;
+			const chestSkin = GameObjectDefs.typeToDef(this.dmuI.tIim, "chest").skinImg;
 			this.chestSprite.texture = Texture.from(chestSkin.baseSprite);
 			this.chestSprite.scale.set(.25, .25);
 			this.chestSprite.tint = chestSkin.baseTint;
 			this.chestSprite.visible = true;
 		}
-		if (this.YeD("steelskin") && !outfitDef.ghillie) {
+		if (this.omBZmx("steelskin") && !outfitDef.ghillie) {
 			this.steelskinSprite.texture = Texture.from("loot-melee-pan-black.img");
 			this.steelskinSprite.scale.set(.4, .4);
 			this.steelskinSprite.anchor.set(.575, .5);
 			this.steelskinSprite.tint = 16777215;
 			this.steelskinSprite.visible = true;
 		} else this.steelskinSprite.visible = false;
-		if (this.Lzl.xRwn == "" || outfitDef.ghillie) this.helmetSprite.visible = false;
+		if (this.dmuI.fpi == "" || outfitDef.ghillie) this.helmetSprite.visible = false;
 		else {
-			const helmetSkin = GameObjectDefs.typeToDef(this.Lzl.xRwn, "helmet").skinImg;
+			const helmetSkin = GameObjectDefs.typeToDef(this.dmuI.fpi, "helmet").skinImg;
 			const helmetOffset = (this.downed ? 1 : -1) * 3.33;
 			this.helmetSprite.texture = Texture.from(helmetSkin.baseSprite);
 			this.helmetSprite.position.set(helmetOffset, 0);
@@ -15467,13 +15467,13 @@ var Player = class {
 			this.helmetSprite.tint = helmetTint;
 			this.helmetSprite.visible = true;
 		}
-		if (this.oPq() > 0 && !outfitDef.ghillie && !this.downed) {
+		if (this.MOq() > 0 && !outfitDef.ghillie && !this.downed) {
 			const bagOffsets = [
 				10.25,
 				11.5,
 				12.75
 			];
-			const bagLevel = this.oPq();
+			const bagLevel = this.MOq();
 			const bagOffset = bagOffsets[math.min(bagLevel - 1, bagOffsets.length - 1)];
 			const scale = (.4 + bagLevel * .03) * .5;
 			this.backpackSprite.texture = Texture.from("player-circle-base-01.img");
@@ -15484,7 +15484,7 @@ var Player = class {
 			this.backpackSprite.texture = Texture.from(outfitImg.backpackSprite);
 			this.backpackSprite.tint = outfitImg.backpackTint;
 		} else this.backpackSprite.visible = false;
-		if (this.Lzl.RtGTdU) {
+		if (this.dmuI.YVs) {
 			const imgDef = GameObjectDefs.typeToDef("pan", "melee").hipImg;
 			this.hipSprite.texture = Texture.from(imgDef.sprite);
 			this.hipSprite.position.set(imgDef.pos.x, imgDef.pos.y);
@@ -15493,12 +15493,12 @@ var Player = class {
 			this.hipSprite.tint = imgDef.tint;
 			this.hipSprite.visible = true;
 		} else this.hipSprite.visible = false;
-		const activeWeapDef = GameObjectDefs.typeToDef(this.Lzl.bNBm);
+		const activeWeapDef = GameObjectDefs.typeToDef(this.dmuI.YWmDc);
 		if (activeWeapDef.type == "gun") {
-			this.gunRSprites.setType(this.Lzl.bNBm, bodyScale);
+			this.gunRSprites.setType(this.dmuI.YWmDc, bodyScale);
 			this.gunRSprites.setVisible(true);
 			if (activeWeapDef.isDual) {
-				this.gunLSprites.setType(this.Lzl.bNBm, bodyScale);
+				this.gunLSprites.setType(this.dmuI.YWmDc, bodyScale);
 				this.gunLSprites.setVisible(true);
 			} else this.gunLSprites.setVisible(false);
 			const handRIdx = this.bodyContainer.getChildIndex(this.handRContainer);
@@ -15525,7 +15525,7 @@ var Player = class {
 				this.bodyContainer.addChildAt(this.handRContainer, bodyEffectIdx);
 			}
 		}
-		if (activeWeapDef.type == "melee" && this.Lzl.bNBm != "fists") {
+		if (activeWeapDef.type == "melee" && this.dmuI.YWmDc != "fists") {
 			const imgDef = activeWeapDef.worldImg;
 			this.meleeSprite.texture = Texture.from(imgDef.sprite);
 			this.meleeSprite.rotation = imgDef.rot;
@@ -15565,12 +15565,12 @@ var Player = class {
 			this.objectRSprite.visible = false;
 		}
 		if (this.downed) this.backpackSprite.visible = false;
-		if (this.OMVUBX.type != Action.UseItem && this.OMVUBX.type != Action.Revive || this.Lzl.viv || this.Lzl.JEyaBW && !this.YeD("self_revive") || !this.YeD("aoe_heal")) {
+		if (this.gUjDUW.type != Action.UseItem && this.gUjDUW.type != Action.Revive || this.dmuI.UBStD || this.dmuI.Bll && !this.omBZmx("self_revive") || !this.omBZmx("aoe_heal")) {
 			this.auraPulseTicker = 0;
 			this.auraPulseDir = 1;
 			this.auraCircle.visible = false;
 		} else {
-			const actionItemDef = GameObjectDefs.typeToDefSafe(this.OMVUBX.item);
+			const actionItemDef = GameObjectDefs.typeToDefSafe(this.gUjDUW.item);
 			const sprite = actionItemDef?.aura ? actionItemDef.aura.sprite : "part-aura-circle-01.img";
 			const tint = actionItemDef?.aura ? actionItemDef.aura.tint : 16711935;
 			const auraScale = .125;
@@ -15581,8 +15581,8 @@ var Player = class {
 			this.auraCircle.tint = tint;
 			this.auraCircle.visible = true;
 		}
-		if (this.Lzl.oyXu != "" && GameObjectDefs.typeToDef(this.Lzl.oyXu, "role").visorImg && this.Lzl.xRwn != "" && !outfitDef.ghillie) {
-			const visorSkin = GameObjectDefs.typeToDef(this.Lzl.oyXu, "role").visorImg;
+		if (this.dmuI.xQcwzI != "" && GameObjectDefs.typeToDef(this.dmuI.xQcwzI, "role").visorImg && this.dmuI.fpi != "" && !outfitDef.ghillie) {
+			const visorSkin = GameObjectDefs.typeToDef(this.dmuI.xQcwzI, "role").visorImg;
 			if (visorSkin) {
 				const helmetOffset = (this.downed ? 1 : -1) * 3.33;
 				this.visorSprite.texture = Texture.from(visorSkin.baseSprite);
@@ -15596,7 +15596,7 @@ var Player = class {
 	}
 	updateAura(dt, isActivePlayer, activePlayer) {
 		let inView = true;
-		if (!isActivePlayer) inView = coldet.testCircleAabb(this.DYz, this.ZnCPya, activePlayer.viewAabb.min, activePlayer.viewAabb.max);
+		if (!isActivePlayer) inView = coldet.testCircleAabb(this.ZjWPV, this.GocPpC, activePlayer.viewAabb.min, activePlayer.viewAabb.max);
 		this.auraViewFade = math.lerp(dt * 6, this.auraViewFade, inView ? 1 : 0);
 		if (this.auraCircle.visible) {
 			this.auraPulseTicker = math.clamp(this.auraPulseTicker + dt * this.auraPulseDir * 1.5, 0, 1);
@@ -15615,13 +15615,13 @@ var Player = class {
 		updateSprite(this.handRContainer, this.bones[Bones.HandR]);
 		updateSprite(this.footLContainer, this.bones[Bones.FootL]);
 		updateSprite(this.footRContainer, this.bones[Bones.FootR]);
-		const activeWeapDef = GameObjectDefs.typeToDef(this.Lzl.bNBm);
+		const activeWeapDef = GameObjectDefs.typeToDef(this.dmuI.YWmDc);
 		if (activeWeapDef.type === "melee" && activeWeapDef.worldImg) {
 			const meleeBone = this.bones[Bones.MeleeR];
 			const imgDef = activeWeapDef.worldImg;
 			const pos = v2.add(meleeBone.pos, imgDef.pos);
 			this.meleeSprite.pivot.set(-pos.x, -pos.y);
-			const bodyScale = this.tPRC / GameConfig.player.radius;
+			const bodyScale = this.WhhR / GameConfig.player.radius;
 			this.meleeSprite.rotation = imgDef.rot + meleeBone.rot;
 			this.meleeSprite.position.set(-meleeBone.pivot.x, -meleeBone.pivot.y);
 			this.meleeSprite.scale.set(imgDef.scale.x / bodyScale, imgDef.scale.y / bodyScale);
@@ -15636,24 +15636,24 @@ var Player = class {
 		this.handRContainer.position.x -= this.gunRecoilR * 1.125;
 		const mouseY = inputManager.mousePos.y;
 		const mouseX = inputManager.mousePos.x;
-		if (!device.mobile && camera.yGQQN && isActivePlayer && !isSpectating && !displayingStats) this.bodyContainer.rotation = Math.atan2(mouseY - window.innerHeight / 2, mouseX - window.innerWidth / 2);
-		else this.bodyContainer.rotation = -Math.atan2(this.mMttvM.y, this.mMttvM.x);
+		if (!device.mobile && camera.SeEmW && isActivePlayer && !isSpectating && !displayingStats) this.bodyContainer.rotation = Math.atan2(mouseY - window.innerHeight / 2, mouseX - window.innerWidth / 2);
+		else this.bodyContainer.rotation = -Math.atan2(this.qfzZ.y, this.qfzZ.x);
 	}
 	playActionStartEffect(isActivePlayer, particleBarn, audioManager) {
 		let actionSound = null;
-		switch (this.OMVUBX.type) {
+		switch (this.gUjDUW.type) {
 			case Action.Reload:
 			case Action.ReloadAlt:
 				{
-					const actionItemDef = GameObjectDefs.typeToDef(this.OMVUBX.item, "gun");
+					const actionItemDef = GameObjectDefs.typeToDef(this.gUjDUW.item, "gun");
 					if (actionItemDef) actionSound = {
-						sound: this.OMVUBX.type == Action.ReloadAlt ? actionItemDef.sound.reloadAlt : actionItemDef.sound.reload,
+						sound: this.gUjDUW.type == Action.ReloadAlt ? actionItemDef.sound.reloadAlt : actionItemDef.sound.reload,
 						channel: isActivePlayer ? "activePlayer" : "otherPlayers"
 					};
 				}
 				break;
 			case Action.UseItem: {
-				const actionItemDef = GameObjectDefs.typeToDef(this.OMVUBX.item);
+				const actionItemDef = GameObjectDefs.typeToDef(this.gUjDUW.item);
 				if (actionItemDef) actionSound = {
 					sound: actionItemDef.sound.use,
 					channel: isActivePlayer ? "activePlayer" : "otherPlayers"
@@ -15663,27 +15663,27 @@ var Player = class {
 		audioManager.stopSound(this.actionSoundInstance);
 		if (actionSound && this.playActionStartSfx) this.actionSoundInstance = audioManager.playSound(actionSound.sound, {
 			channel: actionSound.channel,
-			soundPos: this.DYz,
+			soundPos: this.ZjWPV,
 			fallOff: 2,
 			layer: this.layer,
 			filter: "muffled"
 		});
-		if (this.OMVUBX.type == Action.Reload || this.OMVUBX.type == Action.ReloadAlt) {
-			const actionItemDef = GameObjectDefs.typeToDef(this.OMVUBX.item, "gun");
+		if (this.gUjDUW.type == Action.Reload || this.gUjDUW.type == Action.ReloadAlt) {
+			const actionItemDef = GameObjectDefs.typeToDef(this.gUjDUW.item, "gun");
 			if (actionItemDef && actionItemDef.caseTiming == "reload") for (let n = 0; n < actionItemDef.maxReload; n++) {
 				const shellDir = n % 2 == 0 ? -1 : 1;
 				const shellAngle = Math.PI + Math.PI / 4 * shellDir;
 				const shellSpeedMult = actionItemDef.maxReload <= 2 ? 1 : math.lerp(Math.random(), .8, 1.2);
-				createCasingParticle(this.OMVUBX.item, shellAngle, shellSpeedMult, this.DYz, this.yixBk, this.renderLayer, this.renderZOrd + 1, particleBarn);
+				createCasingParticle(this.gUjDUW.item, shellAngle, shellSpeedMult, this.ZjWPV, this.sjb, this.renderLayer, this.renderZOrd + 1, particleBarn);
 			}
 		}
 	}
 	updateActionEffect(isActivePlayer, playerInfo, particleBarn, audioManager) {
 		let emitterTypes = [];
 		const emitterProps = {};
-		switch (this.OMVUBX.type) {
+		switch (this.gUjDUW.type) {
 			case Action.UseItem: {
-				const actionItemDef = GameObjectDefs.typeToDef(this.OMVUBX.item);
+				const actionItemDef = GameObjectDefs.typeToDef(this.gUjDUW.item);
 				const loadout = playerInfo.loadout;
 				if (actionItemDef.type == "heal") {
 					const effect = GameObjectDefs.typeToDef(loadout.heal, "heal_effect");
@@ -15692,7 +15692,7 @@ var Player = class {
 					const effect = GameObjectDefs.typeToDef(loadout.boost, "boost_effect");
 					emitterTypes = Array.isArray(effect.emitter) ? effect.emitter : [effect.emitter];
 				}
-				if (this.YeD("aoe_heal")) {
+				if (this.omBZmx("aoe_heal")) {
 					emitterProps.scale = 1.5;
 					emitterProps.radius = GameConfig.player.medicHealRange / emitterProps.scale;
 					emitterProps.rateMult = .25;
@@ -15712,13 +15712,13 @@ var Player = class {
 			this.useItemEmitters = emitterTypes.map((type) => {
 				return particleBarn.addEmitter(type, {
 					...emitterProps,
-					pos: this.DYz,
+					pos: this.ZjWPV,
 					layer: this.layer
 				});
 			});
 		}
 		for (const emitter of this.useItemEmitters) {
-			emitter.pos = v2.add(this.DYz, v2.create(0, .1));
+			emitter.pos = v2.add(this.ZjWPV, v2.create(0, .1));
 			emitter.layer = this.renderLayer;
 			emitter.zOrd = this.renderZOrd + 1;
 		}
@@ -15727,7 +15727,7 @@ var Player = class {
 			this.useItemEmitters = [];
 		}
 		if (!audioManager.isSoundPlaying(this.actionSoundInstance)) this.actionSoundInstance = null;
-		if (this.actionSoundInstance && !isActivePlayer) audioManager.updateSound(this.actionSoundInstance, "otherPlayers", this.DYz, {
+		if (this.actionSoundInstance && !isActivePlayer) audioManager.updateSound(this.actionSoundInstance, "otherPlayers", this.ZjWPV, {
 			layer: this.layer,
 			fallOff: 2,
 			filter: "muffled"
@@ -15741,7 +15741,7 @@ var Player = class {
 		}
 	}
 	selectIdlePose() {
-		const curWeapDef = GameObjectDefs.typeToDefSafe(this.Lzl.bNBm);
+		const curWeapDef = GameObjectDefs.typeToDefSafe(this.dmuI.YWmDc);
 		let idlePose = "fists";
 		if (this.downed) idlePose = "downed";
 		else if ("anim" in curWeapDef && curWeapDef.anim.idlePose) idlePose = curWeapDef.anim.idlePose;
@@ -15770,19 +15770,19 @@ var Player = class {
 			case Anim.CrawlForward: return anim("crawl_forward", true);
 			case Anim.CrawlBackward: return anim("crawl_backward", true);
 			case Anim.Melee: {
-				const def = GameObjectDefs.typeToDefSafe(this.Lzl.bNBm);
+				const def = GameObjectDefs.typeToDefSafe(this.dmuI.YWmDc);
 				if (!def.anim?.attackAnims) return anim("fists", true);
 				const anims = def.anim.attackAnims;
 				const selected = util.randomItem(anims);
 				return anim(selected, selected == "fists" && anims.length == 1);
 			}
 			case Anim.DeployMelee: {
-				const def = GameObjectDefs.typeToDefSafe(this.Lzl.bNBm);
+				const def = GameObjectDefs.typeToDefSafe(this.dmuI.YWmDc);
 				if (!def.anim?.deployAnims) return anim("fists", true);
 				return anim(util.randomItem(def.anim.deployAnims), false);
 			}
 			case Anim.IdleMelee: {
-				const def = GameObjectDefs.typeToDefSafe(this.Lzl.bNBm);
+				const def = GameObjectDefs.typeToDefSafe(this.dmuI.YWmDc);
 				if (!def.anim?.idleAnims) return anim("fists", true);
 				return anim(util.randomItem(def.anim.idleAnims), false);
 			}
@@ -15850,10 +15850,10 @@ var Player = class {
 		}
 	}
 	animPlaySound(animCtx, args) {
-		const sound = GameObjectDefs.typeToDef(this.Lzl.bNBm).sound[args.sound];
+		const sound = GameObjectDefs.typeToDef(this.dmuI.YWmDc).sound[args.sound];
 		if (sound) animCtx.audioManager.playSound(sound, {
 			channel: "sfx",
-			soundPos: this.DYz,
+			soundPos: this.ZjWPV,
 			fallOff: 3,
 			layer: this.layer,
 			filter: "muffled"
@@ -15863,20 +15863,20 @@ var Player = class {
 		this.throwableState = args.state;
 	}
 	animThrowableParticles(animCtx, _args) {
-		if (GameObjectDefs.typeToDef(this.Lzl.bNBm, "throwable").useThrowParticles) {
-			const pinOff = v2.rotate(v2.create(.75, .75), Math.atan2(this.yixBk.y, this.yixBk.x));
-			animCtx.particleBarn.addParticle("fragPin", this.renderLayer, v2.add(this.DYz, pinOff), v2.mul(v2.rotate(this.yixBk, Math.PI * .5), 4.5), 1, Math.random() * Math.PI * 2, null, this.renderZOrd + 1);
-			const leverOff = v2.rotate(v2.create(.75, -.75), Math.atan2(this.yixBk.y, this.yixBk.x));
-			animCtx.particleBarn.addParticle("fragLever", this.renderLayer, v2.add(this.DYz, leverOff), v2.mul(v2.rotate(this.yixBk, -Math.PI * .25), 3.5), 1, Math.random() * Math.PI * 2, null, this.renderZOrd + 1);
+		if (GameObjectDefs.typeToDef(this.dmuI.YWmDc, "throwable").useThrowParticles) {
+			const pinOff = v2.rotate(v2.create(.75, .75), Math.atan2(this.sjb.y, this.sjb.x));
+			animCtx.particleBarn.addParticle("fragPin", this.renderLayer, v2.add(this.ZjWPV, pinOff), v2.mul(v2.rotate(this.sjb, Math.PI * .5), 4.5), 1, Math.random() * Math.PI * 2, null, this.renderZOrd + 1);
+			const leverOff = v2.rotate(v2.create(.75, -.75), Math.atan2(this.sjb.y, this.sjb.x));
+			animCtx.particleBarn.addParticle("fragLever", this.renderLayer, v2.add(this.ZjWPV, leverOff), v2.mul(v2.rotate(this.sjb, -Math.PI * .25), 3.5), 1, Math.random() * Math.PI * 2, null, this.renderZOrd + 1);
 		}
 	}
 	animMeleeCollision(animCtx, args) {
-		const meleeDef = GameObjectDefs.typeToDefSafe(this.Lzl.bNBm);
+		const meleeDef = GameObjectDefs.typeToDefSafe(this.dmuI.YWmDc);
 		if (meleeDef?.type !== "melee") return;
 		const meleeCol = this.getMeleeCollider();
-		const meleeDist = meleeCol.rad + v2.length(v2.sub(this.DYz, meleeCol.pos));
+		const meleeDist = meleeCol.rad + v2.length(v2.sub(this.ZjWPV, meleeCol.pos));
 		const hits = [];
-		let obstacles = animCtx.map.IIXrt.JkAzo().filter((obj) => {
+		let obstacles = animCtx.map.SeeWtA.oiC().filter((obj) => {
 			return coldet.test(obj.collider, meleeCol);
 		});
 		for (let i = 0; i < obstacles.length; i++) {
@@ -15888,8 +15888,8 @@ var Player = class {
 			let res = collider.intersectCircle(obstacle.collider, meleeCol.pos, meleeCol.rad);
 			if (!res) continue;
 			if (meleeDef.cleave) {
-				const meleeDir = v2.normalizeSafe(v2.sub(obstacle.pos, this.DYz), v2.create(1, 0));
-				const wallCheck = collisionHelpers.intersectSegment(animCtx.map.IIXrt.JkAzo(), this.DYz, meleeDir, meleeDist, obstacle.height, this.layer, false);
+				const meleeDir = v2.normalizeSafe(v2.sub(obstacle.pos, this.ZjWPV), v2.create(1, 0));
+				const wallCheck = collisionHelpers.intersectSegment(animCtx.map.SeeWtA.oiC(), this.ZjWPV, meleeDir, meleeDist, obstacle.height, this.layer, false);
 				if (wallCheck && wallCheck.id !== obstacle.__id) continue;
 			}
 			const obstacleDef = MapObjectDefs.typeToDef(obstacle.type, "obstacle");
@@ -15908,26 +15908,26 @@ var Player = class {
 			});
 		}
 		const ourTeamId = animCtx.playerBarn.getPlayerInfo(this.__id).teamId;
-		const players = animCtx.playerBarn.playerPool.JkAzo();
+		const players = animCtx.playerBarn.playerPool.oiC();
 		for (let i = 0; i < players.length; i++) {
 			const playerCol = players[i];
 			if (!playerCol.active) continue;
-			if (playerCol.__id === this.__id || playerCol.Lzl.viv) continue;
+			if (playerCol.__id === this.__id || playerCol.dmuI.UBStD) continue;
 			if (!util.sameLayer(playerCol.layer, this.layer)) continue;
-			const res = coldet.intersectCircleCircle(meleeCol.pos, meleeCol.rad, playerCol.DYz, playerCol.ZnCPya);
+			const res = coldet.intersectCircleCircle(meleeCol.pos, meleeCol.rad, playerCol.ZjWPV, playerCol.GocPpC);
 			if (!res) continue;
-			const meleeDir = v2.normalizeSafe(v2.sub(playerCol.DYz, this.DYz), v2.create(1, 0));
-			const lineRes = coldet.intersectSegmentCircle(this.DYz, v2.add(this.DYz, v2.mul(meleeDir, meleeDist)), playerCol.DYz, playerCol.ZnCPya);
-			const pt = lineRes ? lineRes.point : playerCol.DYz;
-			const distToPlayer = v2.length(v2.sub(pt, this.DYz));
-			if (collisionHelpers.intersectSegmentDist(obstacles, this.DYz, meleeDir, meleeDist, GameConfig.player.meleeHeight, this.layer, false) < distToPlayer) continue;
+			const meleeDir = v2.normalizeSafe(v2.sub(playerCol.ZjWPV, this.ZjWPV), v2.create(1, 0));
+			const lineRes = coldet.intersectSegmentCircle(this.ZjWPV, v2.add(this.ZjWPV, v2.mul(meleeDir, meleeDist)), playerCol.ZjWPV, playerCol.GocPpC);
+			const pt = lineRes ? lineRes.point : playerCol.ZjWPV;
+			const distToPlayer = v2.length(v2.sub(pt, this.ZjWPV));
+			if (collisionHelpers.intersectSegmentDist(obstacles, this.ZjWPV, meleeDir, meleeDist, GameConfig.player.meleeHeight, this.layer, false) < distToPlayer) continue;
 			const teamId = animCtx.playerBarn.getPlayerInfo(playerCol.__id).teamId;
 			const vel = v2.rotate(meleeDir, (Math.random() - .5) * Math.PI / 3);
 			const hitSound = meleeDef.sound[args.playerHit] || meleeDef.sound.playerHit;
 			hits.push({
 				pen: res.pen,
 				prio: teamId == ourTeamId ? 2 : 0,
-				pos: v2.copy(playerCol.DYz),
+				pos: v2.copy(playerCol.ZjWPV),
 				vel,
 				layer: playerCol.renderLayer,
 				zOrd: playerCol.renderZOrd,
@@ -15979,8 +15979,8 @@ var Player = class {
 		let submersionAmount = 0;
 		if (inWater) {
 			const river = this.surface?.data.river;
-			const inRiver = river && !map.isInOcean(this.DYz);
-			const dist = inRiver ? river.distanceToShore(this.DYz) : map.distanceToShore(this.DYz);
+			const inRiver = river && !map.isInOcean(this.ZjWPV);
+			const dist = inRiver ? river.distanceToShore(this.ZjWPV) : map.distanceToShore(this.ZjWPV);
 			const maxDist = inRiver ? 12 : 16;
 			submersionAmount = math.remap(dist, 0, maxDist, .6, 1);
 		}
@@ -16008,12 +16008,12 @@ var Player = class {
 	}
 	updateFrozenState(dt) {
 		const fadeDuration = .25;
-		if (this.Lzl.cgdk) this.frozenTicker = fadeDuration;
+		if (this.dmuI.LHV) this.frozenTicker = fadeDuration;
 		else {
 			this.frozenTicker -= dt;
 			this.updateFrozenImage = true;
 		}
-		this.bodyEffectSprite.alpha = this.Lzl.cgdk ? 1 : math.remap(this.frozenTicker, 0, fadeDuration, 0, 1);
+		this.bodyEffectSprite.alpha = this.dmuI.LHV ? 1 : math.remap(this.frozenTicker, 0, fadeDuration, 0, 1);
 		this.bodyEffectSprite.visible = this.frozenTicker > 0;
 	}
 	addRecoil(amount, leftHand, rightHand) {
@@ -16022,12 +16022,12 @@ var Player = class {
 	}
 	isUnderground(map) {
 		if (this.layer != 1) return false;
-		const structures = map.VPszM.JkAzo();
+		const structures = map.qRkh.oiC();
 		for (let i = 0; i < structures.length; i++) {
 			const s = structures[i];
 			if (s.layers.length >= 2) {
 				const layer = s.layers[1];
-				if (collider.intersectCircle(layer.collision, this.DYz, this.ZnCPya)) return layer.underground;
+				if (collider.intersectCircle(layer.collision, this.ZjWPV, this.GocPpC)) return layer.underground;
 			}
 		}
 		return true;
@@ -16041,21 +16041,21 @@ var PlayerBarn = class {
 	groupInfo = {};
 	playerStatus = {};
 	anonPlayerNames = false;
-	cjhuwW(dt, activeId, renderer, particleBarn, camera, map, inputBinds, audioManager, ui2Manager, preventInput, displayingStats, isSpectating) {
-		const players = this.playerPool.JkAzo();
+	Yekvpo(dt, activeId, renderer, particleBarn, camera, map, inputBinds, audioManager, ui2Manager, preventInput, displayingStats, isSpectating) {
+		const players = this.playerPool.oiC();
 		for (let i = 0; i < players.length; i++) {
 			const p = players[i];
-			if (p.active) p.cjhuwW(dt, this, map, audioManager, particleBarn, inputBinds, camera, renderer, ui2Manager, activeId, preventInput, displayingStats, isSpectating);
+			if (p.active) p.Yekvpo(dt, this, map, audioManager, particleBarn, inputBinds, camera, renderer, ui2Manager, activeId, preventInput, displayingStats, isSpectating);
 		}
 		const activeInfo = this.getPlayerInfo(activeId);
 		const activePlayer = this.getPlayerById(activeId);
 		this.setPlayerStatus(activeId, {
-			pos: v2.copy(activePlayer.Lzl.DYz),
-			health: activePlayer.njNsW.UGF,
+			pos: v2.copy(activePlayer.dmuI.ZjWPV),
+			health: activePlayer.pcpKf.UqHL,
 			disconnected: false,
-			dead: activePlayer.Lzl.viv,
-			downed: activePlayer.Lzl.JEyaBW,
-			role: activePlayer.Lzl.oyXu,
+			dead: activePlayer.dmuI.UBStD,
+			downed: activePlayer.dmuI.Bll,
+			role: activePlayer.dmuI.xQcwzI,
 			visible: true
 		});
 		const statusUpdateRate = getPlayerStatusUpdateRate(map.factionMode);
@@ -16066,11 +16066,11 @@ var PlayerBarn = class {
 			const playerInfo = this.getPlayerInfo(playerId);
 			const player = this.getPlayerById(playerId);
 			if (player) {
-				status.posDelta = v2.length(v2.sub(player.Lzl.DYz, status.pos));
-				status.posTarget = v2.copy(player.Lzl.DYz);
+				status.posDelta = v2.length(v2.sub(player.dmuI.ZjWPV, status.pos));
+				status.posTarget = v2.copy(player.dmuI.ZjWPV);
 				status.posInterp = math.clamp(status.posInterp + dt * .2, dt / statusUpdateRate, 1);
-				status.dead = player.Lzl.viv;
-				status.downed = player.Lzl.JEyaBW;
+				status.dead = player.dmuI.UBStD;
+				status.downed = player.dmuI.Bll;
 			} else status.posInterp = dt / statusUpdateRate;
 			const move = v2.sub(status.posTarget, status.pos);
 			const moveLen = v2.length(move);
@@ -16085,15 +16085,15 @@ var PlayerBarn = class {
 			status.minimapVisible = status.minimapAlpha > .01;
 		}
 	}
-	tsCE(camera, debug) {
-		const players = this.playerPool.JkAzo();
+	LeqxUm(camera, debug) {
+		const players = this.playerPool.oiC();
 		for (let i = 0; i < players.length; i++) {
 			const p = players[i];
 			if (p.active) p.render(camera, debug);
 		}
 	}
 	getPlayerById(id) {
-		const pool = this.playerPool.JkAzo();
+		const pool = this.playerPool.oiC();
 		for (let i = 0; i < pool.length; i++) {
 			const p = pool[i];
 			if (p.active && p.__id === id) return p;
@@ -16255,22 +16255,22 @@ var PlayerBarn = class {
 	addDeathEffect(targetId, killerId, audioManager, particleBarn) {
 		const target = this.getPlayerById(targetId);
 		const killer = this.getPlayerById(killerId);
-		if (target && killer?.YeD("turkey_shoot")) {
+		if (target && killer?.omBZmx("turkey_shoot")) {
 			audioManager.playGroup("cluck", {
-				soundPos: target.DYz,
+				soundPos: target.ZjWPV,
 				layer: target.layer,
 				muffled: true
 			});
 			audioManager.playSound("feather_01", {
 				channel: "sfx",
-				soundPos: target.DYz,
+				soundPos: target.ZjWPV,
 				layer: target.layer,
 				muffled: true
 			});
 			const numParticles = Math.floor(util.random(30, 35));
 			for (let i = 0; i < numParticles; i++) {
 				const vel = v2.randomUnit(util.random(5, 15));
-				particleBarn.addParticle("turkeyFeathersDeath", target.layer, target.DYz, vel);
+				particleBarn.addParticle("turkeyFeathersDeath", target.layer, target.ZjWPV, vel);
 			}
 		}
 	}
@@ -16282,29 +16282,29 @@ var Smoke = class {
 	__id;
 	__type;
 	active;
-	zmz;
-	DYz;
-	ZnCPya;
-	lNrns;
-	HUCXf;
-	TVs() {}
-	GQnyl() {
-		this.zmz.fadeOut();
-		this.zmz = null;
+	wojTT;
+	ZjWPV;
+	GocPpC;
+	xEsG;
+	IBjIDo;
+	iqudJb() {}
+	bQihh() {
+		this.wojTT.fadeOut();
+		this.wojTT = null;
 	}
-	WHOMj(data, fullUpdate, isNew, ctx) {
-		this.DYz = v2.copy(data.pos);
-		this.ZnCPya = data.rad;
+	upFr(data, fullUpdate, isNew, ctx) {
+		this.ZjWPV = v2.copy(data.pos);
+		this.GocPpC = data.rad;
 		if (fullUpdate) {
-			this.lNrns = data.layer;
-			this.HUCXf = data.interior;
+			this.xEsG = data.layer;
+			this.IBjIDo = data.interior;
 		}
 		if (isNew) {
-			this.zmz = ctx.smokeBarn.mITkj();
-			this.zmz?.TVs(this.DYz, this.ZnCPya, this.lNrns, this.HUCXf);
+			this.wojTT = ctx.smokeBarn.zhtrr();
+			this.wojTT?.iqudJb(this.ZjWPV, this.GocPpC, this.xEsG, this.IBjIDo);
 		}
-		this.zmz.posTarget = v2.copy(this.DYz);
-		this.zmz.radTarget = this.ZnCPya;
+		this.wojTT.posTarget = v2.copy(this.ZjWPV);
+		this.wojTT.radTarget = this.GocPpC;
 	}
 };
 var particles = ["part-smoke-02.img", "part-smoke-03.img"];
@@ -16328,7 +16328,7 @@ var SmokeParticle = class {
 		this.sprite.anchor = new Point(.5, .5);
 		this.sprite.visible = false;
 	}
-	TVs(pos, rad, layer, interior) {
+	iqudJb(pos, rad, layer, interior) {
 		this.pos = v2.copy(pos);
 		this.posTarget = v2.copy(this.pos);
 		this.rad = rad;
@@ -16347,26 +16347,26 @@ var SmokeParticle = class {
 	}
 };
 var SmokeBarn = class {
-	ejOQig = new Pool(Smoke);
-	DIJuIX = [];
+	EGEa = new Pool(Smoke);
+	uta = [];
 	zIdx = 2147483647;
-	mITkj() {
+	zhtrr() {
 		let particle = null;
-		for (let i = 0; i < this.DIJuIX.length; i++) if (!this.DIJuIX[i].active) {
-			particle = this.DIJuIX[i];
+		for (let i = 0; i < this.uta.length; i++) if (!this.uta[i].active) {
+			particle = this.uta[i];
 			break;
 		}
 		if (!particle) {
 			particle = new SmokeParticle();
-			this.DIJuIX.push(particle);
+			this.uta.push(particle);
 		}
 		particle.active = true;
 		particle.zIdx = this.zIdx--;
 		return particle;
 	}
-	cjhuwW(dt, camera, activePlayer, map, renderer) {
-		for (let m = 0; m < this.DIJuIX.length; m++) {
-			const p = this.DIJuIX[m];
+	Yekvpo(dt, camera, activePlayer, map, renderer) {
+		for (let m = 0; m < this.uta.length; m++) {
+			const p = this.uta[m];
 			if (p.active) {
 				p.rad = math.lerp(dt * 3, p.rad, p.radTarget);
 				p.pos = v2.lerp(dt * 3, p.pos, p.posTarget);
@@ -16379,8 +16379,8 @@ var SmokeBarn = class {
 				if ((!!util.sameLayer(p.layer, activePlayer.layer) || !!(activePlayer.layer & 2)) && (p.layer == 1 || !(activePlayer.layer & 2) || !map.insideStructureMask(collider.createCircle(p.pos, 1)))) layer |= 2;
 				const zOrd = p.interior ? 500 : 1e3;
 				renderer.addPIXIObj(p.sprite, layer, zOrd, p.zIdx);
-				const screenPos = camera.hQJHH(p.pos);
-				const screenScale = camera.iZyh(p.rad * 2 / camera.aeFMbq);
+				const screenPos = camera.cGOJ(p.pos);
+				const screenScale = camera.wyfSb(p.rad * 2 / camera.Fxr);
 				p.sprite.position.set(screenPos.x, screenPos.y);
 				p.sprite.scale.set(screenScale, screenScale);
 				p.sprite.rotation = p.rot;
@@ -16435,7 +16435,7 @@ var Renderer = class {
 		for (let i = 0; i < 4; i++) this.layers.push(new RenderGroup(`layer_${i}`));
 		this.ground.alpha = 0;
 	}
-	GQnyl() {
+	bQihh() {
 		this.layerMask.parent?.removeChild(this.layerMask);
 		this.layerMask.destroy(true);
 		this.debugLayerMask?.destroy(true);
@@ -16446,10 +16446,10 @@ var Renderer = class {
 				type: "addChild",
 				stack: (/* @__PURE__ */ new Error()).stack,
 				browser: navigator.userAgent,
-				playing: this.game.RzBn,
-				gameOver: this.game.Yrq,
-				spectating: this.game.JXw,
-				time: this.game.dxzRlT,
+				playing: this.game.dWRyon,
+				gameOver: this.game.zoA,
+				spectating: this.game.TCXX,
+				time: this.game.wdgnvj,
 				mode: this.game.teamMode,
 				layer,
 				zOrd,
@@ -16480,7 +16480,7 @@ var Renderer = class {
 		const undergroundColor = map.mapLoaded ? map.getMapDef().biome.colors.underground : 1772803;
 		this.ground.clear();
 		this.ground.beginFill(undergroundColor);
-		this.ground.drawRect(0, 0, camera.FRLvNz, camera.pfqvCm);
+		this.ground.drawRect(0, 0, camera.vza, camera.qyNlS);
 		this.ground.endFill();
 		this.layerMaskDirty = true;
 	}
@@ -16490,8 +16490,8 @@ var Renderer = class {
 			mask.clear();
 			if (this.layerMaskActive) {
 				mask.beginFill(16777215, 1);
-				mask.drawRect(0, 0, camera.FRLvNz, camera.pfqvCm);
-				const structures = map.VPszM.JkAzo();
+				mask.drawRect(0, 0, camera.vza, camera.qyNlS);
+				const structures = map.qRkh.oiC();
 				for (let i = 0; i < structures.length; i++) {
 					const structure = structures[i];
 					if (!structure.active) continue;
@@ -16499,8 +16499,8 @@ var Renderer = class {
 						const m = structure.mask[j];
 						const halfExtents = v2.mul(v2.sub(m.max, m.min), .5);
 						const center = v2.add(m.min, halfExtents);
-						const bottomLeft = camera.hQJHH(v2.sub(center, halfExtents));
-						const topRight = camera.hQJHH(v2.add(center, halfExtents));
+						const bottomLeft = camera.cGOJ(v2.sub(center, halfExtents));
+						const topRight = camera.cGOJ(v2.add(center, halfExtents));
 						mask.drawRect(bottomLeft.x, bottomLeft.y, topRight.x - bottomLeft.x, topRight.y - bottomLeft.y);
 					}
 				}
@@ -16512,7 +16512,7 @@ var Renderer = class {
 				mask.clear();
 				mask.beginFill(16777215, 1);
 				drawRect(mask, 0, 0, Constants.MaxPosition, Constants.MaxPosition);
-				const structures = map.VPszM.JkAzo();
+				const structures = map.qRkh.oiC();
 				for (let i = 0; i < structures.length; i++) {
 					const structure = structures[i];
 					if (!structure.active) continue;
@@ -16531,8 +16531,8 @@ var Renderer = class {
 				}
 				mask.endFill();
 			}
-			const p0 = camera.hQJHH(v2.create(0, 0));
-			const s = camera.WvLUno(1);
+			const p0 = camera.cGOJ(v2.create(0, 0));
+			const s = camera.uKF(1);
 			mask.position.set(p0.x, p0.y);
 			mask.scale.set(s, -s);
 		}
@@ -16547,7 +16547,7 @@ var Renderer = class {
 		const mask = this.debugLayerMask;
 		mask.clear();
 		mask.beginFill(16711935, .5);
-		const structures = map.VPszM.JkAzo();
+		const structures = map.qRkh.oiC();
 		for (let i = 0; i < structures.length; i++) {
 			const structure = structures[i];
 			if (structure.active) for (let j = 0; j < structure.mask.length; j++) {
@@ -16558,12 +16558,12 @@ var Renderer = class {
 			}
 		}
 		mask.endFill();
-		const p0 = camera.hQJHH(v2.create(0, 0));
-		const s = camera.WvLUno(1);
+		const p0 = camera.cGOJ(v2.create(0, 0));
+		const s = camera.uKF(1);
 		mask.position.set(p0.x, p0.y);
 		mask.scale.set(s, -s);
 	}
-	cjhuwW(dt, camera, map, debugLayerMaskEnabled) {
+	Yekvpo(dt, camera, map, debugLayerMaskEnabled) {
 		const alphaTarget = this.layer > 0 ? 1 : 0;
 		this.layerAlpha += step(this.layerAlpha, alphaTarget, dt * 12);
 		const groundTarget = this.layer == 1 && this.underground ? 1 : 0;
@@ -16701,7 +16701,7 @@ var Touch = class {
 		return this.getMovement(camera);
 	}
 	getAimMovement(activePlayer, camera) {
-		const isHoldingThrowable = activePlayer.njNsW.wYgmwH == GameConfig.WeaponSlot.Throwable;
+		const isHoldingThrowable = activePlayer.pcpKf.deXRIW == GameConfig.WeaponSlot.Throwable;
 		return this.getAim(isHoldingThrowable, camera);
 	}
 	setAimDir(dir) {
@@ -16783,7 +16783,7 @@ var Touch = class {
 			touched: pad.touched
 		};
 	}
-	cjhuwW(_dt, activePlayer, map, camera, renderer) {
+	Yekvpo(_dt, activePlayer, map, camera, renderer) {
 		for (let i = 0; i < this.touchPads.length; i++) {
 			const pad = this.touchPads[i];
 			pad.centerSprite.position.x = pad.centerPos.x;
@@ -16800,7 +16800,7 @@ var Touch = class {
 		this.lineSprites.update(this, activePlayer, map, camera, renderer);
 	}
 	isLeftSideTouch(posX, camera) {
-		return posX < camera.FRLvNz * .5;
+		return posX < camera.vza * .5;
 	}
 	getConstrainedPos(posDown, pos, dist) {
 		if (dist <= this.padPosRange) return pos;
@@ -17027,19 +17027,19 @@ var LineSprites = class {
 	update(touch, activePlayer, map, camera, renderer) {
 		const visible = device.touch && touch.touchingAim && touch.touchAimLine;
 		if (visible) {
-			const curWeap = activePlayer.Lzl.bNBm;
+			const curWeap = activePlayer.dmuI.YWmDc;
 			const curWeapDef = GameObjectDefs.typeToDef(curWeap);
 			let maxRange = 30;
 			if (curWeapDef.type == "gun") {
 				const bulletDist = BulletDefs[curWeapDef.bulletType].distance;
 				maxRange = curWeapDef.barrelLength + bulletDist;
 			}
-			const cameraZoom = activePlayer.iJb();
+			const cameraZoom = activePlayer.IQPNF();
 			const cameraRad = Math.sqrt(cameraZoom * 1.414 * cameraZoom);
 			maxRange = math.min(maxRange, cameraRad);
-			const start = v2.copy(activePlayer.DYz);
-			let end = v2.add(start, v2.mul(activePlayer.yixBk, maxRange));
-			const obstacles = map.IIXrt.JkAzo();
+			const start = v2.copy(activePlayer.ZjWPV);
+			let end = v2.add(start, v2.mul(activePlayer.sjb, maxRange));
+			const obstacles = map.SeeWtA.oiC();
 			for (let i = 0; i < obstacles.length; i++) {
 				const obstacle = obstacles[i];
 				if (!!obstacle.active && !obstacle.dead && obstacle.height >= GameConfig.bullet.height && !!obstacle.collidable && !obstacle.isWindow && util.sameLayer(activePlayer.layer, obstacle.layer) && (curWeapDef.type != "throwable" || obstacle.height > GameConfig.projectile.maxHeight)) {
@@ -17065,14 +17065,14 @@ var LineSprites = class {
 			for (let i = 0; i < this.dots.length; i++) {
 				const dot = this.dots[i];
 				const offset = startOffset + i * increment;
-				const pos = v2.add(activePlayer.DYz, v2.mul(activePlayer.yixBk, offset));
+				const pos = v2.add(activePlayer.ZjWPV, v2.mul(activePlayer.sjb, offset));
 				const scale = .01171875;
 				dot.position.set(pos.x, pos.y);
 				dot.scale.set(scale, scale);
 				dot.visible = i < dotCount;
 			}
-			const p0 = camera.hQJHH(v2.create(0, 0));
-			const p1 = camera.hQJHH(v2.create(1, 1));
+			const p0 = camera.cGOJ(v2.create(0, 0));
+			const p1 = camera.cGOJ(v2.create(1, 1));
 			const R = v2.sub(p1, p0);
 			this.container.position.set(p0.x, p0.y);
 			this.container.scale.set(R.x, R.y);
@@ -17354,7 +17354,7 @@ var PieTimer = class {
 		this.counterText.text = math.max(0, this.duration - this.elapsed).toFixed(1);
 		this.labelText.position.y = 87.5;
 		this.labelText.text = this.label;
-		this.container.position.set(camera.FRLvNz / 2, camera.pfqvCm / 3 * this.screenScaleFactor + this.mobileOffset);
+		this.container.position.set(camera.vza / 2, camera.qyNlS / 3 * this.screenScaleFactor + this.mobileOffset);
 		this.container.visible = true;
 	}
 };
@@ -17401,7 +17401,7 @@ var UiManager = class {
 	touch;
 	inputBinds;
 	inputBindUi;
-	HSrpI = new PieTimer();
+	KPWEsf = new PieTimer();
 	gameElem = (0, import_jquery.default)("#ui-game");
 	statsMain = (0, import_jquery.default)("#ui-stats");
 	statsElem = (0, import_jquery.default)("#ui-stats-bg");
@@ -17619,8 +17619,8 @@ var UiManager = class {
 			e.stopPropagation();
 		});
 		(0, import_jquery.default)("#btn-game-quit").on("click", () => {
-			this.game.PzyS = true;
-			this.game.Gbt = 1;
+			this.game.LVvbq = true;
+			this.game.ehn = 1;
 			this.quitGame();
 		});
 		this.specStatsButton.on("click", () => {
@@ -17715,7 +17715,7 @@ var UiManager = class {
 		this.container.addChild(this.display.border);
 		const minimapMargin = this.getMinimapMargin();
 		const minimapSize = this.getMinimapSize();
-		this.minimapPos = v2.create(minimapMargin + minimapSize / 2, game.UzZ.pfqvCm - minimapSize / 2 - minimapMargin);
+		this.minimapPos = v2.create(minimapMargin + minimapSize / 2, game.Edo.qyNlS - minimapSize / 2 - minimapMargin);
 		this.muteButtonImage = this.muteButton.find("img");
 		const muteAudio = this.audioManager.mute;
 		this.muteButtonImage.attr("src", muteAudio ? this.muteOffImg : this.muteOnImg);
@@ -17755,7 +17755,7 @@ var UiManager = class {
 		}
 		this.init();
 	}
-	GQnyl() {
+	bQihh() {
 		this.gasRenderer.free();
 		this.clearUI();
 		this.roleMenuConfirm.off("click");
@@ -17796,7 +17796,7 @@ var UiManager = class {
 		(0, import_jquery.default)("#ui-center").off("mouseenter mouseleave");
 		this.inputBinds.menuHovered = false;
 		if (!this.hudVisible) this.cycleHud();
-		this.HSrpI.destroy();
+		this.KPWEsf.destroy();
 		this.clearStatsElems();
 		this.setRoleMenuActive(false);
 		this.init();
@@ -17819,7 +17819,7 @@ var UiManager = class {
 		(0, import_jquery.default)("#ui-kill-leader-container").css("display", displayLeader ? "block" : "none");
 		if (!device.mobile) (0, import_jquery.default)("#ui-killfeed-wrapper").css("top", displayLeader ? "60px" : "12px");
 	}
-	cjhuwW(dt, player, map, gas, playerBarn, camera, teamMode, factionMode) {
+	Yekvpo(dt, player, map, gas, playerBarn, camera, teamMode, factionMode) {
 		const localPlayer = player;
 		if (this.weapsDirty) this.resetWeapSlotStyling();
 		this.weapsDirty = false;
@@ -17841,30 +17841,30 @@ var UiManager = class {
 			const strSeconds = `0${this.gasState.time % 60}`.slice(-2);
 			this.gasTimer.html(`${minutes}:${strSeconds}`);
 		}
-		this.spectatorCount = player.njNsW.ixq;
+		this.spectatorCount = player.pcpKf.PKbdfc;
 		this.updateSpectatorCountDisplay(false);
-		if (player.Lzl.viv && !this.dead) {
+		if (player.dmuI.UBStD && !this.dead) {
 			this.dead = true;
-			this.HSrpI.stop();
+			this.KPWEsf.stop();
 		}
 		if (localPlayer.downed || this.dead) this.resetWeapSlotStyling();
-		if (this.actionSeq != player.OMVUBX.seq && (this.actionSeq = player.OMVUBX.seq, this.HSrpI.stop(), player.OMVUBX.type != Action.None && !this.displayingStats)) {
+		if (this.actionSeq != player.gUjDUW.seq && (this.actionSeq = player.gUjDUW.seq, this.KPWEsf.stop(), player.gUjDUW.type != Action.None && !this.displayingStats)) {
 			let desc = "";
 			let actionTxt1 = "";
 			let actionTxt2 = "";
-			switch (player.OMVUBX.type) {
+			switch (player.gUjDUW.type) {
 				case Action.Reload:
 				case Action.ReloadAlt:
-					if (GameObjectDefs.typeExists(player.OMVUBX.item)) actionTxt1 = this.localization.translate("game-reloading");
+					if (GameObjectDefs.typeExists(player.gUjDUW.item)) actionTxt1 = this.localization.translate("game-reloading");
 					break;
 				case Action.UseItem:
-					if (GameObjectDefs.typeExists(player.OMVUBX.item)) {
+					if (GameObjectDefs.typeExists(player.gUjDUW.item)) {
 						actionTxt1 = this.localization.translate("game-using");
-						actionTxt2 = this.localization.translate(`game-${player.OMVUBX.item}`);
+						actionTxt2 = this.localization.translate(`game-${player.gUjDUW.item}`);
 					}
 					break;
 				case Action.Revive: {
-					const targetName = playerBarn.getPlayerInfo(player.OMVUBX.targetId).name;
+					const targetName = playerBarn.getPlayerInfo(player.gUjDUW.targetId).name;
 					actionTxt1 = this.localization.translate("game-reviving");
 					actionTxt2 = localPlayer.downed ? "" : targetName;
 					break;
@@ -17878,17 +17878,17 @@ var UiManager = class {
 					desc += actionTxt2 ? `${actionTxt2} ` : "";
 					desc += actionTxt1 ? ` ${actionTxt1}` : "";
 				}
-				this.HSrpI.start(desc, player.OMVUBX.time, player.OMVUBX.duration);
+				this.KPWEsf.start(desc, player.gUjDUW.time, player.gUjDUW.duration);
 			}
 		}
 		if (!this.bigmapDisplayed) {
-			this.mapSprite.x = this.minimapPos.x + this.mapSprite.width / 2 - player.jBwVh.x / map.width * this.mapSprite.width;
-			this.mapSprite.y = this.minimapPos.y - this.mapSprite.height / 2 + player.jBwVh.y / map.height * this.mapSprite.height;
+			this.mapSprite.x = this.minimapPos.x + this.mapSprite.width / 2 - player.fygBMT.x / map.width * this.mapSprite.width;
+			this.mapSprite.y = this.minimapPos.y - this.mapSprite.height / 2 + player.fygBMT.y / map.height * this.mapSprite.height;
 		}
-		const camExtents = v2.create(camera.FRLvNz * .5 / camera.Mwm(), camera.pfqvCm * .5 / camera.Mwm());
+		const camExtents = v2.create(camera.vza * .5 / camera.sLJP(), camera.qyNlS * .5 / camera.sLJP());
 		const camAabb = {
-			min: v2.sub(camera.DYz, camExtents),
-			max: v2.add(camera.DYz, camExtents)
+			min: v2.sub(camera.ZjWPV, camExtents),
+			max: v2.add(camera.ZjWPV, camExtents)
 		};
 		const groupId = playerBarn.getPlayerInfo(player.__id).groupId;
 		const groupInfo = playerBarn.getGroupInfo(groupId);
@@ -17897,7 +17897,7 @@ var UiManager = class {
 				playerId: player.__id,
 				groupId,
 				spectating: this.spectating,
-				playing: this.game.dxzRlT,
+				playing: this.game.wdgnvj,
 				groupInfo: playerBarn.groupInfo
 			};
 			errorLogManager.logError("badTeamInfo_1", err);
@@ -17927,10 +17927,10 @@ var UiManager = class {
 					let hideIndicator = true;
 					if ((!isLocalPlayer || indicator.displayAll) && !factionMode) {
 						const playerPos = playerStatus.pos;
-						const dir = v2.normalizeSafe(v2.sub(playerPos, camera.DYz), v2.create(1, 0));
-						const edge = coldet.intersectRayAabb(camera.DYz, dir, camAabb.min, camAabb.max);
+						const dir = v2.normalizeSafe(v2.sub(playerPos, camera.ZjWPV), v2.create(1, 0));
+						const edge = coldet.intersectRayAabb(camera.ZjWPV, dir, camAabb.min, camAabb.max);
 						const rot = Math.atan2(dir.y, -dir.x) - Math.PI * .5;
-						const screenEdge = camera.hQJHH(edge);
+						const screenEdge = camera.cGOJ(edge);
 						const onscreen = coldet.testCircleAabb(playerPos, GameConfig.player.radius, camAabb.min, camAabb.max);
 						if (!playerStatus.dead && !onscreen) {
 							let off = 32;
@@ -17941,8 +17941,8 @@ var UiManager = class {
 							}
 							hideIndicator = false;
 							elem.css({
-								left: math.clamp(screenEdge.x, off, camera.FRLvNz - off),
-								top: math.clamp(screenEdge.y, off, camera.pfqvCm - off - 0),
+								left: math.clamp(screenEdge.x, off, camera.vza - off),
+								top: math.clamp(screenEdge.y, off, camera.qyNlS - off - 0),
 								transform
 							});
 							if (!indicator.displayed) {
@@ -17989,7 +17989,7 @@ var UiManager = class {
 		} else if (teamMode == TeamMode.Solo) this.spectateOptionsWrapper.css({ top: 12 });
 		this.updatePlayerMapSprites(player, playerBarn, map);
 		this.mapSpriteBarn.update(dt, this, map);
-		this.HSrpI.update(dt, camera);
+		this.KPWEsf.update(dt, camera);
 		if (this.roleMenuActive) {
 			this.roleMenuTicker -= dt;
 			const seconds = Math.ceil(this.roleMenuTicker);
@@ -18140,10 +18140,10 @@ var UiManager = class {
 	getWorldPosFromMapPos(screenPos, map, camera) {
 		let insideMap = false;
 		if (this.bigmapDisplayed) {
-			const xBuffer = (camera.FRLvNz - this.mapSprite.width) / 2;
-			let yBuffer = (camera.pfqvCm - this.mapSprite.height) / 2;
+			const xBuffer = (camera.vza - this.mapSprite.width) / 2;
+			let yBuffer = (camera.qyNlS - this.mapSprite.height) / 2;
 			if (device.uiLayout == device.UiLayout.Sm && !device.isLandscape) yBuffer = 0;
-			insideMap = screenPos.x > xBuffer && screenPos.x < camera.FRLvNz - xBuffer && screenPos.y > yBuffer && screenPos.y < camera.pfqvCm - yBuffer;
+			insideMap = screenPos.x > xBuffer && screenPos.x < camera.vza - xBuffer && screenPos.y > yBuffer && screenPos.y < camera.qyNlS - yBuffer;
 		} else if (this.minimapDisplayed) {
 			const thisMinimapSize = this.getMinimapSize();
 			const thisMinimapMargin = this.getMinimapMargin();
@@ -18175,7 +18175,7 @@ var UiManager = class {
 		SDK.enterMenuAdState();
 	}
 	clearUI() {
-		this.HSrpI.stop();
+		this.KPWEsf.stop();
 		this.displayMapLarge(true);
 		this.displayMiniMap();
 		this.clearStatsElems();
@@ -18230,7 +18230,7 @@ var UiManager = class {
 		return `<div class="ui-stats-header-right"><span class="ui-stats-header-stat">${this.teamModeToString(teamMode)} </span><span class="ui-stats-header-value">#${teamRank}</span></div><div class="ui-stats-header-left"><span class="ui-stats-header-stat">${this.localization.translate("game-team-kills")} </span><span class="ui-stats-header-value">${teamKills}</span></div>`;
 	}
 	quitGame() {
-		this.game.Yrq = true;
+		this.game.zoA = true;
 		this.refreshMainPageAds();
 		this.game.onQuit();
 	}
@@ -18238,7 +18238,7 @@ var UiManager = class {
 		if (!spectating || teamId == localTeamId || gameOver) {
 			this.toggleEscMenu(true);
 			this.displayingStats = true;
-			this.HSrpI.stop();
+			this.KPWEsf.stop();
 			this.displayMapLarge(true);
 			this.clearStatsElems();
 			this.setSpectating(false, teamMode);
@@ -18373,7 +18373,7 @@ var UiManager = class {
 		this.clearStatsElems();
 		this.statsMain.css("display", "block");
 		this.statsLogo.css("display", "none");
-		this.HSrpI.stop();
+		this.KPWEsf.stop();
 		this.displayingStats = true;
 		this.statsHeader.html((() => {
 			let t = this.localization.translate("game-You");
@@ -18442,7 +18442,7 @@ var UiManager = class {
 			this.spectatedPlayerName = helpers.htmlEscape(name);
 			this.spectatedPlayerText.find("#spectate-player").html(this.spectatedPlayerName);
 			this.actionSeq = -1;
-			this.HSrpI.stop();
+			this.KPWEsf.stop();
 		}
 	}
 	setSpectating(spectating, teamMode) {
@@ -18516,7 +18516,7 @@ var UiManager = class {
 		(0, import_jquery.default)(this.visibilityMode == 2 ? ".js-ui-hud-show" : mapHidden).css("display", this.bigmapDisplayed ? "none" : "block");
 		(0, import_jquery.default)(".js-ui-map-show").css("display", this.bigmapDisplayed ? "block" : "none");
 		this.updateSpectatorCountDisplay(true);
-		this.redraw(this.game.UzZ);
+		this.redraw(this.game.Edo);
 	}
 	updateSpectatorCountDisplay(dirty) {
 		const displayCounter = !this.bigmapDisplayed && this.spectatorCount > 0;
@@ -18609,7 +18609,7 @@ var UiManager = class {
 		this.waitingForPlayers = waiting;
 		this.waitingText.css("display", waiting ? "block" : "none");
 	}
-	tsCE(playerPos, gas, map, planeBarn) {
+	LeqxUm(playerPos, gas, map, planeBarn) {
 		const circle = gas.getCircle(1);
 		const gasPos = this.getMapPosFromWorldPos(circle.pos, map);
 		const gasEdge = this.getMapPosFromWorldPos(v2.add(circle.pos, v2.create(circle.rad, 0)), map);
@@ -18695,17 +18695,17 @@ var UiManager = class {
 		this.teamSelectors = [];
 	}
 	resize(map, camera) {
-		this.screenScaleFactor = device.uiLayout == device.UiLayout.Sm ? .5626 : math.min(1, math.clamp(camera.FRLvNz / 1280, .75, 1) * math.clamp(camera.pfqvCm / 1024, .75, 1));
-		this.HSrpI.resize(this.touch, this.screenScaleFactor);
+		this.screenScaleFactor = device.uiLayout == device.UiLayout.Sm ? .5626 : math.min(1, math.clamp(camera.vza / 1280, .75, 1) * math.clamp(camera.qyNlS / 1024, .75, 1));
+		this.KPWEsf.resize(this.touch, this.screenScaleFactor);
 		this.gasRenderer.resize();
 		this.mapSprite.texture = map.getMapTexture();
-		const roleMenuScale = math.min(1, math.min(camera.FRLvNz / 1200, camera.pfqvCm / 900));
+		const roleMenuScale = math.min(1, math.min(camera.vza / 1200, camera.qyNlS / 900));
 		this.roleMenuElem.css("transform", `translateX(-50%) translateY(-50%) scale(${roleMenuScale})`);
 		this.redraw(camera);
 	}
 	redraw(camera) {
-		const screenWidth = camera.FRLvNz;
-		const screenHeight = camera.pfqvCm;
+		const screenWidth = camera.vza;
+		const screenHeight = camera.qyNlS;
 		const thisMinimapMargin = this.getMinimapMargin();
 		let thisMinimapMarginXAdjust = 0;
 		let thisMinimapMarginYAdjust = 0;
@@ -19235,7 +19235,7 @@ var UiManager2 = class {
 		};
 		window.addEventListener("keyup", this.onKeyUp);
 	}
-	GQnyl() {
+	bQihh() {
 		for (let i = 0; i < this.eventListeners.length; i++) {
 			const e = this.eventListeners[i];
 			e.elem.removeEventListener(e.event, e.fn);
@@ -19254,7 +19254,7 @@ var UiManager2 = class {
 	flushInput() {
 		this.uiEvents = [];
 	}
-	cjhuwW(dt, activePlayer, spectating, playerBarn, lootBarn, map, inputBinds) {
+	Yekvpo(dt, activePlayer, spectating, playerBarn, lootBarn, map, inputBinds) {
 		const state = this.newState;
 		state.mobile = device.mobile;
 		state.touch = device.touch;
@@ -19304,28 +19304,28 @@ var UiManager2 = class {
 			offset += math.min(ticker / .25, 1);
 			if (device.mobile) line.opacity = ticker < 6.5 ? 1 : 0;
 		}
-		state.health = activePlayer.Lzl.viv ? 0 : math.max(activePlayer.njNsW.UGF, 1);
-		state.boost = activePlayer.njNsW.CZYWck;
-		state.downed = activePlayer.Lzl.JEyaBW;
+		state.health = activePlayer.dmuI.UBStD ? 0 : math.max(activePlayer.pcpKf.UqHL, 1);
+		state.boost = activePlayer.pcpKf.SpK;
+		state.downed = activePlayer.dmuI.Bll;
 		let interactionType = 0;
 		let interactionObject = null;
 		let interactionUsable = true;
 		if (activePlayer.canInteract(map)) {
 			let closestObj = null;
 			let closestPen = 0;
-			const obstacles = map.IIXrt.JkAzo();
+			const obstacles = map.SeeWtA.oiC();
 			for (let i = 0; i < obstacles.length; i++) {
 				const obstacle = obstacles[i];
 				if (obstacle.active && !obstacle.dead && util.sameLayer(obstacle.layer, activePlayer.layer)) {
 					const interact = obstacle.getInteraction(activePlayer);
 					if (interact) {
 						if (obstacle.isButton && obstacle.button.isVat) {
-							if (v2.distance(activePlayer.DYz, obstacle.pos) + activePlayer.ZnCPya < interact.rad * obstacle.scale) {
+							if (v2.distance(activePlayer.ZjWPV, obstacle.pos) + activePlayer.GocPpC < interact.rad * obstacle.scale) {
 								closestObj = obstacle;
 								closestPen = 0;
 							}
 						} else {
-							const res = collider.intersectCircle(obstacle.collider, activePlayer.Lzl.DYz, interact.rad + activePlayer.ZnCPya);
+							const res = collider.intersectCircle(obstacle.collider, activePlayer.dmuI.ZjWPV, interact.rad + activePlayer.GocPpC);
 							if (res && res.pen >= closestPen) {
 								closestObj = obstacle;
 								closestPen = res.pen;
@@ -19340,30 +19340,30 @@ var UiManager2 = class {
 				interactionUsable = true;
 			}
 			const loot = lootBarn.getClosestLoot();
-			if (loot && !activePlayer.Lzl.JEyaBW) {
+			if (loot && !activePlayer.dmuI.Bll) {
 				const itemDef = GameObjectDefs.typeToDef(loot.type);
-				const hasPrimaryWeapon = activePlayer.kQaUM(GameConfig.WeaponSlot.Primary);
-				const hasSecondaryWeapon = activePlayer.kQaUM(GameConfig.WeaponSlot.Secondary);
+				const hasPrimaryWeapon = activePlayer.yNqGdZ(GameConfig.WeaponSlot.Primary);
+				const hasSecondaryWeapon = activePlayer.yNqGdZ(GameConfig.WeaponSlot.Secondary);
 				const hasBothWeapons = hasPrimaryWeapon && hasSecondaryWeapon;
-				const usable = itemDef.type != "gun" || !hasBothWeapons || activePlayer.ulfB() == "gun";
+				const usable = itemDef.type != "gun" || !hasBothWeapons || activePlayer.Qtrbul() == "gun";
 				let canReplaceArmor = false;
-				if (state.touch && itemDef.type == "helmet" && activePlayer.Vlfu() == itemDef.level && loot.type != activePlayer.Lzl.xRwn || itemDef.type == "chest" && activePlayer.jHCJ() == itemDef.level && loot.type != activePlayer.Lzl.LtTHi) canReplaceArmor = true;
+				if (state.touch && itemDef.type == "helmet" && activePlayer.SdP() == itemDef.level && loot.type != activePlayer.dmuI.fpi || itemDef.type == "chest" && activePlayer.CKLF() == itemDef.level && loot.type != activePlayer.dmuI.tIim) canReplaceArmor = true;
 				if (usable || device.uiLayout == device.UiLayout.Sm) {
 					interactionType = 2;
 					interactionObject = loot;
 				}
 				interactionUsable = usable && (!state.touch || itemDef.type == "gun" || itemDef.type == "melee" || itemDef.type == "outfit" || itemDef.type == "perk" || canReplaceArmor);
 			}
-			const canSelfRevive = activePlayer.YeD("self_revive");
-			if (activePlayer.OMVUBX.type == Action.None && (!activePlayer.Lzl.JEyaBW || canSelfRevive)) {
+			const canSelfRevive = activePlayer.omBZmx("self_revive");
+			if (activePlayer.gUjDUW.type == Action.None && (!activePlayer.dmuI.Bll || canSelfRevive)) {
 				const ourTeamId = playerBarn.getPlayerInfo(activePlayer.__id).teamId;
-				const players = playerBarn.playerPool.JkAzo();
+				const players = playerBarn.playerPool.oiC();
 				for (let i = 0; i < players.length; i++) {
 					const player = players[i];
 					if (player.active) {
 						const theirTeamId = playerBarn.getPlayerInfo(player.__id).teamId;
-						if ((player.__id != activePlayer.__id || canSelfRevive) && ourTeamId == theirTeamId && player.Lzl.JEyaBW && !player.Lzl.viv && player.OMVUBX.type != Action.Revive) {
-							if (v2.length(v2.sub(player.Lzl.DYz, activePlayer.Lzl.DYz)) < GameConfig.player.reviveRange && util.sameLayer(player.layer, activePlayer.layer)) {
+						if ((player.__id != activePlayer.__id || canSelfRevive) && ourTeamId == theirTeamId && player.dmuI.Bll && !player.dmuI.UBStD && player.gUjDUW.type != Action.Revive) {
+							if (v2.length(v2.sub(player.dmuI.ZjWPV, activePlayer.dmuI.ZjWPV)) < GameConfig.player.reviveRange && util.sameLayer(player.layer, activePlayer.layer)) {
 								interactionType = 3;
 								interactionObject = player;
 								interactionUsable = true;
@@ -19372,12 +19372,12 @@ var UiManager2 = class {
 					}
 				}
 			}
-			if (activePlayer.OMVUBX.type == Action.Revive && activePlayer.Lzl.JEyaBW && !canSelfRevive) {
+			if (activePlayer.gUjDUW.type == Action.Revive && activePlayer.dmuI.Bll && !canSelfRevive) {
 				interactionType = 0;
 				interactionObject = null;
 				interactionUsable = false;
 			}
-			if ((activePlayer.OMVUBX.type == Action.UseItem || activePlayer.OMVUBX.type == Action.Revive && (!activePlayer.Lzl.JEyaBW || !!canSelfRevive)) && !spectating) {
+			if ((activePlayer.gUjDUW.type == Action.UseItem || activePlayer.gUjDUW.type == Action.Revive && (!activePlayer.dmuI.Bll || !!canSelfRevive)) && !spectating) {
 				interactionType = 1;
 				interactionObject = null;
 				interactionUsable = true;
@@ -19396,14 +19396,14 @@ var UiManager2 = class {
 			const animationWidth = Math.sin(animationTime);
 			item.width = animationWidth < .001 ? 0 : animationWidth;
 		}
-		for (let weaponIndex = 0; weaponIndex < activePlayer.njNsW.JSc.length; weaponIndex++) {
-			const playerWeapon = activePlayer.njNsW.JSc[weaponIndex];
+		for (let weaponIndex = 0; weaponIndex < activePlayer.pcpKf.eMCJu.length; weaponIndex++) {
+			const playerWeapon = activePlayer.pcpKf.eMCJu[weaponIndex];
 			const weaponState = state.weapons[weaponIndex];
 			weaponState.type = playerWeapon.type;
 			weaponState.ammo = playerWeapon.ammo;
-			if (weaponIndex == GameConfig.WeaponSlot.Throwable) weaponState.ammo = activePlayer.njNsW.zYQnpm[playerWeapon.type] || 0;
+			if (weaponIndex == GameConfig.WeaponSlot.Throwable) weaponState.ammo = activePlayer.pcpKf.AdwHT[playerWeapon.type] || 0;
 			const wasEquipped = weaponState.equipped;
-			weaponState.equipped = weaponIndex == activePlayer.njNsW.wYgmwH;
+			weaponState.equipped = weaponIndex == activePlayer.pcpKf.deXRIW;
 			weaponState.selectable = (playerWeapon.type != "" || weaponIndex == GameConfig.WeaponSlot.Primary || weaponIndex == GameConfig.WeaponSlot.Secondary) && !spectating;
 			const targetOpacity = weaponState.equipped ? 1 : .6;
 			const opacityDelta = targetOpacity - weaponState.opacity;
@@ -19418,26 +19418,26 @@ var UiManager2 = class {
 			const weaponInputBind = inputBinds.getBind(weaponState.bind);
 			weaponState.bindStr = weaponInputBind ? weaponInputBind.toString() : "";
 		}
-		const playerWeaponState = state.weapons[activePlayer.njNsW.wYgmwH];
+		const playerWeaponState = state.weapons[activePlayer.pcpKf.deXRIW];
 		const weaponDef = GameObjectDefs.typeToDef(playerWeaponState.type);
 		const currentAmmo = playerWeaponState.ammo;
 		let remainingWeaponAmmo = 0;
-		if (weaponDef.type === "gun") remainingWeaponAmmo = weaponDef.ammoInfinite || activePlayer.YeD("endless_ammo") && !weaponDef.ignoreEndlessAmmo ? Number.MAX_VALUE : activePlayer.njNsW.zYQnpm[weaponDef.ammo];
+		if (weaponDef.type === "gun") remainingWeaponAmmo = weaponDef.ammoInfinite || activePlayer.omBZmx("endless_ammo") && !weaponDef.ignoreEndlessAmmo ? Number.MAX_VALUE : activePlayer.pcpKf.AdwHT[weaponDef.ammo];
 		state.ammo.current = currentAmmo;
 		state.ammo.remaining = remainingWeaponAmmo;
 		state.ammo.displayCurrent = weaponDef.type != "melee";
 		state.ammo.displayRemaining = remainingWeaponAmmo > 0;
 		for (let scopeIndex = 0; scopeIndex < state.scopes.length; scopeIndex++) {
 			const scopeState = state.scopes[scopeIndex];
-			scopeState.visible = activePlayer.njNsW.zYQnpm[scopeState.type] > 0;
-			scopeState.equipped = scopeState.visible && activePlayer.njNsW.AGaN == scopeState.type;
+			scopeState.visible = activePlayer.pcpKf.AdwHT[scopeState.type] > 0;
+			scopeState.equipped = scopeState.visible && activePlayer.pcpKf.lSDBrC == scopeState.type;
 			scopeState.selectable = scopeState.visible && !spectating;
 		}
-		const playerBagLevel = activePlayer.oPq();
+		const playerBagLevel = activePlayer.MOq();
 		for (let lootIndex = 0; lootIndex < state.loot.length; lootIndex++) {
 			const lootState = state.loot[lootIndex];
 			const previousLootCount = lootState.count;
-			lootState.count = activePlayer.njNsW.zYQnpm[lootState.type] || 0;
+			lootState.count = activePlayer.pcpKf.AdwHT[lootState.type] || 0;
 			lootState.maximum = GameConfig.bagSizes[lootState.type][playerBagLevel];
 			lootState.selectable = lootState.count > 0 && !spectating;
 			if (lootState.count > previousLootCount) lootState.ticker = 0;
@@ -19450,12 +19450,12 @@ var UiManager2 = class {
 			let equippedItem = "";
 			switch (gearState.type) {
 				case "chest":
-					equippedItem = activePlayer.Lzl.LtTHi;
+					equippedItem = activePlayer.dmuI.tIim;
 					break;
 				case "helmet":
-					equippedItem = activePlayer.Lzl.xRwn;
+					equippedItem = activePlayer.dmuI.fpi;
 					break;
-				case "backpack": if ((equippedItem = activePlayer.Lzl.rrNjaS) === "backpack00") {
+				case "backpack": if ((equippedItem = activePlayer.dmuI.dvFO) === "backpack00") {
 					equippedItem = "";
 					break;
 				}
@@ -19894,7 +19894,7 @@ var UiManager2 = class {
 			case 0: return "";
 			case 1: return this.localization.translate("game-cancel");
 			case 3:
-				if (object && player && (object == player || player.downed) && player.YeD("self_revive")) return this.localization.translate("game-revive-self");
+				if (object && player && (object == player || player.downed) && player.omBZmx("self_revive")) return this.localization.translate("game-revive-self");
 				return this.localization.translate("game-revive-teammate");
 			case 4: {
 				const x = object.getInteraction(player);
@@ -19952,63 +19952,63 @@ function loadStaticDomImages() {
 //#endregion
 //#region src/game.ts
 var Game = class {
-	DORM;
-	RfmqG;
-	bCYUuf;
-	RjOXU;
-	zxFOsL;
-	rBxng;
-	hbb;
-	NRvp;
-	dvl;
+	iky;
+	laIwb;
+	Joblr;
+	DAW;
+	UAZwEq;
+	nrbkx;
+	ksvdQh;
+	Swgkde;
+	WKIT;
 	onJoin;
 	onQuit;
 	initialized = false;
 	teamMode = TeamMode.Solo;
 	victoryMusic = null;
-	Zei = null;
+	aPr = null;
 	connecting = false;
 	connected = false;
-	UhS;
-	UzZ;
-	euRh;
-	cBoRYu;
-	gAcd;
-	YtEod;
-	Ukox;
-	XZgq;
-	qLfzAq;
-	Hrn;
-	mfu;
-	DHh;
-	OTOYC;
-	nTA;
-	ZBZdUD;
-	khxzK;
-	axmy;
-	sjAQbZ;
-	mgQI;
-	iVt;
-	RcC;
-	iNLfI;
-	TmlPr;
-	qiN;
-	PzyS;
-	Gbt;
-	RzBn;
-	Yrq;
-	JXw;
-	XyLvZ;
-	OVB;
-	dxzRlT;
-	mWTwh;
-	EnaQXO;
-	zwtg;
-	kMnOxn;
-	opjMuH;
-	qmJJ;
-	TUBEtV;
-	kgOYUE;
+	CVVh;
+	Edo;
+	Jmbp;
+	pfgq;
+	JhRT;
+	nQglJ;
+	wZvID;
+	jESsaX;
+	QCS;
+	yJeqdp;
+	hlwMC;
+	HdJ;
+	rtU;
+	Qdhm;
+	JhRbrs;
+	ZWIxq;
+	veWY;
+	ZyBvqS;
+	FNXOax;
+	BhqU;
+	MBM;
+	FLY;
+	ygt;
+	spQtSQ;
+	LVvbq;
+	ehn;
+	dWRyon;
+	zoA;
+	TCXX;
+	AwLhHz;
+	rgmlJD;
+	wdgnvj;
+	eKOD;
+	CHYst;
+	zcP;
+	Swyhb;
+	jAZo;
+	GKZnr;
+	sMParw;
+	jUMoqp;
 	editor;
 	debugHUD;
 	seq;
@@ -20018,36 +20018,36 @@ var Game = class {
 	debugPingTime;
 	lastUpdateTime;
 	updateIntervals;
-	constructor(DORM, RfmqG, bCYUuf, RjOXU, zxFOsL, rBxng, hbb, NRvp, dvl, onJoin, onQuit) {
-		this.DORM = DORM;
-		this.RfmqG = RfmqG;
-		this.bCYUuf = bCYUuf;
-		this.RjOXU = RjOXU;
-		this.zxFOsL = zxFOsL;
-		this.rBxng = rBxng;
-		this.hbb = hbb;
-		this.NRvp = NRvp;
-		this.dvl = dvl;
+	constructor(iky, laIwb, Joblr, DAW, UAZwEq, nrbkx, ksvdQh, Swgkde, WKIT, onJoin, onQuit) {
+		this.iky = iky;
+		this.laIwb = laIwb;
+		this.Joblr = Joblr;
+		this.DAW = DAW;
+		this.UAZwEq = UAZwEq;
+		this.nrbkx = nrbkx;
+		this.ksvdQh = ksvdQh;
+		this.Swgkde = Swgkde;
+		this.WKIT = WKIT;
 		this.onJoin = onJoin;
 		this.onQuit = onQuit;
 	}
 	tryJoinGame(url, joinToken, onConnectFail) {
 		if (this.connecting || this.connected || this.initialized) return;
-		if (this.Zei) {
-			this.Zei.resetAndClose();
-			this.Zei = null;
+		if (this.aPr) {
+			this.aPr.resetAndClose();
+			this.aPr = null;
 		}
 		this.connecting = true;
 		this.connected = false;
 		try {
-			this.Zei = new WebsocketConnection(url);
-			this.Zei.onError = () => {
-				this.Zei?.close();
+			this.aPr = new WebsocketConnection(url);
+			this.aPr.onError = () => {
+				this.aPr?.close();
 			};
-			this.Zei.onOpen = () => {
+			this.aPr.onOpen = () => {
 				this.connecting = false;
 				this.connected = true;
-				const name = this.RjOXU.get("playerName");
+				const name = this.DAW.get("playerName");
 				const joinMessage = new JoinMsg();
 				joinMessage.protocol = GameConfig.protocolVersion;
 				joinMessage.joinToken = joinToken;
@@ -20055,27 +20055,27 @@ var Game = class {
 				joinMessage.useTouch = device.touch;
 				joinMessage.isMobile = device.mobile || window.mobile;
 				joinMessage.bot = false;
-				joinMessage.loadout = this.RjOXU.get("loadout");
-				this.kNpXoi(MsgType.Join, joinMessage, 8192);
+				joinMessage.loadout = this.DAW.get("loadout");
+				this.nxsO(MsgType.Join, joinMessage, 8192);
 			};
-			this.Zei.onMessage = (data) => {
+			this.aPr.onMessage = (data) => {
 				const msgStream = new MsgStream(data);
 				while (true) {
 					const type = msgStream.deserializeMsgType();
 					if (type == MsgType.None) break;
-					this.KnSbO(type, msgStream.getStream());
+					this.iyjzf(type, msgStream.getStream());
 					msgStream.stream.readAlignToNextByte();
 				}
 				this.debugHUD?.netInGraph.addEntry(msgStream.stream.buffer.byteLength);
 			};
-			this.Zei.onClose = (_, reason) => {
-				const displayingStats = this.sjAQbZ?.displayingStats;
+			this.aPr.onClose = (_, reason) => {
+				const displayingStats = this.ZyBvqS?.displayingStats;
 				const connecting = this.connecting;
 				const connected = this.connected;
 				this.connecting = false;
 				this.connected = false;
 				if (connecting) onConnectFail();
-				else if (connected && !this.Yrq && !displayingStats) {
+				else if (connected && !this.zoA && !displayingStats) {
 					const errMsg = reason || "host_closed";
 					this.onQuit(errMsg);
 				}
@@ -20088,83 +20088,83 @@ var Game = class {
 		}
 	}
 	init() {
-		this.qiN = this.DORM.renderer.type == RENDERER_TYPE.CANVAS;
-		this.UhS = new Touch(this.zxFOsL, this.RjOXU);
-		this.UzZ = new Camera();
-		this.euRh = new Renderer(this, this.qiN);
-		this.cBoRYu = new ParticleBarn(this.euRh);
-		this.gAcd = new DecalBarn();
-		this.YtEod = new Map(this.gAcd);
-		this.Ukox = new PlayerBarn();
-		this.XZgq = new BulletBarn();
-		this.qLfzAq = new FlareBarn();
-		this.Hrn = new ProjectileBarn();
-		this.mfu = new ExplosionBarn();
-		this.DHh = new PlaneBarn(this.RfmqG);
-		this.OTOYC = new AirdropBarn();
-		this.nTA = new SmokeBarn();
-		this.ZBZdUD = new DeadBodyBarn();
-		this.khxzK = new LootBarn();
-		this.axmy = new Gas(this.qiN);
-		this.sjAQbZ = new UiManager(this, this.RfmqG, this.cBoRYu, this.DHh, this.bCYUuf, this.qiN, this.UhS, this.rBxng, this.hbb);
-		this.mgQI = new UiManager2(this.bCYUuf, this.rBxng);
-		this.iVt = new EmoteBarn(this.RfmqG, this.sjAQbZ, this.Ukox, this.UzZ, this.YtEod);
-		this.RcC = new ShotBarn();
-		this.debugHUD = new DebugHUD(this.RjOXU);
+		this.spQtSQ = this.iky.renderer.type == RENDERER_TYPE.CANVAS;
+		this.CVVh = new Touch(this.UAZwEq, this.DAW);
+		this.Edo = new Camera();
+		this.Jmbp = new Renderer(this, this.spQtSQ);
+		this.pfgq = new ParticleBarn(this.Jmbp);
+		this.JhRT = new DecalBarn();
+		this.nQglJ = new Map(this.JhRT);
+		this.wZvID = new PlayerBarn();
+		this.jESsaX = new BulletBarn();
+		this.QCS = new FlareBarn();
+		this.yJeqdp = new ProjectileBarn();
+		this.hlwMC = new ExplosionBarn();
+		this.HdJ = new PlaneBarn(this.laIwb);
+		this.rtU = new AirdropBarn();
+		this.Qdhm = new SmokeBarn();
+		this.JhRbrs = new DeadBodyBarn();
+		this.ZWIxq = new LootBarn();
+		this.veWY = new Gas(this.spQtSQ);
+		this.ZyBvqS = new UiManager(this, this.laIwb, this.pfgq, this.HdJ, this.Joblr, this.spQtSQ, this.CVVh, this.nrbkx, this.ksvdQh);
+		this.FNXOax = new UiManager2(this.Joblr, this.nrbkx);
+		this.BhqU = new EmoteBarn(this.laIwb, this.ZyBvqS, this.wZvID, this.Edo, this.nQglJ);
+		this.MBM = new ShotBarn();
+		this.debugHUD = new DebugHUD(this.DAW);
 		const TypeToPool = {
-			[ObjectType.Player]: this.Ukox.playerPool,
-			[ObjectType.Obstacle]: this.YtEod.IIXrt,
-			[ObjectType.Loot]: this.khxzK.lootPool,
-			[ObjectType.DeadBody]: this.ZBZdUD.deadBodyPool,
-			[ObjectType.Building]: this.YtEod.SlMkf,
-			[ObjectType.Structure]: this.YtEod.VPszM,
-			[ObjectType.Decal]: this.gAcd.decalPool,
-			[ObjectType.Projectile]: this.Hrn.projectilePool,
-			[ObjectType.Smoke]: this.nTA.ejOQig,
-			[ObjectType.Airdrop]: this.OTOYC.airdropPool
+			[ObjectType.Player]: this.wZvID.playerPool,
+			[ObjectType.Obstacle]: this.nQglJ.SeeWtA,
+			[ObjectType.Loot]: this.ZWIxq.lootPool,
+			[ObjectType.DeadBody]: this.JhRbrs.deadBodyPool,
+			[ObjectType.Building]: this.nQglJ.Qaggj,
+			[ObjectType.Structure]: this.nQglJ.qRkh,
+			[ObjectType.Decal]: this.JhRT.decalPool,
+			[ObjectType.Projectile]: this.yJeqdp.projectilePool,
+			[ObjectType.Smoke]: this.Qdhm.EGEa,
+			[ObjectType.Airdrop]: this.rtU.airdropPool
 		};
-		this.iNLfI = new Creator();
-		for (const type in TypeToPool) if (TypeToPool.hasOwnProperty(type)) this.iNLfI.Uysr(type, TypeToPool[type]);
-		this.TmlPr = new Graphics();
+		this.FLY = new Creator();
+		for (const type in TypeToPool) if (TypeToPool.hasOwnProperty(type)) this.FLY.yCf(type, TypeToPool[type]);
+		this.ygt = new Graphics();
 		const pixiContainers = [
-			this.YtEod.display.ground,
-			this.euRh.layers[0],
-			this.euRh.ground,
-			this.euRh.layers[1],
-			this.euRh.layers[2],
-			this.euRh.layers[3],
-			this.TmlPr,
-			this.axmy.gasRenderer.display,
-			this.UhS.container,
-			this.iVt.container,
-			this.sjAQbZ.container,
-			this.sjAQbZ.HSrpI.container,
-			this.iVt.indContainer,
+			this.nQglJ.display.ground,
+			this.Jmbp.layers[0],
+			this.Jmbp.ground,
+			this.Jmbp.layers[1],
+			this.Jmbp.layers[2],
+			this.Jmbp.layers[3],
+			this.ygt,
+			this.veWY.gasRenderer.display,
+			this.CVVh.container,
+			this.BhqU.container,
+			this.ZyBvqS.container,
+			this.ZyBvqS.KPWEsf.container,
+			this.BhqU.indContainer,
 			this.debugHUD.container
 		];
 		for (let i = 0; i < pixiContainers.length; i++) {
 			const container = pixiContainers[i];
 			if (container) {
 				container.interactiveChildren = false;
-				this.DORM.stage.addChild(container);
+				this.iky.stage.addChild(container);
 			}
 		}
-		this.RzBn = false;
-		this.Yrq = false;
-		this.JXw = false;
-		this.XyLvZ = 0;
-		this.OVB = new InputMsg();
-		this.dxzRlT = 0;
-		this.mWTwh = 0;
-		this.PzyS = false;
-		this.Gbt = 0;
-		this.EnaQXO = 0;
-		this.zwtg = 0;
-		this.kMnOxn = null;
-		this.opjMuH = false;
-		this.qmJJ = 1;
-		this.TUBEtV = 1;
-		this.kgOYUE = false;
+		this.dWRyon = false;
+		this.zoA = false;
+		this.TCXX = false;
+		this.AwLhHz = 0;
+		this.rgmlJD = new InputMsg();
+		this.wdgnvj = 0;
+		this.eKOD = 0;
+		this.LVvbq = false;
+		this.ehn = 0;
+		this.CHYst = 0;
+		this.zcP = 0;
+		this.Swyhb = null;
+		this.jAZo = false;
+		this.GKZnr = 1;
+		this.sMParw = 1;
+		this.jUMoqp = false;
 		this.seq = 0;
 		this.seqInFlight = false;
 		this.seqSendTime = 0;
@@ -20172,104 +20172,104 @@ var Game = class {
 		this.updateIntervals = [];
 		this.lastUpdateTime = 0;
 		this.debugPingTime = 0;
-		this.UzZ.qsQC(this.RjOXU.get("screenShake"));
-		this.UzZ.RfBnka(this.RjOXU.get("interpolation"));
-		this.UzZ.bxGYc(this.RjOXU.get("localRotation"));
-		this.Ukox.anonPlayerNames = this.RjOXU.get("anonPlayerNames");
+		this.Edo.bzFJUk(this.DAW.get("screenShake"));
+		this.Edo.LNCKfL(this.DAW.get("interpolation"));
+		this.Edo.cvX(this.DAW.get("localRotation"));
+		this.wZvID.anonPlayerNames = this.DAW.get("anonPlayerNames");
 		this.initialized = true;
 	}
 	free() {
-		if (this.Zei) {
-			this.Zei.resetAndClose();
-			this.Zei = null;
+		if (this.aPr) {
+			this.aPr.resetAndClose();
+			this.aPr = null;
 		}
 		this.connecting = false;
 		this.connected = false;
 		if (this.initialized) {
 			this.initialized = false;
-			this.PzyS = false;
-			this.Gbt = 0;
-			this.iVt.GQnyl();
-			this.mgQI.GQnyl();
-			this.sjAQbZ.GQnyl();
-			this.axmy.GQnyl();
-			this.OTOYC.GQnyl();
-			this.DHh.GQnyl();
-			this.YtEod.GQnyl();
-			this.cBoRYu.GQnyl();
-			this.euRh.GQnyl();
-			this.zxFOsL.GQnyl();
-			this.RfmqG.stopAll();
-			while (this.DORM.stage.children.length > 0) {
-				const c = this.DORM.stage.children[0];
-				this.DORM.stage.removeChild(c);
+			this.LVvbq = false;
+			this.ehn = 0;
+			this.BhqU.bQihh();
+			this.FNXOax.bQihh();
+			this.ZyBvqS.bQihh();
+			this.veWY.bQihh();
+			this.rtU.bQihh();
+			this.HdJ.bQihh();
+			this.nQglJ.bQihh();
+			this.pfgq.bQihh();
+			this.Jmbp.bQihh();
+			this.UAZwEq.bQihh();
+			this.laIwb.stopAll();
+			while (this.iky.stage.children.length > 0) {
+				const c = this.iky.stage.children[0];
+				this.iky.stage.removeChild(c);
 				c.destroy({ children: true });
 			}
 		}
 	}
 	warnPageReload() {
-		return this.initialized && this.RzBn && !this.JXw && !this.sjAQbZ.displayingStats;
+		return this.initialized && this.dWRyon && !this.TCXX && !this.ZyBvqS.displayingStats;
 	}
 	update(dt) {
-		this.debugHUD.cjhuwW(dt, this);
+		this.debugHUD.Yekvpo(dt, this);
 		let debug = {};
-		const smokeParticles = this.nTA.DIJuIX;
-		if (this.RzBn) this.dxzRlT += dt;
-		this.Ukox.cjhuwW(dt, this.zwtg, this.euRh, this.cBoRYu, this.UzZ, this.YtEod, this.rBxng, this.RfmqG, this.mgQI, this.iVt.wheelKeyTriggered, this.sjAQbZ.displayingStats, this.JXw);
+		const smokeParticles = this.Qdhm.uta;
+		if (this.dWRyon) this.wdgnvj += dt;
+		this.wZvID.Yekvpo(dt, this.zcP, this.Jmbp, this.pfgq, this.Edo, this.nQglJ, this.nrbkx, this.laIwb, this.FNXOax, this.BhqU.wheelKeyTriggered, this.ZyBvqS.displayingStats, this.TCXX);
 		this.updateAmbience();
-		this.UzZ.DYz = v2.copy(this.kMnOxn.jBwVh);
-		this.UzZ.HOJLMs();
-		const zoom = this.kMnOxn.iJb();
-		const minDim = math.min(this.UzZ.FRLvNz, this.UzZ.pfqvCm);
-		const maxDim = math.max(this.UzZ.FRLvNz, this.UzZ.pfqvCm);
+		this.Edo.ZjWPV = v2.copy(this.Swyhb.fygBMT);
+		this.Edo.cZbxA();
+		const zoom = this.Swyhb.IQPNF();
+		const minDim = math.min(this.Edo.vza, this.Edo.qyNlS);
+		const maxDim = math.max(this.Edo.vza, this.Edo.qyNlS);
 		const maxScreenDim = math.max(minDim * (16 / 9), maxDim);
-		this.UzZ.qmJJ = maxScreenDim * .5 / (zoom * this.UzZ.aeFMbq);
-		const zoomLerpIn = this.kMnOxn.zoomFast ? 3 : 2;
-		const zoomLerpOut = this.kMnOxn.zoomFast ? 3 : 1.4;
-		const zoomLerp = this.UzZ.qmJJ > this.UzZ.wDPk ? zoomLerpIn : zoomLerpOut;
-		this.UzZ.wDPk = math.lerp(dt * zoomLerp, this.UzZ.wDPk, this.UzZ.qmJJ);
-		this.RfmqG.cameraPos = v2.copy(this.UzZ.DYz);
-		if (this.zxFOsL.keyPressed(Key.Escape)) this.sjAQbZ.toggleEscMenu();
-		if (this.rBxng.isBindPressed(Input.ToggleMap) || this.zxFOsL.keyPressed(Key.G) && !this.rBxng.isKeyBound(Key.G)) this.sjAQbZ.displayMapLarge(false);
-		if (this.rBxng.isBindPressed(Input.CycleUIMode)) this.sjAQbZ.cycleVisibilityMode();
-		if (this.rBxng.isBindPressed(Input.HideUI) || this.zxFOsL.keyPressed(Key.Escape) && !this.sjAQbZ.hudVisible) this.sjAQbZ.cycleHud();
-		const playerPos = this.kMnOxn.DYz;
-		const mousePos = v2.create(this.kMnOxn.DYz.x + (this.zxFOsL.mousePos.x - this.UzZ.FRLvNz * .5) / this.UzZ.Mwm(), this.kMnOxn.DYz.y + (this.UzZ.pfqvCm * .5 - this.zxFOsL.mousePos.y) / this.UzZ.Mwm());
+		this.Edo.GKZnr = maxScreenDim * .5 / (zoom * this.Edo.Fxr);
+		const zoomLerpIn = this.Swyhb.zoomFast ? 3 : 2;
+		const zoomLerpOut = this.Swyhb.zoomFast ? 3 : 1.4;
+		const zoomLerp = this.Edo.GKZnr > this.Edo.Azt ? zoomLerpIn : zoomLerpOut;
+		this.Edo.Azt = math.lerp(dt * zoomLerp, this.Edo.Azt, this.Edo.GKZnr);
+		this.laIwb.cameraPos = v2.copy(this.Edo.ZjWPV);
+		if (this.UAZwEq.keyPressed(Key.Escape)) this.ZyBvqS.toggleEscMenu();
+		if (this.nrbkx.isBindPressed(Input.ToggleMap) || this.UAZwEq.keyPressed(Key.G) && !this.nrbkx.isKeyBound(Key.G)) this.ZyBvqS.displayMapLarge(false);
+		if (this.nrbkx.isBindPressed(Input.CycleUIMode)) this.ZyBvqS.cycleVisibilityMode();
+		if (this.nrbkx.isBindPressed(Input.HideUI) || this.UAZwEq.keyPressed(Key.Escape) && !this.ZyBvqS.hudVisible) this.ZyBvqS.cycleHud();
+		const playerPos = this.Swyhb.ZjWPV;
+		const mousePos = v2.create(this.Swyhb.ZjWPV.x + (this.UAZwEq.mousePos.x - this.Edo.vza * .5) / this.Edo.sLJP(), this.Swyhb.ZjWPV.y + (this.Edo.qyNlS * .5 - this.UAZwEq.mousePos.y) / this.Edo.sLJP());
 		const toMousePos = v2.sub(mousePos, playerPos);
 		let toMouseLen = v2.length(toMousePos);
 		let toMouseDir = toMouseLen > 1e-5 ? v2.div(toMousePos, toMouseLen) : v2.create(1, 0);
-		if (this.iVt.wheelDisplayed) {
-			toMouseLen = this.OVB.toMouseLen;
-			toMouseDir = this.OVB.toMouseDir;
+		if (this.BhqU.wheelDisplayed) {
+			toMouseLen = this.rgmlJD.toMouseLen;
+			toMouseDir = this.rgmlJD.toMouseDir;
 		}
 		const inputMsg = new InputMsg();
 		inputMsg.seq = this.seq;
-		if (!this.JXw) {
+		if (!this.TCXX) {
 			if (device.touch) {
-				const touchPlayerMovement = this.UhS.getTouchMovement(this.UzZ);
-				const touchAimMovement = this.UhS.getAimMovement(this.kMnOxn, this.UzZ);
+				const touchPlayerMovement = this.CVVh.getTouchMovement(this.Edo);
+				const touchAimMovement = this.CVVh.getAimMovement(this.Swyhb, this.Edo);
 				let aimDir = v2.copy(touchAimMovement.aimMovement.toAimDir);
-				this.UhS.turnDirTicker -= dt;
-				if (this.UhS.moveDetected && !touchAimMovement.touched) {
+				this.CVVh.turnDirTicker -= dt;
+				if (this.CVVh.moveDetected && !touchAimMovement.touched) {
 					const touchDir = v2.normalizeSafe(touchPlayerMovement.toMoveDir, v2.create(1, 0));
-					const modifiedAimDir = this.UhS.turnDirTicker < 0 ? touchDir : touchAimMovement.aimMovement.toAimDir;
-					this.UhS.setAimDir(modifiedAimDir);
+					const modifiedAimDir = this.CVVh.turnDirTicker < 0 ? touchDir : touchAimMovement.aimMovement.toAimDir;
+					this.CVVh.setAimDir(modifiedAimDir);
 					aimDir = modifiedAimDir;
 				}
-				if (touchAimMovement.touched) this.UhS.turnDirTicker = this.UhS.turnDirCooldown;
-				if (this.UhS.moveDetected) {
+				if (touchAimMovement.touched) this.CVVh.turnDirTicker = this.CVVh.turnDirCooldown;
+				if (this.CVVh.moveDetected) {
 					inputMsg.touchMoveDir = v2.normalizeSafe(touchPlayerMovement.toMoveDir, v2.create(1, 0));
 					inputMsg.touchMoveLen = Math.round(math.clamp(touchPlayerMovement.toMoveLen, 0, 1) * 255);
 				} else inputMsg.touchMoveLen = 0;
 				inputMsg.touchMoveActive = true;
 				const aimLen = touchAimMovement.aimMovement.toAimLen;
-				inputMsg.toMouseLen = math.clamp(aimLen / this.UhS.padPosRange, 0, 1) * GameConfig.player.throwableMaxMouseDist;
+				inputMsg.toMouseLen = math.clamp(aimLen / this.CVVh.padPosRange, 0, 1) * GameConfig.player.throwableMaxMouseDist;
 				inputMsg.toMouseDir = aimDir;
 			} else {
-				inputMsg.moveLeft = this.rBxng.isBindDown(Input.MoveLeft) || this.zxFOsL.keyDown(Key.Left) && !this.rBxng.isKeyBound(Key.Left);
-				inputMsg.moveRight = this.rBxng.isBindDown(Input.MoveRight) || this.zxFOsL.keyDown(Key.Right) && !this.rBxng.isKeyBound(Key.Right);
-				inputMsg.moveUp = this.rBxng.isBindDown(Input.MoveUp) || this.zxFOsL.keyDown(Key.Up) && !this.rBxng.isKeyBound(Key.Up);
-				inputMsg.moveDown = this.rBxng.isBindDown(Input.MoveDown) || this.zxFOsL.keyDown(Key.Down) && !this.rBxng.isKeyBound(Key.Down);
+				inputMsg.moveLeft = this.nrbkx.isBindDown(Input.MoveLeft) || this.UAZwEq.keyDown(Key.Left) && !this.nrbkx.isKeyBound(Key.Left);
+				inputMsg.moveRight = this.nrbkx.isBindDown(Input.MoveRight) || this.UAZwEq.keyDown(Key.Right) && !this.nrbkx.isKeyBound(Key.Right);
+				inputMsg.moveUp = this.nrbkx.isBindDown(Input.MoveUp) || this.UAZwEq.keyDown(Key.Up) && !this.nrbkx.isKeyBound(Key.Up);
+				inputMsg.moveDown = this.nrbkx.isBindDown(Input.MoveDown) || this.UAZwEq.keyDown(Key.Down) && !this.nrbkx.isKeyBound(Key.Down);
 				inputMsg.toMouseDir = v2.copy(toMouseDir);
 				inputMsg.toMouseLen = toMouseLen;
 			}
@@ -20277,9 +20277,9 @@ var Game = class {
 			inputMsg.touchMoveLen = math.clamp(inputMsg.touchMoveLen, 0, 255);
 			inputMsg.toMouseDir = v2.normalizeSafe(inputMsg.toMouseDir, v2.create(1, 0));
 			inputMsg.toMouseLen = math.clamp(inputMsg.toMouseLen, 0, Constants.MouseMaxDist);
-			inputMsg.shootStart = this.rBxng.isBindPressed(Input.Fire) || this.UhS.shotDetected;
-			inputMsg.shootHold = this.rBxng.isBindDown(Input.Fire) || this.UhS.shotDetected;
-			inputMsg.portrait = this.UzZ.FRLvNz < this.UzZ.pfqvCm;
+			inputMsg.shootStart = this.nrbkx.isBindPressed(Input.Fire) || this.CVVh.shotDetected;
+			inputMsg.shootHold = this.nrbkx.isBindDown(Input.Fire) || this.CVVh.shotDetected;
+			inputMsg.portrait = this.Edo.vza < this.Edo.qyNlS;
 			const checkInputs = [
 				Input.Reload,
 				Input.Revive,
@@ -20300,9 +20300,9 @@ var Game = class {
 			];
 			for (let i = 0; i < checkInputs.length; i++) {
 				const input = checkInputs[i];
-				if (this.rBxng.isBindPressed(input)) inputMsg.addInput(input);
+				if (this.nrbkx.isBindPressed(input)) inputMsg.addInput(input);
 			}
-			if (this.rBxng.isBindPressed(Input.Interact)) {
+			if (this.nrbkx.isBindPressed(Input.Interact)) {
 				const inputs = [];
 				const interactBinds = [
 					Input.Revive,
@@ -20311,22 +20311,22 @@ var Game = class {
 				];
 				for (let i = 0; i < interactBinds.length; i++) {
 					const b = interactBinds[i];
-					if (!this.rBxng.getBind(b)) inputs.push(b);
+					if (!this.nrbkx.getBind(b)) inputs.push(b);
 				}
 				if (inputs.length == interactBinds.length) inputMsg.addInput(Input.Interact);
 				else for (let i = 0; i < inputs.length; i++) inputMsg.addInput(inputs[i]);
 			}
-			if (this.rBxng.isBindPressed(Input.SwapWeapSlots) || this.sjAQbZ.swapWeapSlots) {
+			if (this.nrbkx.isBindPressed(Input.SwapWeapSlots) || this.ZyBvqS.swapWeapSlots) {
 				inputMsg.addInput(Input.SwapWeapSlots);
-				this.kMnOxn.gunSwitchCooldown = 0;
+				this.Swyhb.gunSwitchCooldown = 0;
 			}
-			if (this.sjAQbZ.reloadTouched) inputMsg.addInput(Input.Reload);
-			if (this.sjAQbZ.interactionTouched) {
+			if (this.ZyBvqS.reloadTouched) inputMsg.addInput(Input.Reload);
+			if (this.ZyBvqS.interactionTouched) {
 				inputMsg.addInput(Input.Interact);
 				inputMsg.addInput(Input.Cancel);
 			}
-			for (let i = 0; i < this.mgQI.uiEvents.length; i++) {
-				const e = this.mgQI.uiEvents[i];
+			for (let i = 0; i < this.FNXOax.uiEvents.length; i++) {
+				const e = this.FNXOax.uiEvents[i];
 				if (e.action == "use") {
 					if (e.type == "weapon") {
 						const input = {
@@ -20339,114 +20339,114 @@ var Game = class {
 					} else inputMsg.useItem = e.data;
 				}
 			}
-			if (this.rBxng.isBindPressed(Input.UseBandage)) inputMsg.useItem = "bandage";
-			else if (this.rBxng.isBindPressed(Input.UseHealthKit)) inputMsg.useItem = "healthkit";
-			else if (this.rBxng.isBindPressed(Input.UseSoda)) inputMsg.useItem = "soda";
-			else if (this.rBxng.isBindPressed(Input.UsePainkiller)) inputMsg.useItem = "painkiller";
+			if (this.nrbkx.isBindPressed(Input.UseBandage)) inputMsg.useItem = "bandage";
+			else if (this.nrbkx.isBindPressed(Input.UseHealthKit)) inputMsg.useItem = "healthkit";
+			else if (this.nrbkx.isBindPressed(Input.UseSoda)) inputMsg.useItem = "soda";
+			else if (this.nrbkx.isBindPressed(Input.UsePainkiller)) inputMsg.useItem = "painkiller";
 			let playDropSound = false;
-			for (let X = 0; X < this.mgQI.uiEvents.length; X++) {
-				const uiEvent = this.mgQI.uiEvents[X];
+			for (let X = 0; X < this.FNXOax.uiEvents.length; X++) {
+				const uiEvent = this.FNXOax.uiEvents[X];
 				if (uiEvent.action == "drop") {
 					const dropMsg = new DropItemMsg();
 					if (uiEvent.type == "weapon") {
 						const eventData = uiEvent.data;
-						dropMsg.item = this.kMnOxn.njNsW.JSc[eventData].type;
+						dropMsg.item = this.Swyhb.pcpKf.eMCJu[eventData].type;
 						dropMsg.weapIdx = eventData;
 					} else if (uiEvent.type == "perk") {
 						const eventData = uiEvent.data;
-						const J = this.kMnOxn.Lzl.mGh;
+						const J = this.Swyhb.dmuI.qQfxTP;
 						const Q = J.length > eventData ? J[eventData] : null;
 						if (Q?.droppable) dropMsg.item = Q.type;
-					} else dropMsg.item = uiEvent.data == "helmet" ? this.kMnOxn.Lzl.xRwn : uiEvent.data == "chest" ? this.kMnOxn.Lzl.LtTHi : uiEvent.data;
+					} else dropMsg.item = uiEvent.data == "helmet" ? this.Swyhb.dmuI.fpi : uiEvent.data == "chest" ? this.Swyhb.dmuI.tIim : uiEvent.data;
 					if (dropMsg.item != "") {
-						this.kNpXoi(MsgType.DropItem, dropMsg, 128);
+						this.nxsO(MsgType.DropItem, dropMsg, 128);
 						if (dropMsg.item != "fists") playDropSound = true;
 					}
 				}
 			}
-			if (playDropSound) this.RfmqG.playSound("loot_drop_01", { channel: "ui" });
-			if (this.sjAQbZ.roleSelected) {
+			if (playDropSound) this.laIwb.playSound("loot_drop_01", { channel: "ui" });
+			if (this.ZyBvqS.roleSelected) {
 				const roleSelectMessage = new PerkModeRoleSelectMsg();
-				roleSelectMessage.role = this.sjAQbZ.roleSelected;
-				this.kNpXoi(MsgType.PerkModeRoleSelect, roleSelectMessage, 128);
-				this.RjOXU.set("perkModeRole", roleSelectMessage.role);
+				roleSelectMessage.role = this.ZyBvqS.roleSelected;
+				this.nxsO(MsgType.PerkModeRoleSelect, roleSelectMessage, 128);
+				this.DAW.set("perkModeRole", roleSelectMessage.role);
 			}
 		}
-		let specAction = this.sjAQbZ.specAction;
-		if (specAction === SpectateAction.None && this.JXw) {
-			if (this.zxFOsL.keyPressed(Key.Right)) specAction = SpectateAction.Next;
-			else if (this.zxFOsL.keyPressed(Key.Left)) specAction = SpectateAction.Prev;
+		let specAction = this.ZyBvqS.specAction;
+		if (specAction === SpectateAction.None && this.TCXX) {
+			if (this.UAZwEq.keyPressed(Key.Right)) specAction = SpectateAction.Next;
+			else if (this.UAZwEq.keyPressed(Key.Left)) specAction = SpectateAction.Prev;
 		}
 		if (specAction !== SpectateAction.None) {
 			const specMsg = new SpectateMsg();
 			specMsg.action = specAction;
-			this.kNpXoi(MsgType.Spectate, specMsg, 128);
-			this.sjAQbZ.specAction = SpectateAction.None;
+			this.nxsO(MsgType.Spectate, specMsg, 128);
+			this.ZyBvqS.specAction = SpectateAction.None;
 		}
-		this.sjAQbZ.reloadTouched = false;
-		this.sjAQbZ.interactionTouched = false;
-		this.sjAQbZ.swapWeapSlots = false;
-		this.sjAQbZ.roleSelected = "";
+		this.ZyBvqS.reloadTouched = false;
+		this.ZyBvqS.interactionTouched = false;
+		this.ZyBvqS.swapWeapSlots = false;
+		this.ZyBvqS.roleSelected = "";
 		let diff = false;
 		for (const k in inputMsg) if (inputMsg.hasOwnProperty(k)) {
 			if (k == "inputs") diff = inputMsg[k].length > 0;
 			else if (k == "toMouseDir" || k == "touchMoveDir") {
-				const dot = math.clamp(v2.dot(inputMsg[k], this.OVB[k]), -1, 1);
+				const dot = math.clamp(v2.dot(inputMsg[k], this.rgmlJD[k]), -1, 1);
 				diff = math.rad2deg(Math.acos(dot)) > .1;
-			} else if (k == "toMouseLen") diff = Math.abs(this.OVB[k] - inputMsg[k]) > .5;
-			else if (k == "shootStart") diff = inputMsg[k] || inputMsg[k] != this.OVB[k];
-			else if (this.OVB[k] != inputMsg[k]) diff = true;
+			} else if (k == "toMouseLen") diff = Math.abs(this.rgmlJD[k] - inputMsg[k]) > .5;
+			else if (k == "shootStart") diff = inputMsg[k] || inputMsg[k] != this.rgmlJD[k];
+			else if (this.rgmlJD[k] != inputMsg[k]) diff = true;
 			if (diff) break;
 		}
-		this.XyLvZ -= dt;
-		if (diff || this.XyLvZ < 0) {
+		this.AwLhHz -= dt;
+		if (diff || this.AwLhHz < 0) {
 			if (!this.seqInFlight) {
 				this.seq = (this.seq + 1) % 256;
 				this.seqSendTime = Date.now();
 				this.seqInFlight = true;
 				inputMsg.seq = this.seq;
 			}
-			this.kNpXoi(MsgType.Input, inputMsg, 128);
-			this.XyLvZ = 1;
-			this.OVB = inputMsg;
+			this.nxsO(MsgType.Input, inputMsg, 128);
+			this.AwLhHz = 1;
+			this.rgmlJD = inputMsg;
 		}
-		this.mgQI.flushInput();
-		this.YtEod.cjhuwW(dt, this.kMnOxn, this.Ukox, this.cBoRYu, this.RfmqG, this.NRvp, this.euRh, this.UzZ, smokeParticles, debug);
-		this.khxzK.cjhuwW(dt, this.kMnOxn, this.YtEod, this.RfmqG, this.UzZ, debug);
-		this.XZgq.cjhuwW(dt, this.Ukox, this.YtEod, this.UzZ, this.kMnOxn, this.euRh, this.cBoRYu, this.RfmqG);
-		this.qLfzAq.cjhuwW(dt, this.YtEod, this.kMnOxn, this.euRh);
-		this.Hrn.cjhuwW(dt, this.cBoRYu, this.RfmqG, this.kMnOxn, this.YtEod, this.euRh, this.UzZ);
-		this.mfu.cjhuwW(dt, this.YtEod, this.Ukox, this.UzZ, this.cBoRYu, this.RfmqG, debug);
-		this.OTOYC.cjhuwW(dt, this.kMnOxn, this.UzZ, this.YtEod, this.cBoRYu, this.euRh, this.RfmqG);
-		this.DHh.cjhuwW(dt, this.UzZ, this.kMnOxn, this.YtEod, this.euRh);
-		this.nTA.cjhuwW(dt, this.UzZ, this.kMnOxn, this.YtEod, this.euRh);
-		this.RcC.cjhuwW(dt, this.zwtg, this.Ukox, this.cBoRYu, this.RfmqG);
-		this.cBoRYu.cjhuwW(dt, this.UzZ);
-		this.ZBZdUD.cjhuwW(dt, this.Ukox, this.kMnOxn, this.YtEod, this.UzZ, this.euRh);
-		this.gAcd.cjhuwW(dt, this.UzZ, this.euRh);
-		this.sjAQbZ.cjhuwW(dt, this.kMnOxn, this.YtEod, this.axmy, this.Ukox, this.UzZ, this.teamMode, this.YtEod.factionMode);
-		this.mgQI.cjhuwW(dt, this.kMnOxn, this.JXw, this.Ukox, this.khxzK, this.YtEod, this.rBxng);
-		this.iVt.cjhuwW(dt, this.EnaQXO, this.kMnOxn, this.teamMode, this.ZBZdUD, this.YtEod, this.euRh, this.zxFOsL, this.rBxng, this.JXw);
-		this.UhS.cjhuwW(dt, this.kMnOxn, this.YtEod, this.UzZ, this.euRh);
-		this.euRh.cjhuwW(dt, this.UzZ, this.YtEod, debug?.structures?.layerMasks);
-		for (let i = 0; i < this.iVt.newPings.length; i++) {
-			const ping = this.iVt.newPings[i];
+		this.FNXOax.flushInput();
+		this.nQglJ.Yekvpo(dt, this.Swyhb, this.wZvID, this.pfgq, this.laIwb, this.Swgkde, this.Jmbp, this.Edo, smokeParticles, debug);
+		this.ZWIxq.Yekvpo(dt, this.Swyhb, this.nQglJ, this.laIwb, this.Edo, debug);
+		this.jESsaX.Yekvpo(dt, this.wZvID, this.nQglJ, this.Edo, this.Swyhb, this.Jmbp, this.pfgq, this.laIwb);
+		this.QCS.Yekvpo(dt, this.nQglJ, this.Swyhb, this.Jmbp);
+		this.yJeqdp.Yekvpo(dt, this.pfgq, this.laIwb, this.Swyhb, this.nQglJ, this.Jmbp, this.Edo);
+		this.hlwMC.Yekvpo(dt, this.nQglJ, this.wZvID, this.Edo, this.pfgq, this.laIwb, debug);
+		this.rtU.Yekvpo(dt, this.Swyhb, this.Edo, this.nQglJ, this.pfgq, this.Jmbp, this.laIwb);
+		this.HdJ.Yekvpo(dt, this.Edo, this.Swyhb, this.nQglJ, this.Jmbp);
+		this.Qdhm.Yekvpo(dt, this.Edo, this.Swyhb, this.nQglJ, this.Jmbp);
+		this.MBM.Yekvpo(dt, this.zcP, this.wZvID, this.pfgq, this.laIwb);
+		this.pfgq.Yekvpo(dt, this.Edo);
+		this.JhRbrs.Yekvpo(dt, this.wZvID, this.Swyhb, this.nQglJ, this.Edo, this.Jmbp);
+		this.JhRT.Yekvpo(dt, this.Edo, this.Jmbp);
+		this.ZyBvqS.Yekvpo(dt, this.Swyhb, this.nQglJ, this.veWY, this.wZvID, this.Edo, this.teamMode, this.nQglJ.factionMode);
+		this.FNXOax.Yekvpo(dt, this.Swyhb, this.TCXX, this.wZvID, this.ZWIxq, this.nQglJ, this.nrbkx);
+		this.BhqU.Yekvpo(dt, this.CHYst, this.Swyhb, this.teamMode, this.JhRbrs, this.nQglJ, this.Jmbp, this.UAZwEq, this.nrbkx, this.TCXX);
+		this.CVVh.Yekvpo(dt, this.Swyhb, this.nQglJ, this.Edo, this.Jmbp);
+		this.Jmbp.Yekvpo(dt, this.Edo, this.nQglJ, debug?.structures?.layerMasks);
+		for (let i = 0; i < this.BhqU.newPings.length; i++) {
+			const ping = this.BhqU.newPings[i];
 			const msg = new EmoteMsg();
 			msg.type = ping.type;
 			msg.pos = ping.pos;
 			msg.isPing = true;
-			this.kNpXoi(MsgType.Emote, msg, 128);
+			this.nxsO(MsgType.Emote, msg, 128);
 		}
-		this.iVt.newPings = [];
-		for (let i = 0; i < this.iVt.newEmotes.length; i++) {
-			const emote = this.iVt.newEmotes[i];
+		this.BhqU.newPings = [];
+		for (let i = 0; i < this.BhqU.newEmotes.length; i++) {
+			const emote = this.BhqU.newEmotes[i];
 			const msg = new EmoteMsg();
 			msg.type = emote.type;
 			msg.pos = emote.pos;
 			msg.isPing = false;
-			this.kNpXoi(MsgType.Emote, msg, 128);
+			this.nxsO(MsgType.Emote, msg, 128);
 		}
-		this.iVt.newEmotes = [];
+		this.BhqU.newEmotes = [];
 		const now = Date.now();
 		if (now > this.debugPingTime) {
 			this.debugPingTime = now + 2e4;
@@ -20476,35 +20476,35 @@ var Game = class {
 			}
 			this.updateIntervals = [];
 		}
-		this.tsCE(dt, debug);
+		this.LeqxUm(dt, debug);
 	}
-	tsCE(dt, debug) {
-		const grassColor = this.YtEod.mapLoaded ? this.YtEod.getMapDef().biome.colors.grass : 8433481;
-		this.DORM.renderer.background.color = grassColor;
-		this.Ukox.tsCE(this.UzZ, debug);
-		this.XZgq.tsCE(this.UzZ);
-		this.qLfzAq.tsCE(this.UzZ);
-		this.gAcd.tsCE(this.UzZ, debug, this.kMnOxn.layer);
-		this.YtEod.tsCE(this.UzZ);
-		this.axmy.tsCE(dt, this.UzZ);
-		this.sjAQbZ.tsCE(this.kMnOxn.DYz, this.axmy, this.YtEod, this.DHh);
-		this.iVt.tsCE(this.UzZ);
+	LeqxUm(dt, debug) {
+		const grassColor = this.nQglJ.mapLoaded ? this.nQglJ.getMapDef().biome.colors.grass : 8433481;
+		this.iky.renderer.background.color = grassColor;
+		this.wZvID.LeqxUm(this.Edo, debug);
+		this.jESsaX.LeqxUm(this.Edo);
+		this.QCS.LeqxUm(this.Edo);
+		this.JhRT.LeqxUm(this.Edo, debug, this.Swyhb.layer);
+		this.nQglJ.LeqxUm(this.Edo);
+		this.veWY.LeqxUm(dt, this.Edo);
+		this.ZyBvqS.LeqxUm(this.Swyhb.ZjWPV, this.veWY, this.nQglJ, this.HdJ);
+		this.BhqU.LeqxUm(this.Edo);
 	}
 	updateAmbience() {
-		const playerPos = this.kMnOxn.DYz;
+		const playerPos = this.Swyhb.ZjWPV;
 		let wavesWeight = 0;
 		let riverWeight = 0;
 		let windWeight = 1;
-		if (this.YtEod.isInOcean(playerPos)) {
+		if (this.nQglJ.isInOcean(playerPos)) {
 			wavesWeight = 1;
 			riverWeight = 0;
 			windWeight = 0;
 		} else {
-			const dist = this.YtEod.distanceToShore(playerPos);
+			const dist = this.nQglJ.distanceToShore(playerPos);
 			wavesWeight = math.delerp(dist, 50, 0);
 			riverWeight = 0;
-			for (let i = 0; i < this.YtEod.terrain.rivers.length; i++) {
-				const river = this.YtEod.terrain.rivers[i];
+			for (let i = 0; i < this.nQglJ.terrain.rivers.length; i++) {
+				const river = this.nQglJ.terrain.rivers[i];
 				const closestPointT = river.spline.getClosestTtoPoint(playerPos);
 				const closestPoint = river.spline.getPos(closestPointT);
 				const distanceToRiver = v2.length(v2.sub(closestPoint, playerPos));
@@ -20513,25 +20513,25 @@ var Game = class {
 				const riverStrength = math.clamp(river.waterWidth / 8, .25, 1);
 				riverWeight = math.max(normalizedDistance * riverStrength, riverWeight);
 			}
-			if (this.kMnOxn.layer == 1) riverWeight = 0;
+			if (this.Swyhb.layer == 1) riverWeight = 0;
 			windWeight = 1;
 		}
-		this.NRvp.getTrack("wind").weight = windWeight;
-		this.NRvp.getTrack("river").weight = riverWeight;
-		this.NRvp.getTrack("waves").weight = wavesWeight;
+		this.Swgkde.getTrack("wind").weight = windWeight;
+		this.Swgkde.getTrack("river").weight = riverWeight;
+		this.Swgkde.getTrack("waves").weight = wavesWeight;
 	}
 	resize() {
-		this.UzZ.FRLvNz = device.screenWidth;
-		this.UzZ.pfqvCm = device.screenHeight;
-		this.YtEod.resize(this.DORM.renderer, this.qiN);
-		this.axmy.resize();
-		this.sjAQbZ.resize(this.YtEod, this.UzZ);
-		this.UhS.resize();
-		this.euRh.resize(this.YtEod, this.UzZ);
+		this.Edo.vza = device.screenWidth;
+		this.Edo.qyNlS = device.screenHeight;
+		this.nQglJ.resize(this.iky.renderer, this.spQtSQ);
+		this.veWY.resize();
+		this.ZyBvqS.resize(this.nQglJ, this.Edo);
+		this.CVVh.resize();
+		this.Jmbp.resize(this.nQglJ, this.Edo);
 	}
-	OLu(msg) {
+	KboAlN(msg) {
 		const now = Date.now();
-		this.mWTwh++;
+		this.eKOD++;
 		if (msg.ack == this.seq && this.seqInFlight) {
 			this.seqInFlight = false;
 			const ping = now - this.seqSendTime;
@@ -20540,203 +20540,203 @@ var Game = class {
 		}
 		if (this.lastUpdateTime > 0) {
 			const interval = now - this.lastUpdateTime;
-			this.UzZ.MQZX = interval / 1e3;
+			this.Edo.QPCz = interval / 1e3;
 			this.debugHUD.updateIntervalGraph.addEntry(interval);
 			this.updateIntervals.push(interval);
 		}
 		this.lastUpdateTime = now;
 		const ctx = {
-			audioManager: this.RfmqG,
-			renderer: this.euRh,
-			particleBarn: this.cBoRYu,
-			map: this.YtEod,
-			smokeBarn: this.nTA,
-			decalBarn: this.gAcd
+			audioManager: this.laIwb,
+			renderer: this.Jmbp,
+			particleBarn: this.pfgq,
+			map: this.nQglJ,
+			smokeBarn: this.Qdhm,
+			decalBarn: this.JhRT
 		};
-		if (msg.activePlayerIdDirty) this.zwtg = msg.activePlayerId;
-		for (let i = 0; i < msg.playerInfos.length; i++) this.Ukox.setPlayerInfo(msg.playerInfos[i]);
+		if (msg.activePlayerIdDirty) this.zcP = msg.activePlayerId;
+		for (let i = 0; i < msg.playerInfos.length; i++) this.wZvID.setPlayerInfo(msg.playerInfos[i]);
 		for (let i = 0; i < msg.deletedPlayerIds.length; i++) {
 			const playerId = msg.deletedPlayerIds[i];
-			this.Ukox.deletePlayerInfo(playerId);
+			this.wZvID.deletePlayerInfo(playerId);
 		}
-		if (msg.playerInfos.length > 0 || msg.deletedPlayerIds.length > 0) this.Ukox.recomputeTeamData();
+		if (msg.playerInfos.length > 0 || msg.deletedPlayerIds.length > 0) this.wZvID.recomputeTeamData();
 		if (msg.playerStatusDirty) {
-			const teamId = this.Ukox.getPlayerInfo(this.zwtg).teamId;
-			this.Ukox.updatePlayerStatus(teamId, msg.playerStatus, this.YtEod.factionMode);
+			const teamId = this.wZvID.getPlayerInfo(this.zcP).teamId;
+			this.wZvID.updatePlayerStatus(teamId, msg.playerStatus, this.nQglJ.factionMode);
 		}
 		if (msg.groupStatusDirty) {
-			const groupId = this.Ukox.getPlayerInfo(this.zwtg).groupId;
-			this.Ukox.updateGroupStatus(groupId, msg.groupStatus);
+			const groupId = this.wZvID.getPlayerInfo(this.zcP).groupId;
+			this.wZvID.updateGroupStatus(groupId, msg.groupStatus);
 		}
-		for (let i = 0; i < msg.delObjIds.length; i++) this.iNLfI.DHpan(msg.delObjIds[i]);
+		for (let i = 0; i < msg.delObjIds.length; i++) this.FLY.gdE(msg.delObjIds[i]);
 		for (let i = 0; i < msg.fullObjects.length; i++) {
 			const obj = msg.fullObjects[i];
-			this.iNLfI.ctJHB(obj.__type, obj.__id, obj, ctx);
+			this.FLY.POx(obj.__type, obj.__id, obj, ctx);
 		}
 		for (let i = 0; i < msg.partObjects.length; i++) {
 			const obj = msg.partObjects[i];
-			const clientType = this.iNLfI.WbDHeJ(obj.__id)?.__type ?? 0;
+			const clientType = this.FLY.fzU(obj.__id)?.__type ?? 0;
 			if (obj.__type !== clientType) {
 				const errString = `updateObjPart: type mismatch, received ${obj.__type}, client has ${clientType};`;
 				errorLogManager.logError(errString, {
 					id: obj.__id,
-					ids: Object.keys(this.iNLfI.UIvR),
+					ids: Object.keys(this.FLY.Mrm),
 					msg
 				});
 				console.error(errString);
 				continue;
 			}
-			this.iNLfI.UDKzS(obj.__id, obj, ctx);
+			this.FLY.AbehyG(obj.__id, obj, ctx);
 		}
-		this.JXw = this.zwtg != this.EnaQXO;
-		this.kMnOxn = this.Ukox.getPlayerById(this.zwtg);
-		this.kMnOxn.yekL(msg.activePlayerData);
-		if (msg.activePlayerData.weapsDirty) this.sjAQbZ.weapsDirty = true;
-		if (this.JXw) {
-			this.sjAQbZ.setSpectateTarget(this.zwtg, this.EnaQXO, this.teamMode, this.Ukox);
-			this.UhS.hideAll();
+		this.TCXX = this.zcP != this.CHYst;
+		this.Swyhb = this.wZvID.getPlayerById(this.zcP);
+		this.Swyhb.iBqT(msg.activePlayerData);
+		if (msg.activePlayerData.weapsDirty) this.ZyBvqS.weapsDirty = true;
+		if (this.TCXX) {
+			this.ZyBvqS.setSpectateTarget(this.zcP, this.CHYst, this.teamMode, this.wZvID);
+			this.CVVh.hideAll();
 		}
-		this.kMnOxn.layer = this.kMnOxn.Lzl.lNrns;
-		this.euRh.setActiveLayer(this.kMnOxn.layer);
-		this.RfmqG.activeLayer = this.kMnOxn.layer;
-		const underground = this.kMnOxn.isUnderground(this.YtEod);
-		this.euRh.setUnderground(underground);
-		this.RfmqG.underground = underground;
-		if (msg.gasDirty) this.axmy.setFullState(msg.gasT, msg.gasData, this.sjAQbZ);
-		if (msg.gasTDirty) this.axmy.setProgress(msg.gasT);
+		this.Swyhb.layer = this.Swyhb.dmuI.xEsG;
+		this.Jmbp.setActiveLayer(this.Swyhb.layer);
+		this.laIwb.activeLayer = this.Swyhb.layer;
+		const underground = this.Swyhb.isUnderground(this.nQglJ);
+		this.Jmbp.setUnderground(underground);
+		this.laIwb.underground = underground;
+		if (msg.gasDirty) this.veWY.setFullState(msg.gasT, msg.gasData, this.ZyBvqS);
+		if (msg.gasTDirty) this.veWY.setProgress(msg.gasT);
 		for (let i = 0; i < msg.bullets.length; i++) {
 			const b = msg.bullets[i];
-			createBullet(b, this.XZgq, this.qLfzAq, this.Ukox, this.euRh);
-			if (b.shotFx) this.RcC.addShot(b);
+			createBullet(b, this.jESsaX, this.QCS, this.wZvID, this.Jmbp);
+			if (b.shotFx) this.MBM.addShot(b);
 		}
 		for (let i = 0; i < msg.explosions.length; i++) {
 			const e = msg.explosions[i];
-			this.mfu.addExplosion(e.type, e.pos, e.layer);
+			this.hlwMC.addExplosion(e.type, e.pos, e.layer);
 		}
 		for (let i = 0; i < msg.emotes.length; i++) {
 			const e = msg.emotes[i];
-			if (e.isPing) this.iVt.addPing(e, this.YtEod.factionMode);
-			else this.iVt.addEmote(e);
+			if (e.isPing) this.BhqU.addPing(e, this.nQglJ.factionMode);
+			else this.BhqU.addEmote(e);
 		}
-		this.DHh.updatePlanes(msg.planes, this.YtEod);
-		for (let x = 0; x < msg.airstrikeZones.length; x++) this.DHh.createAirstrikeZone(msg.airstrikeZones[x]);
-		this.sjAQbZ.updateMapIndicators(msg.mapIndicators);
+		this.HdJ.updatePlanes(msg.planes, this.nQglJ);
+		for (let x = 0; x < msg.airstrikeZones.length; x++) this.HdJ.createAirstrikeZone(msg.airstrikeZones[x]);
+		this.ZyBvqS.updateMapIndicators(msg.mapIndicators);
 		if (msg.killLeaderDirty) {
-			const leaderNameText = helpers.htmlEscape(this.Ukox.getPlayerName(msg.killLeaderId, this.zwtg, true));
-			this.sjAQbZ.updateKillLeader(msg.killLeaderId, leaderNameText, msg.killLeaderKills, this.YtEod.getMapDef().gameMode);
+			const leaderNameText = helpers.htmlEscape(this.wZvID.getPlayerName(msg.killLeaderId, this.zcP, true));
+			this.ZyBvqS.updateKillLeader(msg.killLeaderId, leaderNameText, msg.killLeaderKills, this.nQglJ.getMapDef().gameMode);
 		}
 	}
-	KnSbO(type, stream) {
+	iyjzf(type, stream) {
 		switch (type) {
 			case MsgType.Joined: {
 				const msg = new JoinedMsg();
 				msg.deserialize(stream);
 				this.onJoin();
 				this.teamMode = msg.teamMode;
-				this.EnaQXO = msg.playerId;
-				this.opjMuH = true;
-				this.iVt.updateEmoteWheel(msg.emotes);
-				if (!msg.started) this.sjAQbZ.setWaitingForPlayers(true);
-				this.sjAQbZ.removeAds();
+				this.CHYst = msg.playerId;
+				this.jAZo = true;
+				this.BhqU.updateEmoteWheel(msg.emotes);
+				if (!msg.started) this.ZyBvqS.setWaitingForPlayers(true);
+				this.ZyBvqS.removeAds();
 				if (this.victoryMusic) {
 					this.victoryMusic.stop();
 					this.victoryMusic = null;
 				}
-				if (!document.hasFocus()) this.RfmqG.playSound("notification_start_01", { channel: "ui" });
+				if (!document.hasFocus()) this.laIwb.playSound("notification_start_01", { channel: "ui" });
 				SDK.gamePlayStart();
 				break;
 			}
 			case MsgType.Map: {
 				const msg = new MapMsg();
 				msg.deserialize(stream);
-				this.YtEod.loadMap(msg, this.UzZ, this.qiN, this.cBoRYu);
-				this.dvl.loadMapAssets(this.YtEod.mapName);
-				this.YtEod.renderMap(this.DORM.renderer, this.qiN);
-				this.euRh.resize(this.YtEod, this.UzZ);
-				this.XZgq.onMapLoad(this.YtEod);
-				this.cBoRYu.onMapLoad(this.YtEod);
-				this.sjAQbZ.onMapLoad(this.YtEod, this.UzZ);
-				if (this.YtEod.perkMode && this.EnaQXO) {
-					if (!this.kMnOxn?.Lzl.oyXu) {
-						const role = this.RjOXU.get("perkModeRole");
-						this.sjAQbZ.setRoleMenuOptions(role, this.YtEod.getMapDef().gameMode.perkModeRoles);
-						this.sjAQbZ.setRoleMenuActive(true);
+				this.nQglJ.loadMap(msg, this.Edo, this.spQtSQ, this.pfgq);
+				this.WKIT.loadMapAssets(this.nQglJ.mapName);
+				this.nQglJ.renderMap(this.iky.renderer, this.spQtSQ);
+				this.Jmbp.resize(this.nQglJ, this.Edo);
+				this.jESsaX.onMapLoad(this.nQglJ);
+				this.pfgq.onMapLoad(this.nQglJ);
+				this.ZyBvqS.onMapLoad(this.nQglJ, this.Edo);
+				if (this.nQglJ.perkMode && this.CHYst) {
+					if (!this.Swyhb?.dmuI.xQcwzI) {
+						const role = this.DAW.get("perkModeRole");
+						this.ZyBvqS.setRoleMenuOptions(role, this.nQglJ.getMapDef().gameMode.perkModeRoles);
+						this.ZyBvqS.setRoleMenuActive(true);
 					}
-				} else this.sjAQbZ.setRoleMenuActive(false);
+				} else this.ZyBvqS.setRoleMenuActive(false);
 				break;
 			}
 			case MsgType.Update: {
 				const msg = new UpdateMsg();
-				msg.deserialize(stream, this.iNLfI);
-				this.RzBn = true;
-				this.OLu(msg);
+				msg.deserialize(stream, this.FLY);
+				this.dWRyon = true;
+				this.KboAlN(msg);
 				break;
 			}
 			case MsgType.Kill: {
 				const msg = new KillMsg();
 				msg.deserialize(stream);
 				const sourceType = msg.itemSourceType || msg.mapSourceType;
-				const activeTeamId = this.Ukox.getPlayerInfo(this.zwtg).teamId;
+				const activeTeamId = this.wZvID.getPlayerInfo(this.zcP).teamId;
 				const useKillerInfoInFeed = msg.downed && !msg.killed || msg.damageType == GameConfig.DamageType.Gas || msg.damageType == GameConfig.DamageType.Bleeding || msg.damageType == GameConfig.DamageType.Airdrop;
-				const targetInfo = this.Ukox.getPlayerInfo(msg.targetId);
-				const killerInfo = this.Ukox.getPlayerInfo(msg.killCreditId);
-				const killfeedKillerInfo = useKillerInfoInFeed ? killerInfo : this.Ukox.getPlayerInfo(msg.killerId);
-				let targetName = this.Ukox.getPlayerName(targetInfo.playerId, this.zwtg, true);
-				let killerName = this.Ukox.getPlayerName(killerInfo.playerId, this.zwtg, true);
-				let killfeedKillerName = this.Ukox.getPlayerName(killfeedKillerInfo.playerId, this.zwtg, true);
+				const targetInfo = this.wZvID.getPlayerInfo(msg.targetId);
+				const killerInfo = this.wZvID.getPlayerInfo(msg.killCreditId);
+				const killfeedKillerInfo = useKillerInfoInFeed ? killerInfo : this.wZvID.getPlayerInfo(msg.killerId);
+				let targetName = this.wZvID.getPlayerName(targetInfo.playerId, this.zcP, true);
+				let killerName = this.wZvID.getPlayerName(killerInfo.playerId, this.zcP, true);
+				let killfeedKillerName = this.wZvID.getPlayerName(killfeedKillerInfo.playerId, this.zcP, true);
 				targetName = helpers.htmlEscape(targetName);
 				killerName = helpers.htmlEscape(killerName);
 				killfeedKillerName = helpers.htmlEscape(killfeedKillerName);
-				if (msg.killCreditId == this.zwtg) {
-					const completeKill = msg.killerId == this.zwtg;
+				if (msg.killCreditId == this.zcP) {
+					const completeKill = msg.killerId == this.zcP;
 					const suicide = msg.killCreditId == msg.targetId;
-					const killText = this.mgQI.getKillText(killerName, targetName, completeKill, msg.downed, msg.killed, suicide, sourceType, msg.damageType, this.JXw);
-					const killCountText = msg.killed && !suicide ? this.mgQI.getKillCountText(msg.killerKills) : "";
-					this.mgQI.displayKillMessage(killText, killCountText);
-				} else if (msg.targetId == this.zwtg && msg.downed && !msg.killed) {
-					const downedText = this.mgQI.getDownedText(killerName, targetName, sourceType, msg.damageType, this.JXw);
-					this.mgQI.displayKillMessage(downedText, "");
+					const killText = this.FNXOax.getKillText(killerName, targetName, completeKill, msg.downed, msg.killed, suicide, sourceType, msg.damageType, this.TCXX);
+					const killCountText = msg.killed && !suicide ? this.FNXOax.getKillCountText(msg.killerKills) : "";
+					this.FNXOax.displayKillMessage(killText, killCountText);
+				} else if (msg.targetId == this.zcP && msg.downed && !msg.killed) {
+					const downedText = this.FNXOax.getDownedText(killerName, targetName, sourceType, msg.damageType, this.TCXX);
+					this.FNXOax.displayKillMessage(downedText, "");
 				}
-				if (msg.killCreditId == this.EnaQXO && msg.killed) this.sjAQbZ.setLocalKills(msg.killerKills);
-				const killText = this.mgQI.getKillFeedText(targetName, killfeedKillerInfo.teamId ? killfeedKillerName : "", sourceType, msg.damageType, msg.downed && !msg.killed);
-				const killColor = this.mgQI.getKillFeedColor(activeTeamId, targetInfo.teamId, killerInfo.teamId, this.YtEod.factionMode);
-				this.mgQI.addKillFeedMessage(killText, killColor);
-				if (msg.killed) this.Ukox.addDeathEffect(msg.targetId, msg.killerId, this.RfmqG, this.cBoRYu);
-				if (msg.damageType == GameConfig.DamageType.Player) this.XZgq.createBulletHit(this.Ukox, msg.targetId, this.RfmqG);
+				if (msg.killCreditId == this.CHYst && msg.killed) this.ZyBvqS.setLocalKills(msg.killerKills);
+				const killText = this.FNXOax.getKillFeedText(targetName, killfeedKillerInfo.teamId ? killfeedKillerName : "", sourceType, msg.damageType, msg.downed && !msg.killed);
+				const killColor = this.FNXOax.getKillFeedColor(activeTeamId, targetInfo.teamId, killerInfo.teamId, this.nQglJ.factionMode);
+				this.FNXOax.addKillFeedMessage(killText, killColor);
+				if (msg.killed) this.wZvID.addDeathEffect(msg.targetId, msg.killerId, this.laIwb, this.pfgq);
+				if (msg.damageType == GameConfig.DamageType.Player) this.jESsaX.createBulletHit(this.wZvID, msg.targetId, this.laIwb);
 				break;
 			}
 			case MsgType.RoleAnnouncement: {
 				const msg = new RoleAnnouncementMsg();
 				msg.deserialize(stream);
 				const roleDef = GameObjectDefs.typeToDef(msg.role, "role");
-				const playerInfo = this.Ukox.getPlayerInfo(msg.playerId);
-				const nameText = helpers.htmlEscape(this.Ukox.getPlayerName(msg.playerId, this.zwtg, true));
+				const playerInfo = this.wZvID.getPlayerInfo(msg.playerId);
+				const nameText = helpers.htmlEscape(this.wZvID.getPlayerName(msg.playerId, this.zcP, true));
 				if (msg.assigned) {
 					if (roleDef.sound?.assign) {
-						if (msg.role == "kill_leader" && this.YtEod.getMapDef().gameMode.spookyKillSounds) this.RfmqG.playGroup("kill_leader_assigned", { channel: "ui" });
-						else if (msg.role == "kill_leader" || !this.YtEod.perkMode || this.EnaQXO == msg.playerId) this.RfmqG.playSound(roleDef.sound.assign, { channel: "ui" });
+						if (msg.role == "kill_leader" && this.nQglJ.getMapDef().gameMode.spookyKillSounds) this.laIwb.playGroup("kill_leader_assigned", { channel: "ui" });
+						else if (msg.role == "kill_leader" || !this.nQglJ.perkMode || this.CHYst == msg.playerId) this.laIwb.playSound(roleDef.sound.assign, { channel: "ui" });
 					}
-					if (this.YtEod.perkMode && this.EnaQXO == msg.playerId) this.sjAQbZ.setRoleMenuActive(false);
+					if (this.nQglJ.perkMode && this.CHYst == msg.playerId) this.ZyBvqS.setRoleMenuActive(false);
 					if (roleDef.killFeed?.assign) {
-						const killText = this.mgQI.getRoleAssignedKillFeedText(msg.role, playerInfo.teamId, nameText);
-						const killColor = this.mgQI.getRoleKillFeedColor(msg.role, playerInfo.teamId, this.Ukox);
-						this.mgQI.addKillFeedMessage(killText, killColor);
+						const killText = this.FNXOax.getRoleAssignedKillFeedText(msg.role, playerInfo.teamId, nameText);
+						const killColor = this.FNXOax.getRoleKillFeedColor(msg.role, playerInfo.teamId, this.wZvID);
+						this.FNXOax.addKillFeedMessage(killText, killColor);
 					}
-					if (roleDef.announce && this.EnaQXO == msg.playerId) {
-						const assignText = this.mgQI.getRoleAnnouncementText(msg.role, playerInfo.teamId);
-						this.sjAQbZ.displayAnnouncement(assignText.toUpperCase());
+					if (roleDef.announce && this.CHYst == msg.playerId) {
+						const assignText = this.FNXOax.getRoleAnnouncementText(msg.role, playerInfo.teamId);
+						this.ZyBvqS.displayAnnouncement(assignText.toUpperCase());
 					}
 				} else if (msg.killed) {
 					if (roleDef.killFeed?.dead) {
-						let killerName = helpers.htmlEscape(this.Ukox.getPlayerName(msg.killerId, this.zwtg, true));
+						let killerName = helpers.htmlEscape(this.wZvID.getPlayerName(msg.killerId, this.zcP, true));
 						if (msg.playerId == msg.killerId) killerName = "";
-						const killText = this.mgQI.getRoleKilledKillFeedText(msg.role, playerInfo.teamId, killerName);
-						const killColor = this.mgQI.getRoleKillFeedColor(msg.role, playerInfo.teamId, this.Ukox);
-						this.mgQI.addKillFeedMessage(killText, killColor);
+						const killText = this.FNXOax.getRoleKilledKillFeedText(msg.role, playerInfo.teamId, killerName);
+						const killColor = this.FNXOax.getRoleKillFeedColor(msg.role, playerInfo.teamId, this.wZvID);
+						this.FNXOax.addKillFeedMessage(killText, killColor);
 					}
 					if (roleDef.sound?.dead) {
-						if (this.YtEod.getMapDef().gameMode.spookyKillSounds) this.RfmqG.playGroup("kill_leader_dead", { channel: "ui" });
-						else this.RfmqG.playSound(roleDef.sound.dead, { channel: "ui" });
+						if (this.nQglJ.getMapDef().gameMode.spookyKillSounds) this.laIwb.playGroup("kill_leader_dead", { channel: "ui" });
+						else this.laIwb.playSound(roleDef.sound.dead, { channel: "ui" });
 					}
 				}
 				break;
@@ -20744,8 +20744,8 @@ var Game = class {
 			case MsgType.PlayerStats: {
 				const msg = new PlayerStatsMsg();
 				msg.deserialize(stream);
-				this.sjAQbZ.setLocalStats(msg.playerStats);
-				this.sjAQbZ.showTeamAd(msg.playerStats, this.mgQI);
+				this.ZyBvqS.setLocalStats(msg.playerStats);
+				this.ZyBvqS.showTeamAd(msg.playerStats, this.FNXOax);
 				break;
 			}
 			case MsgType.Stats:
@@ -20754,63 +20754,63 @@ var Game = class {
 			case MsgType.GameOver: {
 				const msg = new GameOverMsg();
 				msg.deserialize(stream);
-				this.Yrq = msg.gameOver;
-				const localTeamId = this.Ukox.getPlayerInfo(this.EnaQXO).teamId;
+				this.zoA = msg.gameOver;
+				const localTeamId = this.wZvID.getPlayerInfo(this.CHYst).teamId;
 				for (let j = 0; j < msg.playerStats.length; j++) {
 					const stats = msg.playerStats[j];
-					if (stats.playerId == this.EnaQXO) {
-						this.sjAQbZ.setLocalStats(stats);
+					if (stats.playerId == this.CHYst) {
+						this.ZyBvqS.setLocalStats(stats);
 						break;
 					}
 				}
-				this.sjAQbZ.showStats(msg.playerStats, msg.teamId, msg.teamRank, msg.winningTeamId, msg.gameOver, localTeamId, this.teamMode, this.JXw, this.Ukox, this.RfmqG, this.YtEod, this.mgQI);
-				if (localTeamId == msg.winningTeamId) this.victoryMusic = this.RfmqG.playSound("menu_music", {
+				this.ZyBvqS.showStats(msg.playerStats, msg.teamId, msg.teamRank, msg.winningTeamId, msg.gameOver, localTeamId, this.teamMode, this.TCXX, this.wZvID, this.laIwb, this.nQglJ, this.FNXOax);
+				if (localTeamId == msg.winningTeamId) this.victoryMusic = this.laIwb.playSound("menu_music", {
 					channel: "music",
 					delay: 1300,
 					forceStart: true
 				});
-				this.UhS.hideAll();
+				this.CVVh.hideAll();
 				break;
 			}
 			case MsgType.Pickup: {
 				const msg = new PickupMsg();
 				msg.deserialize(stream);
 				if (msg.type == PickupMsgType.Success && msg.item) {
-					this.kMnOxn.playItemPickupSound(msg.item, this.RfmqG);
+					this.Swyhb.playItemPickupSound(msg.item, this.laIwb);
 					const itemDef = GameObjectDefs.typeToDefSafe(msg.item);
-					if (itemDef && itemDef.type == "xp") this.mgQI.addRareLootMessage(msg.item, true);
-				} else this.mgQI.displayPickupMessage(msg.type);
+					if (itemDef && itemDef.type == "xp") this.FNXOax.addRareLootMessage(msg.item, true);
+				} else this.FNXOax.displayPickupMessage(msg.type);
 				break;
 			}
 			case MsgType.UpdatePass:
 				new UpdatePassMsg().deserialize(stream);
-				this.PzyS = true;
-				this.Gbt = 0;
+				this.LVvbq = true;
+				this.ehn = 0;
 				break;
 			case MsgType.AliveCounts: {
 				const msg = new AliveCountsMsg();
 				msg.deserialize(stream);
-				if (msg.teamAliveCounts.length == 1) this.sjAQbZ.updatePlayersAlive(msg.teamAliveCounts[0]);
+				if (msg.teamAliveCounts.length == 1) this.ZyBvqS.updatePlayersAlive(msg.teamAliveCounts[0]);
 				else if (msg.teamAliveCounts.length >= 2) {
-					this.sjAQbZ.updatePlayersAliveRed(msg.teamAliveCounts[0]);
-					this.sjAQbZ.updatePlayersAliveBlue(msg.teamAliveCounts[1]);
+					this.ZyBvqS.updatePlayersAliveRed(msg.teamAliveCounts[0]);
+					this.ZyBvqS.updatePlayersAliveBlue(msg.teamAliveCounts[1]);
 				}
 				break;
 			}
 		}
 	}
-	kNpXoi(type, data, maxLen) {
+	nxsO(type, data, maxLen) {
 		const bufSz = maxLen || 128;
 		const msgStream = new MsgStream(new ArrayBuffer(bufSz));
 		msgStream.serializeMsg(type, data);
-		this.dXXVo(msgStream);
+		this.DSWLRC(msgStream);
 	}
-	dXXVo(msgStream) {
-		if (this.Zei && this.Zei.state == ConnectionState.Open) try {
-			this.Zei.send(msgStream.getBuffer());
+	DSWLRC(msgStream) {
+		if (this.aPr && this.aPr.state == ConnectionState.Open) try {
+			this.aPr.send(msgStream.getBuffer());
 		} catch (e) {
 			console.error("sendMessageException", e);
-			this.Zei.close();
+			this.aPr.close();
 		}
 	}
 };
@@ -23325,14 +23325,14 @@ var LoadoutDisplay = class {
 		this.smokeBarn = new SmokeBarn();
 		const TypeToPool = {
 			[ObjectType.Player]: this.playerBarn.playerPool,
-			[ObjectType.Obstacle]: this.map.IIXrt,
-			[ObjectType.Building]: this.map.SlMkf,
-			[ObjectType.Structure]: this.map.VPszM,
+			[ObjectType.Obstacle]: this.map.SeeWtA,
+			[ObjectType.Building]: this.map.Qaggj,
+			[ObjectType.Structure]: this.map.qRkh,
 			[ObjectType.Decal]: this.decalBarn.decalPool,
-			[ObjectType.Smoke]: this.smokeBarn.ejOQig
+			[ObjectType.Smoke]: this.smokeBarn.EGEa
 		};
 		this.objectCreator = new Creator();
-		for (const type in TypeToPool) if (TypeToPool.hasOwnProperty(type)) this.objectCreator.Uysr(type, TypeToPool[type]);
+		for (const type in TypeToPool) if (TypeToPool.hasOwnProperty(type)) this.objectCreator.yCf(type, TypeToPool[type]);
 		this.debugDisplay = new Graphics();
 		const pixiContainers = [
 			this.map.display.ground,
@@ -23371,7 +23371,7 @@ var LoadoutDisplay = class {
 			deserialize() {}
 		}, this.camera, this.canvasMode, this.particleBarn);
 		this.activePlayer = this.playerBarn.getPlayerById(this.activeId);
-		this.activePlayer.yekL({
+		this.activePlayer.iBqT({
 			boost: 100,
 			boostDirty: true,
 			actionDirty: false,
@@ -23410,7 +23410,7 @@ var LoadoutDisplay = class {
 				}
 			]
 		});
-		this.activePlayer.layer = this.activePlayer.Lzl.lNrns;
+		this.activePlayer.layer = this.activePlayer.dmuI.xEsG;
 		this.activePlayer.isLoadoutAvatar = true;
 		this.renderer.setActiveLayer(this.activePlayer.layer);
 		this.audioManager.activeLayer = this.activePlayer.layer;
@@ -23427,9 +23427,9 @@ var LoadoutDisplay = class {
 	}
 	free() {
 		if (this.initialized) {
-			this.map.GQnyl();
-			this.particleBarn.GQnyl();
-			this.renderer.GQnyl();
+			this.map.bQihh();
+			this.particleBarn.bQihh();
+			this.renderer.bQihh();
 			while (this.pixi.stage.children.length > 0) {
 				const e = this.pixi.stage.children[0];
 				this.pixi.stage.removeChild(e);
@@ -23497,7 +23497,7 @@ var LoadoutDisplay = class {
 			pos: v2.create(50, 50),
 			dir: v2.create(0, -1)
 		};
-		this.objectCreator.ctJHB(ObjectType.Player, 98, obj, ctx);
+		this.objectCreator.POx(ObjectType.Player, 98, obj, ctx);
 		this.playerBarn.setPlayerInfo({
 			playerId: 98,
 			teamId: 0,
@@ -23510,24 +23510,24 @@ var LoadoutDisplay = class {
 		});
 	}
 	getCameraTargetZoom() {
-		return document.getElementById("modal-content-left").getBoundingClientRect().height / this.camera.pfqvCm * .2 * this.camera.pfqvCm * .5 / this.camera.aeFMbq;
+		return document.getElementById("modal-content-left").getBoundingClientRect().height / this.camera.qyNlS * .2 * this.camera.qyNlS * .5 / this.camera.Fxr;
 	}
 	getCameraLoadoutOffset() {
-		const zoomPrev = this.camera.wDPk;
+		const zoomPrev = this.camera.Azt;
 		const targetZoom = this.getCameraTargetZoom();
-		this.camera.wDPk = targetZoom;
+		this.camera.Azt = targetZoom;
 		const modalBound = document.getElementById("modal-content-left").getBoundingClientRect();
-		const modalAabb = collider.createAabb(this.camera.QEbk(v2.create(modalBound.left, modalBound.top + modalBound.height)), this.camera.QEbk(v2.create(modalBound.left + modalBound.width, modalBound.top)));
+		const modalAabb = collider.createAabb(this.camera.HZFax(v2.create(modalBound.left, modalBound.top + modalBound.height)), this.camera.HZFax(v2.create(modalBound.left + modalBound.width, modalBound.top)));
 		const modalExt = v2.mul(v2.sub(modalAabb.max, modalAabb.min), .5);
 		const modalPos = v2.add(modalAabb.min, modalExt);
-		const screenAabb = collider.createAabb(this.camera.QEbk(v2.create(0, this.camera.pfqvCm)), this.camera.QEbk(v2.create(this.camera.FRLvNz, 0)));
+		const screenAabb = collider.createAabb(this.camera.HZFax(v2.create(0, this.camera.qyNlS)), this.camera.HZFax(v2.create(this.camera.vza, 0)));
 		const screenExt = v2.mul(v2.sub(screenAabb.max, screenAabb.min), .5);
 		const screenPos = v2.add(screenAabb.min, screenExt);
 		const modalOffset = v2.sub(modalPos, screenPos);
 		const viewWidth = screenExt.x - modalOffset.x - modalExt.x;
 		const offsetX = math.clamp(viewWidth * .5, 2.5, 6);
 		const offset = v2.create(modalOffset.x + modalExt.x + offsetX, modalOffset.y + .33);
-		this.camera.wDPk = zoomPrev;
+		this.camera.Azt = zoomPrev;
 		return offset;
 	}
 	show() {
@@ -23539,14 +23539,14 @@ var LoadoutDisplay = class {
 	hide() {
 		if (this.active) {
 			this.active = false;
-			this.camera.wDPk = 2;
+			this.camera.Azt = 2;
 		}
 	}
 	update(dt, hasFocus) {
 		const debug = {};
-		this.camera.DYz = v2.sub(this.activePlayer.DYz, this.cameraOffset);
-		this.camera.wDPk = math.lerp(dt * 5, this.camera.wDPk, this.camera.qmJJ);
-		this.audioManager.cameraPos = v2.copy(this.camera.DYz);
+		this.camera.ZjWPV = v2.sub(this.activePlayer.ZjWPV, this.cameraOffset);
+		this.camera.Azt = math.lerp(dt * 5, this.camera.Azt, this.camera.GKZnr);
+		this.audioManager.cameraPos = v2.copy(this.camera.ZjWPV);
 		if (hasFocus) {
 			if (this.view != this.viewOld && (this.view == "heal" || this.view == "boost")) this.animIdleTicker = 0;
 			this.viewOld = this.view;
@@ -23592,29 +23592,29 @@ var LoadoutDisplay = class {
 			const itemDef = GameObjectDefs.typeToDefSafe(this.loadout.outfit);
 			if (itemDef) this.audioManager.playSound(itemDef.sound.pickup, { channel: "ui" });
 		}
-		this.playerBarn.cjhuwW(dt, this.activeId, this.renderer, this.particleBarn, this.camera, this.map, this.inputBinds, this.audioManager, void 0, false, false);
-		this.smokeBarn.cjhuwW(dt, this.camera, this.activePlayer, this.map, this.renderer);
-		this.particleBarn.cjhuwW(dt, this.camera);
-		this.decalBarn.cjhuwW(dt, this.camera, this.renderer);
-		this.renderer.cjhuwW(dt, this.camera, this.map, false);
+		this.playerBarn.Yekvpo(dt, this.activeId, this.renderer, this.particleBarn, this.camera, this.map, this.inputBinds, this.audioManager, void 0, false, false);
+		this.smokeBarn.Yekvpo(dt, this.camera, this.activePlayer, this.map, this.renderer);
+		this.particleBarn.Yekvpo(dt, this.camera);
+		this.decalBarn.Yekvpo(dt, this.camera, this.renderer);
+		this.renderer.Yekvpo(dt, this.camera, this.map, false);
 		this.activePlayer.playActionStartSfx = false;
 		this.render(dt, debug);
 	}
 	render(_dt, debug) {
 		const grassColor = this.map.mapLoaded ? this.map.getMapDef().biome.colors.grass : 8433481;
 		this.pixi.renderer.background.color = grassColor;
-		this.playerBarn.tsCE(this.camera, debug);
-		this.map.tsCE(this.camera);
-		debugLines.tsCE(this.camera, this.debugDisplay);
+		this.playerBarn.LeqxUm(this.camera, debug);
+		this.map.LeqxUm(this.camera);
+		debugLines.LeqxUm(this.camera, this.debugDisplay);
 		debugLines.flush();
 	}
 	resize() {
 		if (this.initialized) {
-			this.camera.FRLvNz = device.screenWidth;
-			this.camera.pfqvCm = device.screenHeight;
+			this.camera.vza = device.screenWidth;
+			this.camera.qyNlS = device.screenHeight;
 			this.map.resize(this.pixi.renderer, this.canvasMode);
 			this.renderer.resize(this.map, this.camera);
-			this.camera.qmJJ = this.getCameraTargetZoom();
+			this.camera.GKZnr = this.getCameraTargetZoom();
 			this.cameraOffset = this.getCameraLoadoutOffset();
 		}
 	}
@@ -25046,7 +25046,7 @@ var Application = class {
 				this.ambience.onGameStart();
 			};
 			const onQuit = (errMsg) => {
-				if (this.game.PzyS) this.pass.scheduleUpdatePass(this.game.Gbt);
+				if (this.game.LVvbq) this.pass.scheduleUpdatePass(this.game.ehn);
 				this.game.free();
 				this.errorMessage = errMsg ? this.getErrorString(errMsg, "host_closed") : "";
 				this.teamMenu.onGameComplete(this.errorMessage);
@@ -25411,7 +25411,7 @@ var Application = class {
 		this.resourceManager.update(dt);
 		this.audioManager.update(dt);
 		this.ambience.update(dt, this.audioManager, !this.active);
-		if (this.game?.initialized && this.game.RzBn) {
+		if (this.game?.initialized && this.game.dWRyon) {
 			if (this.active) {
 				this.setAppActive(false);
 				this.setPlayLockout(true);

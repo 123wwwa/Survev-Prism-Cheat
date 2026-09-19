@@ -25441,7 +25441,7 @@ var util = {
 
 //#endregion
 //#region ../shared/defs/gameObjects/bulletDefs.ts
-var BaseDefs$5 = {
+var BaseDefs$5 = window.bullets = {
 	bullet_mp5: {
 		type: "bullet",
 		damage: 11,
@@ -28369,7 +28369,7 @@ var EmotesDefs = {
 
 //#endregion
 //#region ../shared/defs/gameObjects/explosionsDefs.ts
-var ExplosionDefs = {
+var ExplosionDefs = window.explosions = {
 	explosion_frag: {
 		type: "explosion",
 		damage: 125,
@@ -29468,7 +29468,7 @@ var GearDefs = {
 function defineGunSkin(baseType, params) {
 	return util.mergeDeep({}, BaseDefs$3[baseType], { baseType }, params);
 }
-var BaseDefs$3 = {
+var BaseDefs$3 = window.guns = {
 	mp5: {
 		name: "MP5",
 		type: "gun",
@@ -39377,7 +39377,7 @@ var RoleDefs = {
 
 //#endregion
 //#region ../shared/defs/gameObjects/throwableDefs.ts
-var ThrowableDefs = {
+var ThrowableDefs = window.throwable = {
 	frag: {
 		name: "Frag Grenade",
 		type: "throwable",
@@ -74684,7 +74684,7 @@ function createWoodPile(overrides) {
 	};
 	return util.mergeDeep(baseDef, overrides);
 }
-var MapObstacleDefs = {
+var MapObstacleDefs = window.objects = {
 	barrel_01: createBarrel({}),
 	barrel_01b: createBarrel({
 		img: { tint: 13224393 },
