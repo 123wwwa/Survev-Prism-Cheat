@@ -31,9 +31,9 @@ The workflow uses `ubuntu-24.04`, Node.js 24, and action versions that run on No
 
 ## Preserving the upstream build and imports
 
-The upstream source and Vite configuration files remain unchanged. Production entry points, shared chunks, CSS and image processing, obfuscation plugins, and hashed filenames are preserved. The pipeline does not apply `minify: false` to the entire build.
+The upstream checkout stays unchanged. The wrapper explicitly sets `build.minify: false` and removes `codefend-plugin`, which otherwise replaces `m_` properties with random names independently of minification. Both app and shared retain source properties such as `m_input`, `m_camera`, and `m_netData`. Production entry points, chunk splitting, CSS/image processing, and the hashed filename format are retained; actual hashes and chunk contents can differ from a normal upstream build.
 
-The app and shared code are captured during Rolldown's `renderChunk` stage. The shared chunk is identified as the game's direct dependency containing upstream `shared/gameConfig.ts`, rather than by a hardcoded hash or file size. The runtime helper and statistics entry are excluded; ambiguous selection stops the build. The original build then completes Oxc minification and filename hashing normally. Internal hash placeholders in the captured code are replaced with **the filenames finalized by that same production build**. Import paths and exported aliases remain unchanged in both extracted files.
+The app and shared code are captured during Rolldown's `renderChunk` stage. The shared chunk is identified as the game's direct dependency containing upstream `shared/gameConfig.ts`, rather than by a hardcoded hash or file size. The runtime helper and statistics entry are excluded; ambiguous selection stops the build. Hash placeholders are replaced with the filenames finalized by the same unminified build. App/shared import and export aliases remain consistent with each other. Short bundle export aliases are module wiring, not renamed source properties.
 
 ```js
 import { a as __toESM } from "./B0Z9INg1.js";
@@ -41,7 +41,7 @@ import { U as GameConfig /* ... */ } from "./shared-chunk-hash.js";
 var AliveCountsMsg = class { /* ... */ };
 ```
 
-Filenames from an existing website, such as `Cbg9k6wS.js`, are not hardcoded. Matching a deployed site's hashes requires matching its source commit, configuration, dependencies, obfuscation output, and other build inputs. The upstream obfuscation plugin also uses randomness, so separate builds are not guaranteed to produce identical hashes. This tool preserves **the exact dependency filenames from its own production build** in the extracted JS. It does not restore property names already changed by the upstream obfuscation plugin.
+Filenames from an existing website, such as `Cbg9k6wS.js`, are not hardcoded. Turning off minification and property obfuscation changes build contents and therefore hashes. The extracted files use dependency filenames from their own build. The userscript maps those imports to the injected shared module and the host's runtime helper.
 
 ## Files and CDN access
 

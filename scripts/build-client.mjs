@@ -21,6 +21,10 @@ const loaded = await loadConfigFromFile(
 );
 if (!loaded) throw new Error('Upstream Vite config could not be loaded.');
 const config = loaded.config;
+const upstreamPlugins = (await Promise.all(config.plugins ?? [])).flat(Infinity).filter(Boolean);
+if (upstreamPlugins.filter(plugin => plugin.name === 'codefend-plugin').length !== 1) {
+  throw new Error('Upstream property obfuscator changed; review the readable build configuration.');
+}
 const captured = new Map();
 await build({
   ...config,
@@ -28,12 +32,13 @@ await build({
   root: client,
   mode: 'production',
   plugins: [
-    ...(config.plugins ?? []),
+    ...upstreamPlugins.filter(plugin => plugin.name !== 'codefend-plugin'),
     {
       name: 'capture-app-and-shared-before-native-minification',
       enforce: 'post',
       configResolved(resolved) {
-        if (resolved.build.minify !== 'oxc') throw new Error('The upstream minifier changed; review the capture adapter.');
+        if (resolved.build.minify !== false) throw new Error('Readable builds require minify: false.');
+        if (resolved.plugins.some(plugin => plugin.name === 'codefend-plugin')) throw new Error('Property obfuscation must be disabled.');
       },
       renderChunk: {
         order: 'post',
@@ -59,6 +64,8 @@ await build({
         }
         this.emitFile({ type: 'asset', fileName: 'build-report.json', source: JSON.stringify({
           artifacts,
+          minify: false,
+          propertyObfuscation: false,
           generatedJavaScript: chunks.map(item => item.fileName),
           productionHashes: Object.fromEntries(chunks.map(item => [item.fileName, sha256(item.code)])),
         }, null, 2) });
@@ -67,6 +74,7 @@ await build({
   ],
   build: {
     ...config.build,
+    minify: false,
     outDir: outputDirectory,
     emptyOutDir: true,
     reportCompressedSize: false,
