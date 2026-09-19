@@ -1,5 +1,5 @@
-import { a as __toESM } from "./B0Z9INg1.js";
-import { $ as Graphics, A as SCOPE_LEVELS, B as Anim, C as MapObjectDefs, D as PingDefs, E as QuestDefs, F as assert, G as HasteType, H as EmoteSlot, I as util, J as Rarity, K as Input, L as math, M as EmotesDefs, N as CrosshairDefs, O as PassDefs, P as BulletDefs, Q as BasePrepare, R as v2, S as GameObjectDefs, T as coldet, U as GameConfig, V as DamageType, W as GasMode, X as WeaponSlot, Y as TeamMode, Z as Spritesheet, _ as ObjectType, a as helpers, at as Container, b as InputMsg, c as proxy, ct as Point, d as MsgStream, dt as PRECISION, et as LINE_JOIN, f as MsgType, ft as RENDERER_TYPE, g as getPlayerStatusUpdateRate, h as UpdateMsg, i as ConfigManager, it as Sprite, j as EmoteCategory, k as GEAR_TYPES, l as loadout, lt as Color$1, m as UpdatePassMsg, mt as require_jquery, n as SDK, nt as Text, o as MapDefs, ot as RenderTexture, p as PickupMsgType, pt as SCALE_MODES, r as device, rt as TextStyle, s as api, st as Texture, t as Localization, tt as Application$1, u as Constants, ut as settings, v as MapMsg, w as collider, x as BitStream, y as JoinMsg, z as Action } from "./BvmdDwTY.js";
+import { a as __toESM } from "./7_rZTKki.js";
+import { $ as Graphics, A as SCOPE_LEVELS, B as Anim, C as MapObjectDefs, D as PingDefs, E as QuestDefs, F as assert, G as HasteType, H as EmoteSlot, I as util, J as Rarity, K as Input, L as math, M as EmotesDefs, N as CrosshairDefs, O as PassDefs, P as BulletDefs, Q as BasePrepare, R as v2, S as GameObjectDefs, T as coldet, U as GameConfig, V as DamageType, W as GasMode, X as WeaponSlot, Y as TeamMode, Z as Spritesheet, _ as ObjectType, a as helpers, at as Container, b as InputMsg, c as proxy, ct as Point, d as MsgStream, dt as PRECISION, et as LINE_JOIN, f as MsgType, ft as RENDERER_TYPE, g as getPlayerStatusUpdateRate, h as UpdateMsg, i as ConfigManager, it as Sprite, j as EmoteCategory, k as GEAR_TYPES, l as loadout, lt as Color$1, m as UpdatePassMsg, mt as require_jquery, n as SDK, nt as Text, o as MapDefs, ot as RenderTexture, p as PickupMsgType, pt as SCALE_MODES, r as device, rt as TextStyle, s as api, st as Texture, t as Localization, tt as Application$1, u as Constants, ut as settings, v as MapMsg, w as collider, x as BitStream, y as JoinMsg, z as Action } from "./ocX2Ek5F.js";
 
 //#region ../shared/net/aliveCountsMsg.ts
 var AliveCountsMsg = class {
@@ -3998,55 +3998,55 @@ var AudioManager = class {
 //#endregion
 //#region src/camera.ts
 var Camera = class {
-	Obgct = v2.create(0, 0);
-	rMBaI = 16;
-	pju = 1.5;
-	SydkJ = 1.5;
-	btgd = 1;
-	aJoZKR = 1;
-	RjP = true;
-	svtcZ = 0;
-	GYh = true;
-	uWHw = false;
-	syGZ = 0;
-	WMfjV() {
-		return this.rMBaI * this.pju;
+	m_pos = v2.create(0, 0);
+	m_ppu = 16;
+	m_zoom = 1.5;
+	m_targetZoom = 1.5;
+	m_screenWidth = 1;
+	m_screenHeight = 1;
+	m_shakeEnabled = true;
+	m_shakeInt = 0;
+	m_interpEnabled = true;
+	m_localRotationEnabled = false;
+	m_interpInterval = 0;
+	m_z() {
+		return this.m_ppu * this.m_zoom;
 	}
-	InUgqy(point) {
+	m_pointToScreen(point) {
 		return {
-			x: this.btgd * .5 + (point.x - this.Obgct.x) * this.WMfjV(),
-			y: this.aJoZKR * .5 - (point.y - this.Obgct.y) * this.WMfjV()
+			x: this.m_screenWidth * .5 + (point.x - this.m_pos.x) * this.m_z(),
+			y: this.m_screenHeight * .5 - (point.y - this.m_pos.y) * this.m_z()
 		};
 	}
-	Qjir(screen) {
+	m_screenToPoint(screen) {
 		return {
-			x: this.Obgct.x + (screen.x - this.btgd * .5) / this.WMfjV(),
-			y: this.Obgct.y + (this.aJoZKR * .5 - screen.y) / this.WMfjV()
+			x: this.m_pos.x + (screen.x - this.m_screenWidth * .5) / this.m_z(),
+			y: this.m_pos.y + (this.m_screenHeight * .5 - screen.y) / this.m_z()
 		};
 	}
-	jIqEw(p) {
-		return p * this.pju;
+	m_pixels(p) {
+		return p * this.m_zoom;
 	}
-	OQyq(s) {
-		return s * this.WMfjV();
+	m_scaleToScreen(s) {
+		return s * this.m_z();
 	}
-	DwcYA(en) {
-		this.RjP = en;
+	m_setShakeEnabled(en) {
+		this.m_shakeEnabled = en;
 	}
-	DvxO(en) {
-		this.GYh = en;
+	m_setInterpEnabled(en) {
+		this.m_interpEnabled = en;
 	}
-	PvzX(en) {
-		this.uWHw = en;
+	m_setRotationEnabled(en) {
+		this.m_localRotationEnabled = en;
 	}
-	LPeFRo(pos, intensity) {
-		const dist = v2.length(v2.sub(this.Obgct, pos));
+	m_addShake(pos, intensity) {
+		const dist = v2.length(v2.sub(this.m_pos, pos));
 		const newInt = math.delerp(dist, 40, 10) * intensity;
-		this.svtcZ = Math.max(this.svtcZ, newInt);
+		this.m_shakeInt = Math.max(this.m_shakeInt, newInt);
 	}
-	Zdg() {
-		if (this.RjP) this.Obgct = v2.add(this.Obgct, v2.randomUnit(this.svtcZ));
-		this.svtcZ = 0;
+	m_applyShake() {
+		if (this.m_shakeEnabled) this.m_pos = v2.add(this.m_pos, v2.randomUnit(this.m_shakeInt));
+		this.m_shakeInt = 0;
 	}
 };
 
@@ -4149,18 +4149,22 @@ var Graph = class {
 		return this._maxHistory;
 	}
 	_maxValue = 0;
+	/** Biggest value in the current history */
 	get maxValue() {
 		return this._maxValue;
 	}
 	_minValue = 0;
+	/** Smallest value in the current history */
 	get minValue() {
 		return this._minValue;
 	}
 	_sum = 0;
+	/** Sum of all values in the current history */
 	get sum() {
 		return this._sum;
 	}
 	_averageValue = 0;
+	/** Rounded average value in the history (sum / history size) */
 	get averageValue() {
 		return this._averageValue;
 	}
@@ -4311,7 +4315,7 @@ var DebugHUD = class {
 			graph.toggleGraph(cfg.enabled && graphCfg.showGraph);
 		}
 	}
-	eJuNn(dt, game) {
+	m_update(dt, game) {
 		if (!this.container.visible) return;
 		const cfg = this.hudConfig();
 		if (cfg.fps.show || cfg.fps.showGraph) {
@@ -4326,8 +4330,8 @@ var DebugHUD = class {
 		}
 		for (let i = 0; i < this.infoLines.length; i++) this.infoLines[i].visible = false;
 		if (cfg.position) {
-			const activePlayer = game.ONGIE;
-			this.addLine(`Pos:     X: ${activePlayer.Obgct.x.toFixed(2)}   Y: ${activePlayer.Obgct.y.toFixed(2)}`);
+			const activePlayer = game.m_activePlayer;
+			this.addLine(`Pos:     X: ${activePlayer.m_pos.x.toFixed(2)}   Y: ${activePlayer.m_pos.y.toFixed(2)}`);
 		}
 		if (cfg.objectPools) {
 			this.addLine("-- Objects     (Active / Allocated)");
@@ -4336,26 +4340,26 @@ var DebugHUD = class {
 				this.addLine(`${name}: ${active.toString().padStart(pad)} / ${allocated.toString().padStart(4)}`);
 			};
 			const addPool = (name, pool) => {
-				addCount(name, pool.fddOV, pool.lOGr().length);
+				addCount(name, pool.m_activeCount, pool.m_getPool().length);
 			};
-			addPool("Players", game.bZEWIr.playerPool);
-			addPool("Loot", game.YrXyh.lootPool);
-			addPool("Projectiles", game.Jbthd.projectilePool);
-			addPool("Obstacles", game.BSCABs.FDvy);
-			addPool("Buildings", game.BSCABs.cMUHHl);
-			addPool("Structures", game.BSCABs.jVMWEq);
-			addPool("Decals", game.mFics.decalPool);
-			addPool("Dead Bodies", game.bbtw.deadBodyPool);
-			addPool("Smoke", game.yjto.rTw);
-			addPool("Airdrops", game.wkMlZ.airdropPool);
-			const activeParticles = game.oGDwCY.particles.filter((p) => p.active).length;
-			addCount("Particles", activeParticles, game.oGDwCY.particles.length);
-			const activeBullets = game.HLt.bullets.filter((b) => b.alive).length;
-			addCount("Bullets", activeBullets, game.HLt.bullets.length);
-			const activeExplosions = game.RTN.explosions.filter((e) => e.active).length;
-			addCount("Explosions", activeExplosions, game.RTN.explosions.length);
-			const activePlanes = game.agvujx.planes.filter((p) => p.active).length;
-			addCount("Planes", activePlanes, game.agvujx.planes.length);
+			addPool("Players", game.m_playerBarn.playerPool);
+			addPool("Loot", game.m_lootBarn.lootPool);
+			addPool("Projectiles", game.m_projectileBarn.projectilePool);
+			addPool("Obstacles", game.m_map.m_obstaclePool);
+			addPool("Buildings", game.m_map.m_buildingPool);
+			addPool("Structures", game.m_map.m_structurePool);
+			addPool("Decals", game.m_decalBarn.decalPool);
+			addPool("Dead Bodies", game.m_deadBodyBarn.deadBodyPool);
+			addPool("Smoke", game.m_smokeBarn.m_smokePool);
+			addPool("Airdrops", game.m_airdropBarn.airdropPool);
+			const activeParticles = game.m_particleBarn.particles.filter((p) => p.active).length;
+			addCount("Particles", activeParticles, game.m_particleBarn.particles.length);
+			const activeBullets = game.m_bulletBarn.bullets.filter((b) => b.alive).length;
+			addCount("Bullets", activeBullets, game.m_bulletBarn.bullets.length);
+			const activeExplosions = game.m_explosionBarn.explosions.filter((e) => e.active).length;
+			addCount("Explosions", activeExplosions, game.m_explosionBarn.explosions.length);
+			const activePlanes = game.m_planeBarn.planes.filter((p) => p.active).length;
+			addCount("Planes", activePlanes, game.m_planeBarn.planes.length);
 		}
 		this.updateLayout();
 	}
@@ -4410,7 +4414,7 @@ var DebugLines = class {
 	addCircle(pos, rad, color, fill) {}
 	addAabb(min, max, color, fill) {}
 	addCollider(col, color, fill) {}
-	aTWTA(camera, gfx) {}
+	m_render(camera, gfx) {}
 	flush() {
 		this.shapes = [];
 	}
@@ -4573,7 +4577,7 @@ var EmoteBarn = class {
 				if (this.emoteSelector.ping && !this.emoteWheelsGreyed) {
 					if (PingDefs[this.emoteSelector.ping]?.pingMap) {
 						worldPos = this.uiManager.getWorldPosFromMapPos(this.bigmapPingPos || this.emoteScreenPos, this.map, this.camera);
-						worldPos ||= this.camera.Qjir(this.emoteScreenPos);
+						worldPos ||= this.camera.m_screenToPoint(this.emoteScreenPos);
 						worldPos.x = math.clamp(worldPos.x, 0, this.map.width);
 						worldPos.y = math.clamp(worldPos.y, 0, this.map.height);
 						this.sendPing({
@@ -4582,7 +4586,7 @@ var EmoteBarn = class {
 						});
 					}
 				} else if (this.emoteSelector.emote && !this.emoteWheelsGreyed) {
-					worldPos = this.activePlayer.Obgct;
+					worldPos = this.activePlayer.m_pos;
 					this.sendEmote({
 						type: this.emoteSelector.emote,
 						pos: worldPos
@@ -4597,7 +4601,7 @@ var EmoteBarn = class {
 			if (this.activePlayer) {
 				let worldPos;
 				if (this.emoteSelector.emote && !this.emoteWheelsGreyed) {
-					worldPos = this.activePlayer.Obgct;
+					worldPos = this.activePlayer.m_pos;
 					this.sendEmote({
 						type: this.emoteSelector.emote,
 						pos: worldPos
@@ -4620,13 +4624,13 @@ var EmoteBarn = class {
 					x: e.originalEvent.changedTouches[0].pageX,
 					y: e.originalEvent.changedTouches[0].pageY
 				};
-				this.emoteScreenPos = v2.create(this.camera.btgd / 2, this.camera.aJoZKR / 2);
+				this.emoteScreenPos = v2.create(this.camera.m_screenWidth / 2, this.camera.m_screenHeight / 2);
 				this.pingMouseTriggered = true;
 			});
 			this.emoteButtonElem.css("pointer-events", "auto");
 			this.emoteButtonElem.on("touchstart", (event) => {
 				event.stopPropagation();
-				this.emoteScreenPos = v2.create(this.camera.btgd / 2, this.camera.aJoZKR / 2);
+				this.emoteScreenPos = v2.create(this.camera.m_screenWidth / 2, this.camera.m_screenHeight / 2);
 				this.emoteMouseTriggered = true;
 			});
 			this.emoteElems.on("touchstart", (e) => {
@@ -4821,7 +4825,7 @@ var EmoteBarn = class {
 		this.indContainer.addChild(this.airstrikeIndicator.indContainer);
 		this.pingIndicators.push({ ping: this.airstrikeIndicator });
 	}
-	MkE() {
+	m_free() {
 		if (device.touch) {
 			(0, import_jquery.default)(document).off("touchstart", this.onTouchStart);
 			this.emoteButtonElem.off("touchstart");
@@ -4985,7 +4989,7 @@ var EmoteBarn = class {
 		this.emoteCounter++;
 		if (this.emoteCounter >= GameConfig.player.emoteThreshold) this.emoteHardTicker = this.emoteHardTicker > 0 ? this.emoteHardTicker : GameConfig.player.emoteHardCooldown * 1.5;
 	}
-	eJuNn(dt, localId, player, teamMode, deadBodyBarn, map, renderer, input, inputBinds, spectating) {
+	m_update(dt, localId, player, teamMode, deadBodyBarn, map, renderer, input, inputBinds, spectating) {
 		const playerBarn = this.playerBarn;
 		const camera = this.camera;
 		let mousePos = v2.create(input.mousePos.x, input.mousePos.y);
@@ -5022,11 +5026,11 @@ var EmoteBarn = class {
 			if (this.emoteMouseTriggered) this.triggerEmote();
 		}
 		this.activePlayer = player;
-		if ((localId != player.__id || !!player.glWLM.wer) && !this.disable) {
-			this.MkE();
+		if ((localId != player.__id || !!player.m_netData.m_dead) && !this.disable) {
+			this.m_free();
 			this.disable = true;
 		}
-		const perkModeDisable = map.perkMode && !player.glWLM.mWZGg;
+		const perkModeDisable = map.perkMode && !player.m_netData.m_role;
 		if (!this.disable && !perkModeDisable) {
 			this.wheelKeyTriggered = this.pingKeyTriggered || this.emoteMouseTriggered;
 			this.emoteSoftTicker -= dt;
@@ -5047,7 +5051,7 @@ var EmoteBarn = class {
 				this.displayWheel(this.parentDisplayed, true);
 				this.wheelDisplayed = true;
 				this.displayedSelectors = this.pingMouseTriggered ? this.teamPingSelectors : this.emoteWheelSelectors;
-				this.worldPos = camera.Qjir(this.emoteScreenPos);
+				this.worldPos = camera.m_screenToPoint(this.emoteScreenPos);
 			}
 			if (this.wheelDisplayed) {
 				this.emoteTimeoutTicker += dt;
@@ -5072,7 +5076,7 @@ var EmoteBarn = class {
 						const distToCenter = v2.length(vB);
 						const angleB = vectorToDegreeAngle(vB);
 						const distMinLength = 35;
-						const equippedWeapon = player.RnR.Lyvf[player.RnR.opb];
+						const equippedWeapon = player.m_localData.m_weapons[player.m_localData.m_curWeapIdx];
 						const weapDef = GameObjectDefs.typeToDefSafe(equippedWeapon.type);
 						let ammoType = "";
 						if (weapDef && weapDef.ammo) ammoType = weapDef.ammo;
@@ -5138,8 +5142,8 @@ var EmoteBarn = class {
 				let targetPos = v2.create(0, 0);
 				let targetLayer = 0;
 				const targetPlayer = playerBarn.getPlayerById(emote.playerId);
-				if (targetPlayer && !targetPlayer.glWLM.wer) {
-					targetPos = v2.copy(targetPlayer.faA);
+				if (targetPlayer && !targetPlayer.m_netData.m_dead) {
+					targetPos = v2.copy(targetPlayer.m_visualPos);
 					targetLayer = targetPlayer.layer;
 					hasTarget = true;
 				}
@@ -5168,10 +5172,10 @@ var EmoteBarn = class {
 				} else emote.alive = false;
 			}
 		}
-		const camExtents = v2.create(camera.btgd * .5 / camera.WMfjV(), camera.aJoZKR * .5 / camera.WMfjV());
+		const camExtents = v2.create(camera.m_screenWidth * .5 / camera.m_z(), camera.m_screenHeight * .5 / camera.m_z());
 		const camAabb = {
-			min: v2.sub(camera.Obgct, camExtents),
-			max: v2.add(camera.Obgct, camExtents)
+			min: v2.sub(camera.m_pos, camExtents),
+			max: v2.add(camera.m_pos, camExtents)
 		};
 		const groupId = playerBarn.getPlayerInfo(player.__id).groupId;
 		const groupInfo = playerBarn.getGroupInfo(groupId);
@@ -5194,22 +5198,22 @@ var EmoteBarn = class {
 				indicator.fadeOut -= indicator.life > 0 ? 0 : dt;
 				if (indicator.fadeOut > 0) {
 					const indicatorPos = indicator.pos;
-					const dir = v2.normalizeSafe(v2.sub(indicatorPos, camera.Obgct), v2.create(1, 0));
-					const edge = coldet.intersectRayAabb(camera.Obgct, dir, camAabb.min, camAabb.max);
+					const dir = v2.normalizeSafe(v2.sub(indicatorPos, camera.m_pos), v2.create(1, 0));
+					const edge = coldet.intersectRayAabb(camera.m_pos, dir, camAabb.min, camAabb.max);
 					const rot = Math.atan2(dir.y, -dir.x) + Math.PI * .5;
-					const screenEdge = camera.InUgqy(edge);
+					const screenEdge = camera.m_pointToScreen(edge);
 					const onscreen = coldet.testCircleAabb(indicatorPos, GameConfig.player.radius, camAabb.min, camAabb.max);
-					const borderScale = camera.jIqEw(indicator.borderSprite.baseScale);
-					const pingScale = camera.jIqEw(indicator.pingSprite.baseScale);
+					const borderScale = camera.m_pixels(indicator.borderSprite.baseScale);
+					const pingScale = camera.m_pixels(indicator.pingSprite.baseScale);
 					borderSprite.scale.set(borderScale, borderScale);
 					pingSprite.scale.set(pingScale, pingScale);
 					if (playerStatus?.dead) continue;
 					const off = 64;
 					hideIndicator = indicator.fadeOut < 0;
-					const leftConstrain = onscreen ? camera.InUgqy(indicatorPos).x : math.clamp(screenEdge.x, off, camera.btgd - off);
-					const topConstrain = onscreen ? camera.InUgqy(indicatorPos).y : math.clamp(screenEdge.y, off, camera.aJoZKR - off);
-					const left = camera.InUgqy(indicatorPos).x;
-					const top = camera.InUgqy(indicatorPos).y;
+					const leftConstrain = onscreen ? camera.m_pointToScreen(indicatorPos).x : math.clamp(screenEdge.x, off, camera.m_screenWidth - off);
+					const topConstrain = onscreen ? camera.m_pointToScreen(indicatorPos).y : math.clamp(screenEdge.y, off, camera.m_screenHeight - off);
+					const left = camera.m_pointToScreen(indicatorPos).x;
+					const top = camera.m_pointToScreen(indicatorPos).y;
 					pingSprite.position.x = left;
 					pingSprite.position.y = top;
 					borderSprite.position.x = left;
@@ -5221,7 +5225,7 @@ var EmoteBarn = class {
 					indSpriteInner.position.y = topConstrain;
 					const pulseAlpha = borderSprite.alpha <= 0 ? 1 : borderSprite.alpha - dt;
 					borderSprite.alpha = pulseAlpha;
-					const pulseScale = camera.jIqEw(indicator.borderSprite.baseScale * (2 - pulseAlpha));
+					const pulseScale = camera.m_pixels(indicator.borderSprite.baseScale * (2 - pulseAlpha));
 					borderSprite.scale.set(pulseScale, pulseScale);
 					indSpriteInner.alpha = onscreen ? 0 : pulseAlpha;
 					if (indicator.fadeIn > 0) {
@@ -5285,7 +5289,7 @@ var EmoteBarn = class {
 			imageElem.css("background-image", `url(${imgUrl})`);
 		}
 	}
-	aTWTA(camera) {
+	m_render(camera) {
 		for (let i = 0; i < this.emotes.length; i++) {
 			const emote = this.emotes[i];
 			emote.container.visible = emote.alive;
@@ -5296,9 +5300,9 @@ var EmoteBarn = class {
 					scale = math.easeOutElastic(normLifeIn);
 				} else if (emote.life > 0) scale = 1;
 				else if (emote.lifeOut > 0) scale = emote.lifeOut / this.emoteLifeOut;
-				const pos = v2.add(emote.pos, v2.mul(emote.posOffset, 1 / math.clamp(camera.pju, .75, 1)));
-				const screenPos = camera.InUgqy(pos);
-				const screenScale = scale * emote.baseScale * math.clamp(camera.pju, .9, 1.75);
+				const pos = v2.add(emote.pos, v2.mul(emote.posOffset, 1 / math.clamp(camera.m_zoom, .75, 1)));
+				const screenPos = camera.m_pointToScreen(pos);
+				const screenScale = scale * emote.baseScale * math.clamp(camera.m_zoom, .9, 1.75);
 				emote.container.position.set(screenPos.x, screenPos.y);
 				emote.container.scale.set(screenScale, screenScale);
 			}
@@ -5449,7 +5453,7 @@ var Gas = class {
 		};
 		this.gasRenderer = new GasRenderer(canvasMode, 16711680);
 	}
-	MkE() {
+	m_free() {
 		this.gasRenderer.free();
 	}
 	resize() {
@@ -5484,13 +5488,13 @@ var Gas = class {
 		this.circleNew.pos = v2.copy(data.posNew);
 		this.circleNew.rad = data.radNew;
 	}
-	aTWTA(dt, camera) {
+	m_render(dt, camera) {
 		this.interpolationT += dt;
 		let interpT = 1;
-		if (camera.GYh) interpT = math.clamp(this.interpolationT / camera.syGZ, 0, 1);
+		if (camera.m_interpEnabled) interpT = math.clamp(this.interpolationT / camera.m_interpInterval, 0, 1);
 		const circle = this.getCircle(interpT);
-		const pos = camera.InUgqy(circle.pos);
-		const scale = camera.OQyq(circle.rad);
+		const pos = camera.m_pointToScreen(circle.pos);
+		const scale = camera.m_scaleToScreen(circle.rad);
 		this.gasRenderer.render(pos, scale, this.isActive());
 	}
 };
@@ -5550,7 +5554,7 @@ var InputHandler = class {
 			e.preventDefault();
 		}, false);
 	}
-	MkE() {
+	m_free() {
 		this.touches = [];
 		this.touchIdCounter = 0;
 	}
@@ -6603,7 +6607,7 @@ var Building = class {
 	bounds;
 	ceiling;
 	surfaces;
-	BLojB() {
+	m_init() {
 		this.isNew = false;
 		this.residue = null;
 		this.ceilingDead = false;
@@ -6616,7 +6620,7 @@ var Building = class {
 		this.puzzleSolved = false;
 		this.soundEmitterTicker = 0;
 	}
-	MkE() {
+	m_free() {
 		for (let i = 0; i < this.sprites.length; i++) {
 			const t = this.sprites[i];
 			t.active = false;
@@ -6645,7 +6649,7 @@ var Building = class {
 		});
 		return sprite;
 	}
-	zgF(data, fullUpdate, isNew, ctx) {
+	m_updateData(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			this.type = data.type;
 			this.pos = v2.copy(data.pos);
@@ -6783,17 +6787,17 @@ var Building = class {
 			}
 		}
 	}
-	eJuNn(dt, map, particleBarn, audioManager, activePlayer, renderer, camera, debug) {
+	m_update(dt, map, particleBarn, audioManager, activePlayer, renderer, camera, debug) {
 		if (this.hasPuzzle) {
 			const def = MapObjectDefs.typeToDef(this.type, "building");
 			if (this.puzzleErrSeqModified && (this.puzzleErrSeqModified = false, !this.isNew)) {
 				let nearestObj = this;
-				let nearestDist = v2.length(v2.sub(activePlayer.Obgct, nearestObj.pos));
-				const obstacles = map.FDvy.lOGr();
+				let nearestDist = v2.length(v2.sub(activePlayer.m_pos, nearestObj.pos));
+				const obstacles = map.m_obstaclePool.m_getPool();
 				for (let i = 0; i < obstacles.length; i++) {
 					const o = obstacles[i];
 					if (o.active && o.isPuzzlePiece && o.parentBuildingId == this.__id) {
-						const dist = v2.length(v2.sub(activePlayer.Obgct, o.pos));
+						const dist = v2.length(v2.sub(activePlayer.m_pos, o.pos));
 						if (dist < nearestDist) {
 							nearestObj = o;
 							nearestDist = dist;
@@ -6843,7 +6847,7 @@ var Building = class {
 		let canSeeInside = false;
 		for (let i = 0; i < this.ceiling.zoomRegions.length; i++) {
 			const zoomIn = this.ceiling.zoomRegions[i].zoomIn;
-			if (zoomIn && (this.layer == activePlayer.layer || activePlayer.layer & 2) && collisionHelpers.scanCollider(zoomIn, map.FDvy.lOGr(), activePlayer.Obgct, activePlayer.layer, .5, vision.width * 2, vision.dist, 5, debug.buildings?.ceiling, debugLines)) {
+			if (zoomIn && (this.layer == activePlayer.layer || activePlayer.layer & 2) && collisionHelpers.scanCollider(zoomIn, map.m_obstaclePool.m_getPool(), activePlayer.m_pos, activePlayer.layer, .5, vision.width * 2, vision.dist, 5, debug.buildings?.ceiling, debugLines)) {
 				canSeeInside = true;
 				break;
 			}
@@ -6868,7 +6872,7 @@ var Building = class {
 					startSilent: true
 				});
 				if (soundEmitter.instance) {
-					const diff = v2.sub(camera.Obgct, soundEmitter.pos);
+					const diff = v2.sub(camera.m_pos, soundEmitter.pos);
 					const dist = v2.length(diff);
 					const distT = math.remap(dist, soundEmitter.range.min, soundEmitter.range.max, 1, 0);
 					const volumeFalloff = Math.pow(distT, soundEmitter.falloff);
@@ -6926,8 +6930,8 @@ var Building = class {
 		});
 	}
 	positionSprite(sprite, alpha, camera) {
-		const screenPos = camera.InUgqy(v2.add(this.pos, sprite.posOffset));
-		const screenScale = camera.jIqEw(this.scale * sprite.defScale);
+		const screenPos = camera.m_pointToScreen(v2.add(this.pos, sprite.posOffset));
+		const screenScale = camera.m_pixels(this.scale * sprite.defScale);
 		sprite.position.set(screenPos.x, screenPos.y);
 		sprite.scale.set(screenScale, screenScale);
 		if (sprite.mirrorY) sprite.scale.y *= -1;
@@ -6941,58 +6945,58 @@ var Building = class {
 //#endregion
 //#region src/objects/objectPool.ts
 var Pool = class {
-	ENQn = [];
-	fddOV = 0;
-	KpbSu;
+	m_pool = [];
+	m_activeCount = 0;
+	m_creator;
 	constructor(classFn) {
-		this.KpbSu = { type: classFn };
+		this.m_creator = { type: classFn };
 		assert(classFn !== void 0);
 	}
-	RmelyO() {
+	m_alloc() {
 		let obj = null;
-		for (let i = 0; i < this.ENQn.length; i++) if (!this.ENQn[i].active) {
-			obj = this.ENQn[i];
+		for (let i = 0; i < this.m_pool.length; i++) if (!this.m_pool[i].active) {
+			obj = this.m_pool[i];
 			break;
 		}
 		if (!obj) {
-			obj = new this.KpbSu.type();
-			this.ENQn.push(obj);
+			obj = new this.m_creator.type();
+			this.m_pool.push(obj);
 		}
 		obj.active = true;
-		obj.BLojB();
-		this.fddOV++;
+		obj.m_init();
+		this.m_activeCount++;
 		return obj;
 	}
-	MkE(obj) {
-		obj.MkE();
+	m_free(obj) {
+		obj.m_free();
 		obj.active = false;
-		this.fddOV--;
-		if (this.ENQn.length > 128 && this.fddOV < this.ENQn.length / 2) {
+		this.m_activeCount--;
+		if (this.m_pool.length > 128 && this.m_activeCount < this.m_pool.length / 2) {
 			const compact = [];
-			for (let i = 0; i < this.ENQn.length; i++) if (this.ENQn[i].active) compact.push(this.ENQn[i]);
-			this.ENQn = compact;
+			for (let i = 0; i < this.m_pool.length; i++) if (this.m_pool[i].active) compact.push(this.m_pool[i]);
+			this.m_pool = compact;
 		}
 	}
-	lOGr() {
-		return this.ENQn;
+	m_getPool() {
+		return this.m_pool;
 	}
 };
 var Creator = class {
-	ridmVe = {};
-	lEDeZa = {};
-	sxCKqP = 0;
-	WPZ(type, pool) {
-		this.lEDeZa[type] = pool;
+	m_idToObj = {};
+	m_types = {};
+	m_seenCount = 0;
+	m_registerType(type, pool) {
+		this.m_types[type] = pool;
 	}
-	cPn(id) {
-		return this.ridmVe[id];
+	m_getObjById(id) {
+		return this.m_idToObj[id];
 	}
-	hfFBu(id, s) {
-		const obj = this.cPn(id);
+	m_getTypeById(id, s) {
+		const obj = this.m_getObjById(id);
 		if (!obj) {
 			const err = {
 				id,
-				ids: Object.keys(this.ridmVe),
+				ids: Object.keys(this.m_idToObj),
 				stream: [...s.view.view]
 			};
 			errorLogManager.logError("getTypeById", err);
@@ -7001,36 +7005,36 @@ var Creator = class {
 		}
 		return obj.__type;
 	}
-	QRV(type, id, data, ctx) {
-		let obj = this.cPn(id);
+	m_updateObjFull(type, id, data, ctx) {
+		let obj = this.m_getObjById(id);
 		let isNew = false;
 		if (obj === void 0) {
-			obj = this.lEDeZa[type].RmelyO();
+			obj = this.m_types[type].m_alloc();
 			obj.__id = id;
 			obj.__type = type;
-			this.ridmVe[id] = obj;
-			this.sxCKqP++;
+			this.m_idToObj[id] = obj;
+			this.m_seenCount++;
 			isNew = true;
 		}
-		obj.zgF(data, true, isNew, ctx);
+		obj.m_updateData(data, true, isNew, ctx);
 		return obj;
 	}
-	efsMP(id, data, ctx) {
-		const obj = this.cPn(id);
-		if (obj) obj.zgF(data, false, false, ctx);
+	m_updateObjPart(id, data, ctx) {
+		const obj = this.m_getObjById(id);
+		if (obj) obj.m_updateData(data, false, false, ctx);
 		else {
 			errorLogManager.storeGeneric("objectPoolErr", "updateObjPart");
 			console.error("updateObjPart, missing object", id);
 		}
 	}
-	sPPe(id) {
-		const obj = this.cPn(id);
+	m_deleteObj(id) {
+		const obj = this.m_getObjById(id);
 		if (obj === void 0) {
 			console.error("deleteObj, missing object", id);
 			errorLogManager.storeGeneric("objectPoolErr", "deleteObj");
 		} else {
-			this.lEDeZa[obj.__type].MkE(obj);
-			delete this.ridmVe[id];
+			this.m_types[obj.__type].m_free(obj);
+			delete this.m_idToObj[id];
 		}
 	}
 };
@@ -7079,14 +7083,14 @@ var Obstacle = class {
 		this.sprite.anchor.set(.5, .5);
 		this.sprite.visible = false;
 	}
-	BLojB() {
+	m_init() {
 		this.isNew = false;
 		this.smokeEmitter = null;
 		this.sprite.visible = false;
 		this.img = "";
 		this.visualPosOld = v2.create(0, 0);
 	}
-	MkE() {
+	m_free() {
 		this.sprite.visible = false;
 		this.sprite.parent?.removeChild(this.sprite);
 		if (this.door?.casingSprite) {
@@ -7098,7 +7102,7 @@ var Obstacle = class {
 			this.smokeEmitter = null;
 		}
 	}
-	zgF(data, fullUpdate, isNew, ctx) {
+	m_updateData(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			this.type = data.type;
 			this.layer = data.layer;
@@ -7233,7 +7237,7 @@ var Obstacle = class {
 	}
 	getInteraction(player) {
 		if (this.isButton && this.button.canUse) {
-			if (this.button.roleToPromote && this.button.roleToPromote === player.glWLM.mWZGg) return null;
+			if (this.button.roleToPromote && this.button.roleToPromote === player.m_netData.m_role) return null;
 			return {
 				rad: this.button.interactionRad,
 				action: this.button.interactionText,
@@ -7371,23 +7375,23 @@ var Obstacle = class {
 	}
 	render(dt, camera, debug, layer) {
 		let pos = this.isDoor ? this.door.interpPos : this.pos;
-		if (this.isSkin && camera.GYh) {
+		if (this.isSkin && camera.m_interpEnabled) {
 			this.posInterpTicker += dt;
-			const posT = math.clamp(this.posInterpTicker / camera.syGZ, 0, 1);
+			const posT = math.clamp(this.posInterpTicker / camera.m_interpInterval, 0, 1);
 			pos = v2.lerp(posT, this.visualPosOld, this.pos);
 		}
 		const rot = this.isDoor ? this.door.interpRot : this.rot;
 		const scale = this.scale;
-		const screenPos = camera.InUgqy(pos);
-		const screenScale = camera.jIqEw(scale * this.imgScale);
+		const screenPos = camera.m_pointToScreen(pos);
+		const screenScale = camera.m_pixels(scale * this.imgScale);
 		this.sprite.position.set(screenPos.x, screenPos.y);
 		this.sprite.scale.set(screenScale, screenScale);
 		if (this.imgMirrorY) this.sprite.scale.y *= -1;
 		if (this.imgMirrorX) this.sprite.scale.x *= -1;
 		this.sprite.rotation = -rot + this.imgRot;
 		if (this.isDoor && this.door?.casingSprite) {
-			const casingPos = camera.InUgqy(v2.add(this.door.closedPos, this.door.casingSprite.posOffset));
-			const casingScale = camera.jIqEw(scale * this.door.casingSprite.imgScale);
+			const casingPos = camera.m_pointToScreen(v2.add(this.door.closedPos, this.door.casingSprite.posOffset));
+			const casingScale = camera.m_pixels(scale * this.door.casingSprite.imgScale);
 			this.door.casingSprite.position.set(casingPos.x, casingPos.y);
 			this.door.casingSprite.scale.set(casingScale, casingScale);
 			this.door.casingSprite.rotation = -rot;
@@ -7415,11 +7419,11 @@ var Structure = class {
 	layers;
 	stairs;
 	mask;
-	BLojB() {
+	m_init() {
 		this.soundTransitionT = 0;
 	}
-	MkE() {}
-	zgF(data, fullUpdate, isNew, ctx) {
+	m_free() {}
+	m_updateData(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			this.type = data.type;
 			this.layer = 0;
@@ -7476,8 +7480,8 @@ var Structure = class {
 	updateInteriorSounds(dt, map, activePlayer, ambience) {
 		const def = MapObjectDefs.typeToDef(this.type, "structure");
 		assert(def.interiorSound);
-		collider.createCircle(activePlayer.Obgct, .001);
-		map.cMUHHl.lOGr();
+		collider.createCircle(activePlayer.m_pos, .001);
+		map.m_buildingPool.m_getPool();
 		const building0 = this.layers.length > 0 ? map.getBuildingById(this.layers[0].objId) : null;
 		const building1 = this.layers.length > 1 ? map.getBuildingById(this.layers[1].objId) : null;
 		const maxDist = def.interiorSound.outsideMaxDist !== void 0 ? def.interiorSound.outsideMaxDist : 10;
@@ -7487,7 +7491,7 @@ var Structure = class {
 		let weight1 = 0;
 		if (activePlayer.layer != 1) {
 			if (building0) {
-				const dist = building0.getDistanceToBuilding(activePlayer.Obgct, maxDist);
+				const dist = building0.getDistanceToBuilding(activePlayer.m_pos, maxDist);
 				const weight = math.remap(dist, maxDist, 0, 0, 1);
 				const onStairs = activePlayer.layer & 2;
 				const visionT = building0.ceiling.fadeAlpha;
@@ -7495,7 +7499,7 @@ var Structure = class {
 				weight1 = weight * visionT * (onStairs ? undergroundVol : outsideVol);
 			}
 		} else if (building1) {
-			const dist = building1.getDistanceToBuilding(activePlayer.Obgct, maxDist);
+			const dist = building1.getDistanceToBuilding(activePlayer.m_pos, maxDist);
 			const weight = math.remap(dist, maxDist, 0, 0, 1);
 			weight0 = 0;
 			weight1 = weight * undergroundVol;
@@ -7574,9 +7578,9 @@ var Map = class {
 	};
 	mapLoaded = false;
 	mapTexture = null;
-	FDvy = new Pool(Obstacle);
-	cMUHHl = new Pool(Building);
-	jVMWEq = new Pool(Structure);
+	m_obstaclePool = new Pool(Obstacle);
+	m_buildingPool = new Pool(Building);
+	m_structurePool = new Pool(Structure);
 	deadObstacleIds = [];
 	deadCeilingIds = [];
 	solvedPuzzleIds = [];
@@ -7586,9 +7590,9 @@ var Map = class {
 	constructor(decalBarn) {
 		this.decalBarn = decalBarn;
 	}
-	MkE() {
-		const buildings = this.cMUHHl.lOGr();
-		for (let i = 0; i < buildings.length; i++) buildings[i].MkE();
+	m_free() {
+		const buildings = this.m_buildingPool.m_getPool();
+		for (let i = 0; i < buildings.length; i++) buildings[i].m_free();
 		this.mapTexture?.destroy(true);
 		this.display.ground.destroy({ children: true });
 		this.cameraEmitter?.stop();
@@ -7627,7 +7631,7 @@ var Map = class {
 			});
 		}
 		this.display.ground.clear();
-		this.renderTerrain(this.display.ground, 2 / camera.rMBaI, canvasMode, false);
+		this.renderTerrain(this.display.ground, 2 / camera.m_ppu, canvasMode, false);
 	}
 	getMapDef() {
 		if (!this.mapLoaded) throw new Error("Map not loaded!");
@@ -7636,8 +7640,8 @@ var Map = class {
 	getMapTexture() {
 		return this.mapTexture;
 	}
-	eJuNn(dt, activePlayer, playerBarn, particleBarn, audioManager, ambience, renderer, camera, _smokeParticles, debug) {
-		const obstacles = this.FDvy.lOGr();
+	m_update(dt, activePlayer, playerBarn, particleBarn, audioManager, ambience, renderer, camera, _smokeParticles, debug) {
+		const obstacles = this.m_obstaclePool.m_getPool();
 		for (let i = 0; i < obstacles.length; i++) {
 			const obstacle = obstacles[i];
 			if (obstacle.active) {
@@ -7645,15 +7649,15 @@ var Map = class {
 				obstacle.render(dt, camera, debug, activePlayer.layer);
 			}
 		}
-		const buildings = this.cMUHHl.lOGr();
+		const buildings = this.m_buildingPool.m_getPool();
 		for (let i = 0; i < buildings.length; i++) {
 			const building = buildings[i];
 			if (building.active) {
-				building.eJuNn(dt, this, particleBarn, audioManager, activePlayer, renderer, camera, debug);
+				building.m_update(dt, this, particleBarn, audioManager, activePlayer, renderer, camera, debug);
 				building.render(camera, debug, activePlayer.layer);
 			}
 		}
-		for (let structures = this.jVMWEq.lOGr(), x = 0; x < structures.length; x++) {
+		for (let structures = this.m_structurePool.m_getPool(), x = 0; x < structures.length; x++) {
 			const structure = structures[x];
 			if (structure.active) {
 				structure.update(dt, this, activePlayer, ambience);
@@ -7661,10 +7665,10 @@ var Map = class {
 			}
 		}
 		if (this.cameraEmitter) {
-			this.cameraEmitter.pos = v2.copy(camera.Obgct);
+			this.cameraEmitter.pos = v2.copy(camera.m_pos);
 			this.cameraEmitter.enabled = true;
 			const maxRadius = 120;
-			const camRadius = activePlayer.RwkV() * 2.5;
+			const camRadius = activePlayer.m_getZoom() * 2.5;
 			this.cameraEmitter.radius = math.min(camRadius, maxRadius);
 			const radius = this.cameraEmitter.radius;
 			const ratio = radius * radius / 14400;
@@ -7772,9 +7776,9 @@ var Map = class {
 			}
 		}
 	}
-	aTWTA(camera) {
-		const p0 = camera.InUgqy(v2.create(0, 0));
-		const p1 = camera.InUgqy(v2.create(1, 1));
+	m_render(camera) {
+		const p0 = camera.m_pointToScreen(v2.create(0, 0));
+		const p1 = camera.m_pointToScreen(v2.create(1, 1));
 		const s = v2.sub(p1, p0);
 		this.display.ground.position.set(p0.x, p0.y);
 		this.display.ground.scale.set(s.x, s.y);
@@ -7940,7 +7944,7 @@ window.mapColorizing(minimapRenders);
 				data
 			};
 		};
-		const decals = this.decalBarn.decalPool.lOGr();
+		const decals = this.decalBarn.decalPool.m_getPool();
 		for (let i = 0; i < decals.length; i++) {
 			const decal = decals[i];
 			if (decal.active && decal.surface && util.sameLayer(decal.layer, layer) && collider.intersectCircle(decal.collider, pos, 1e-4)) return groundSurface(decal.surface.type, decal.surface.data);
@@ -7948,7 +7952,7 @@ window.mapColorizing(minimapRenders);
 		let surface = null;
 		let zIdx = 0;
 		const onStairs = layer & 2;
-		const buildings = this.cMUHHl.lOGr();
+		const buildings = this.m_buildingPool.m_getPool();
 		for (let i = 0; i < buildings.length; i++) {
 			const building = buildings[i];
 			if (building.active && building.zIdx >= zIdx && (building.layer == layer || !!onStairs) && (building.layer != 1 || !onStairs)) for (let i = 0; i < building.surfaces.length; i++) {
@@ -7978,7 +7982,7 @@ window.mapColorizing(minimapRenders);
 		return math.distToPolygon(pos, this.terrain.shore);
 	}
 	insideStructureStairs(collision) {
-		const structures = this.jVMWEq.lOGr();
+		const structures = this.m_structurePool.m_getPool();
 		for (let i = 0; i < structures.length; i++) {
 			const structure = structures[i];
 			if (structure.active && structure.insideStairs(collision)) return true;
@@ -7986,7 +7990,7 @@ window.mapColorizing(minimapRenders);
 		return false;
 	}
 	getBuildingById(objId) {
-		const buildings = this.cMUHHl.lOGr();
+		const buildings = this.m_buildingPool.m_getPool();
 		for (let i = 0; i < buildings.length; i++) {
 			const building = buildings[i];
 			if (building.active && building.__id == objId) return building;
@@ -7994,7 +7998,7 @@ window.mapColorizing(minimapRenders);
 		return null;
 	}
 	insideStructureMask(collision) {
-		const structures = this.jVMWEq.lOGr();
+		const structures = this.m_structurePool.m_getPool();
 		for (let i = 0; i < structures.length; i++) {
 			const structure = structures[i];
 			if (structure.active && structure.insideMask(collision)) return true;
@@ -8002,7 +8006,7 @@ window.mapColorizing(minimapRenders);
 		return false;
 	}
 	insideBuildingCeiling(collision, checkVisible) {
-		const buildings = this.cMUHHl.lOGr();
+		const buildings = this.m_buildingPool.m_getPool();
 		for (let i = 0; i < buildings.length; i++) {
 			const building = buildings[i];
 			if (building.active && (!checkVisible || building.ceiling.visionTicker > 0 && !building.ceilingDead) && building.isInsideCeiling(collision)) return true;
@@ -8031,7 +8035,7 @@ var AirDrop = class {
 		this.sprite.anchor.set(.5, .5);
 		this.sprite.visible = false;
 	}
-	BLojB() {
+	m_init() {
 		this.playedLandFx = false;
 		this.landed = false;
 		this.fallInstance = null;
@@ -8041,12 +8045,12 @@ var AirDrop = class {
 		this.isNew = false;
 		this.fallTicker = 0;
 	}
-	MkE() {
+	m_free() {
 		this.fallInstance?.stop();
 		this.fallInstance = null;
 		this.sprite.visible = false;
 	}
-	zgF(data, fullUpdate, isNew, ctx) {
+	m_updateData(data, fullUpdate, isNew, ctx) {
 		if (isNew) {
 			this.isNew = true;
 			this.fallTicker = data.fallT * GameConfig.airdrop.fallTime;
@@ -8059,12 +8063,12 @@ var AirDrop = class {
 };
 var AirdropBarn = class {
 	airdropPool = new Pool(AirDrop);
-	MkE() {
-		const airdrops = this.airdropPool.lOGr();
-		for (let i = 0; i < airdrops.length; i++) airdrops[i].MkE();
+	m_free() {
+		const airdrops = this.airdropPool.m_getPool();
+		for (let i = 0; i < airdrops.length; i++) airdrops[i].m_free();
 	}
-	eJuNn(dt, activePlayer, camera, map, particleBarn, renderer, audioManager) {
-		const airdrops = this.airdropPool.lOGr();
+	m_update(dt, activePlayer, camera, map, particleBarn, renderer, audioManager) {
+		const airdrops = this.airdropPool.m_getPool();
 		for (let i = 0; i < airdrops.length; i++) {
 			const airdrop = airdrops[i];
 			if (!airdrop.active) continue;
@@ -8122,8 +8126,8 @@ var AirdropBarn = class {
 			} else airdrop.soundUpdateThrottle -= dt;
 			airdrop.rad = math.lerp((1 - fallT) ** 1.1, 5, 12);
 			renderer.addPIXIObj(airdrop.sprite, layer, 1500, airdrop.__id);
-			const screenPos = camera.InUgqy(airdrop.pos);
-			const screenScale = camera.jIqEw(2 * airdrop.rad / camera.rMBaI);
+			const screenPos = camera.m_pointToScreen(airdrop.pos);
+			const screenScale = camera.m_pixels(2 * airdrop.rad / camera.m_ppu);
 			airdrop.sprite.position.set(screenPos.x, screenPos.y);
 			airdrop.sprite.scale.set(screenScale, screenScale);
 			airdrop.sprite.tint = 16776960;
@@ -8223,8 +8227,8 @@ var BulletBarn = class {
 		b.container.visible = true;
 		renderer.addPIXIObj(b.container, b.layer, 20);
 	}
-	eJuNn(dt, playerBarn, map, camera, activePlayer, renderer, particleBarn, audioManager) {
-		const players = playerBarn.playerPool.lOGr();
+	m_update(dt, playerBarn, map, camera, activePlayer, renderer, particleBarn, audioManager) {
+		const players = playerBarn.playerPool.m_getPool();
 		for (let i = 0; i < this.bullets.length; i++) {
 			const b = this.bullets[i];
 			if (b.collided) {
@@ -8244,7 +8248,7 @@ var BulletBarn = class {
 					particleBarn.addParticle("boost_basic", b.layer, b.pos, b.dir, void 0, void 0, void 0, void 0, Color$1.shared.setValue(b.bulletTrail.tint).toNumber());
 					b.particleTicker = util.random(0, .1);
 				}
-				if (!activePlayer.glWLM.wer && util.sameAudioLayer(activePlayer.layer, b.layer) && v2.length(v2.sub(camera.Obgct, b.pos)) < 7.5 && !b.whizHeard && b.playerId != activePlayer.__id) {
+				if (!activePlayer.m_netData.m_dead && util.sameAudioLayer(activePlayer.layer, b.layer) && v2.length(v2.sub(camera.m_pos, b.pos)) < 7.5 && !b.whizHeard && b.playerId != activePlayer.__id) {
 					audioManager.playGroup("bullet_whiz", {
 						soundPos: b.pos,
 						fallOff: 4
@@ -8256,7 +8260,7 @@ var BulletBarn = class {
 					b.bulletTrail.alpha = math.max(b.tracerAlphaMin, b.bulletTrail.alpha * rate);
 				}
 				const colObjs = [];
-				const obstacles = map.FDvy.lOGr();
+				const obstacles = map.m_obstaclePool.m_getPool();
 				for (let j = 0; j < obstacles.length; j++) {
 					const obstacle = obstacles[j];
 					if (!!obstacle.active && !obstacle.dead && !!util.sameLayer(obstacle.layer, b.layer) && obstacle.height >= GameConfig.bullet.height && (b.reflectCount <= 0 || obstacle.__id != b.reflectObjId)) {
@@ -8272,12 +8276,12 @@ var BulletBarn = class {
 				}
 				for (let j = 0; j < players.length; j++) {
 					const player = players[j];
-					if (player.active && !player.glWLM.wer && (util.sameLayer(player.glWLM.oVwj, b.layer) || player.glWLM.oVwj & 2) && (player.__id != b.playerId || b.damageSelf)) {
+					if (player.active && !player.m_netData.m_dead && (util.sameLayer(player.m_netData.m_layer, b.layer) || player.m_netData.m_layer & 2) && (player.__id != b.playerId || b.damageSelf)) {
 						let panCollision = null;
-						if (player.DenYJc()) {
-							const panSeg = player.IAYv();
-							const oldSegment = math.transformSegment(panSeg.p0, panSeg.p1, player.OFNgIv, player.VFZ);
-							const newSegment = math.transformSegment(panSeg.p0, panSeg.p1, player.Obgct, player.LFUhXt);
+						if (player.m_hasActivePan()) {
+							const panSeg = player.m_getPanSegment();
+							const oldSegment = math.transformSegment(panSeg.p0, panSeg.p1, player.m_posOld, player.m_dirOld);
+							const newSegment = math.transformSegment(panSeg.p0, panSeg.p1, player.m_pos, player.m_dir);
 							const newIntersection = coldet.intersectSegmentSegment(posOld, b.pos, oldSegment.p0, oldSegment.p1);
 							const finalIntersection = coldet.intersectSegmentSegment(posOld, b.pos, newSegment.p0, newSegment.p1) || newIntersection;
 							if (finalIntersection) {
@@ -8288,7 +8292,7 @@ var BulletBarn = class {
 								};
 							}
 						}
-						const collision = coldet.intersectSegmentCircle(posOld, b.pos, player.Obgct, player.KfW);
+						const collision = coldet.intersectSegmentCircle(posOld, b.pos, player.m_pos, player.m_rad);
 						if (collision && (!panCollision || v2.length(v2.sub(collision.point, b.startPos)) < v2.length(v2.sub(panCollision.point, b.startPos)))) {
 							colObjs.push({
 								type: "player",
@@ -8298,7 +8302,7 @@ var BulletBarn = class {
 								layer: player.layer,
 								collidable: true
 							});
-							if (player.qRUB("steelskin")) colObjs.push({
+							if (player.m_hasPerk("steelskin")) colObjs.push({
 								type: "pan",
 								point: v2.add(collision.point, v2.mul(collision.normal, .1)),
 								normal: collision.normal,
@@ -8324,7 +8328,7 @@ var BulletBarn = class {
 				});
 				let shooterDead = false;
 				const shooter = playerBarn.getPlayerById(b.playerId);
-				if (shooter && (shooter.glWLM.wer || shooter.glWLM.PKQjLQ)) shooterDead = true;
+				if (shooter && (shooter.m_netData.m_dead || shooter.m_netData.m_downed)) shooterDead = true;
 				let hit = false;
 				for (let j = 0; j < colObjs.length; j++) {
 					const col = colObjs[j];
@@ -8335,15 +8339,15 @@ var BulletBarn = class {
 					} else if (col.type == "player") {
 						if (!shooterDead) {
 							const collidedPlayer = col.player;
-							if (map.turkeyMode && shooter?.qRUB("turkey_shoot")) {
+							if (map.turkeyMode && shooter?.m_hasPerk("turkey_shoot")) {
 								const vel = v2.randomUnit(util.random(3, 6));
-								particleBarn.addParticle("turkeyFeathersHit", collidedPlayer.layer, collidedPlayer.Obgct, vel);
+								particleBarn.addParticle("turkeyFeathersHit", collidedPlayer.layer, collidedPlayer.m_pos, vel);
 							}
-							const diff = v2.sub(col.point, collidedPlayer?.Obgct);
+							const diff = v2.sub(col.point, collidedPlayer?.m_pos);
 							diff.y *= -1;
-							particleBarn.addParticle("bloodSplat", collidedPlayer.layer, v2.mul(diff, camera.rMBaI), v2.create(0, 0), 1, 1, collidedPlayer.container);
+							particleBarn.addParticle("bloodSplat", collidedPlayer.layer, v2.mul(diff, camera.m_ppu), v2.create(0, 0), 1, 1, collidedPlayer.container);
 							audioManager.playGroup("player_bullet_hit", {
-								soundPos: collidedPlayer.Obgct,
+								soundPos: collidedPlayer.m_pos,
 								fallOff: 1,
 								layer: collidedPlayer.layer,
 								filter: "muffled"
@@ -8360,7 +8364,7 @@ var BulletBarn = class {
 					}
 				}
 				if (!(b.layer & 2)) {
-					const structures = map.jVMWEq.lOGr();
+					const structures = map.m_structurePool.m_getPool();
 					let targetLayer = b.layer;
 					for (let j = 0; j < structures.length; j++) {
 						const struct = structures[j];
@@ -8397,20 +8401,20 @@ var BulletBarn = class {
 	createBulletHit(playerBarn, targetId, audioManager) {
 		const player = playerBarn.getPlayerById(targetId);
 		if (player) audioManager.playGroup("player_bullet_hit", {
-			soundPos: player.Obgct,
+			soundPos: player.m_pos,
 			fallOff: 1,
 			layer: player.layer,
 			filter: "muffled"
 		});
 	}
-	aTWTA(camera) {
+	m_render(camera) {
 		for (let i = 0; i < this.bullets.length; i++) {
 			const b = this.bullets[i];
 			if (b.alive || b.collided) {
 				const dist = v2.length(v2.sub(b.pos, b.startPos));
-				const screenPos = camera.InUgqy(b.pos);
+				const screenPos = camera.m_pointToScreen(b.pos);
 				b.container.position.set(screenPos.x, screenPos.y);
-				const screenScale = camera.jIqEw(1);
+				const screenScale = camera.m_pixels(1);
 				const trailLength = math.min(b.tracerLength * 15, dist / 2);
 				b.container.scale.set(screenScale * trailLength * b.scale, screenScale);
 			}
@@ -8460,11 +8464,11 @@ var DeadBody = class {
 		this.nameText.tint = util.rgbToInt(util.hsvToRgb(0, 0, .5));
 		this.container.addChild(this.nameText);
 	}
-	BLojB() {}
-	MkE() {
+	m_init() {}
+	m_free() {
 		this.container.visible = false;
 	}
-	zgF(data, fullUpdate, isNew, _ctx) {
+	m_updateData(data, fullUpdate, isNew, _ctx) {
 		this.pos = v2.copy(data.pos);
 		if (fullUpdate) {
 			this.layer = data.layer;
@@ -8478,8 +8482,8 @@ var DeadBody = class {
 };
 var DeadBodyBarn = class {
 	deadBodyPool = new Pool(DeadBody);
-	eJuNn(_dt, playerBarn, activePlayer, map, camera, renderer) {
-		const deadBodies = this.deadBodyPool.lOGr();
+	m_update(_dt, playerBarn, activePlayer, map, camera, renderer) {
+		const deadBodies = this.deadBodyPool.m_getPool();
 		for (let i = 0; i < deadBodies.length; i++) {
 			const d = deadBodies[i];
 			if (d.active) {
@@ -8496,15 +8500,15 @@ var DeadBodyBarn = class {
 					zOrd += 100;
 				}
 				renderer.addPIXIObj(d.container, layer, zOrd, d.__id);
-				const screenPos = camera.InUgqy(d.pos);
-				const screenScale = camera.jIqEw(1);
+				const screenPos = camera.m_pointToScreen(d.pos);
+				const screenScale = camera.m_pixels(1);
 				d.container.position.set(screenPos.x, screenPos.y);
 				d.container.scale.set(screenScale, screenScale);
 			}
 		}
 	}
 	getDeadBodyById(playerId) {
-		const deadBodies = this.deadBodyPool.lOGr();
+		const deadBodies = this.deadBodyPool.m_getPool();
 		for (let i = 0; i < deadBodies.length; i++) {
 			const d = deadBodies[i];
 			if (d.active && d.playerId == playerId) return d;
@@ -8534,17 +8538,17 @@ var Decal = class {
 	goreKills;
 	collider;
 	surface;
-	BLojB() {
+	m_init() {
 		this.isNew = false;
 		this.goreT = 0;
 	}
-	MkE() {
+	m_free() {
 		if (this.decalRender) {
 			this.decalRender.free();
 			this.decalRender = null;
 		}
 	}
-	zgF(data, fullUpdate, isNew, ctx) {
+	m_updateData(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			const def = MapObjectDefs.typeToDef(data.type, "decal");
 			this.type = data.type;
@@ -8665,8 +8669,8 @@ var DecalRender = class {
 				this.flickerCooldown -= dt;
 			}
 		}
-		const screenPos = camera.InUgqy(this.pos);
-		const screenScale = camera.jIqEw(this.scale * this.imgScale);
+		const screenPos = camera.m_pointToScreen(this.pos);
+		const screenScale = camera.m_pixels(this.scale * this.imgScale);
 		this.sprite.position.set(screenPos.x, screenPos.y);
 		this.sprite.scale.set(screenScale, screenScale);
 		this.sprite.rotation = -this.rot;
@@ -8692,8 +8696,8 @@ var DecalBarn = class {
 		}
 		return decalRender;
 	}
-	eJuNn(dt, camera, renderer) {
-		const decals = this.decalPool.lOGr();
+	m_update(dt, camera, renderer) {
+		const decals = this.decalPool.m_getPool();
 		for (let i = 0; i < decals.length; i++) {
 			const decal = decals[i];
 			if (decal.active) decal.update(dt);
@@ -8703,7 +8707,7 @@ var DecalBarn = class {
 			if (decalRender.active) decalRender.update(dt, camera, renderer);
 		}
 	}
-	aTWTA(_camera, _debug, _layer) {}
+	m_render(_camera, _debug, _layer) {}
 };
 
 //#endregion
@@ -8733,15 +8737,15 @@ var PhysicsParticle = class {
 		this.pos = v2.add(this.pos, v2.mul(this.vel, dt));
 		this.vel = v2.mul(this.vel, 1 / (1 + dt * 5));
 		const colliders = [];
-		const obstacles = map.FDvy.lOGr();
+		const obstacles = map.m_obstaclePool.m_getPool();
 		for (let i = 0; i < obstacles.length; i++) {
 			const obstacle = obstacles[i];
 			if (obstacle.active && !obstacle.dead && util.sameLayer(this.layer, obstacle.layer)) colliders.push(obstacle.collider);
 		}
-		const players = playerBarn.playerPool.lOGr();
+		const players = playerBarn.playerPool.m_getPool();
 		for (let i = 0; i < players.length; i++) {
 			const player = players[i];
-			if (player.active && !player.glWLM.wer && util.sameLayer(this.layer, player.layer)) colliders.push(collider.createCircle(player.Obgct, player.KfW));
+			if (player.active && !player.m_netData.m_dead && util.sameLayer(this.layer, player.layer)) colliders.push(collider.createCircle(player.m_pos, player.m_rad));
 		}
 		const cols = [];
 		for (let i = 0; i < colliders.length; i++) {
@@ -8854,7 +8858,7 @@ var Explosion = class {
 		this.ticker += dt;
 		const shakeT = math.min(this.ticker / def.shakeDur, 1);
 		const shakeInt = math.lerp(shakeT, def.shakeStr, 0);
-		camera.LPeFRo(this.pos, shakeInt);
+		camera.m_addShake(this.pos, shakeInt);
 		if (this.ticker >= this.lifetime) this.active = false;
 	}
 };
@@ -8892,7 +8896,7 @@ var ExplosionBarn = class {
 		}
 		return p;
 	}
-	eJuNn(dt, map, playerBarn, camera, particleBarn, audioManager, debug) {
+	m_update(dt, map, playerBarn, camera, particleBarn, audioManager, debug) {
 		for (let i = 0; i < this.explosions.length; i++) {
 			const e = this.explosions[i];
 			if (e.active) {
@@ -9335,7 +9339,7 @@ var FlareBarn = class {
 		b.flareContainer.visible = true;
 		b.trailContainer.visible = true;
 	}
-	eJuNn(dt, map, activePlayer, renderer) {
+	m_update(dt, map, activePlayer, renderer) {
 		for (let h = 0; h < this.bullets.length; h++) {
 			const d = this.bullets[h];
 			if (d.collided) {
@@ -9374,13 +9378,13 @@ var FlareBarn = class {
 			}
 		}
 	}
-	aTWTA(camera) {
+	m_render(camera) {
 		for (let i = 0; i < this.bullets.length; i++) {
 			const b = this.bullets[i];
 			if (b.alive || b.collided) {
-				const screenPos = camera.InUgqy(b.pos);
+				const screenPos = camera.m_pointToScreen(b.pos);
 				b.flareContainer.position.set(screenPos.x, screenPos.y);
-				const screenScale = camera.jIqEw(1);
+				const screenScale = camera.m_pixels(1);
 				b.flareContainer.scale.set(screenScale * b.flareScale, screenScale * b.flareScale);
 				const dist = v2.length(v2.sub(b.pos, b.startPos));
 				b.trailContainer.position.set(screenPos.x, screenPos.y);
@@ -9421,18 +9425,18 @@ var Loot = class {
 		this.sprite.scale.set(.8, .8);
 		this.container.addChild(this.sprite);
 	}
-	BLojB() {
+	m_init() {
 		this.updatedData = false;
 		this.visualPosOld = v2.create(0, 0);
 	}
-	MkE() {
+	m_free() {
 		this.container.visible = false;
 		if (this.emitter) {
 			this.emitter.stop();
 			this.emitter = null;
 		}
 	}
-	zgF(data, fullUpdate, isNew, ctx) {
+	m_updateData(data, fullUpdate, isNew, ctx) {
 		this.updatedData = true;
 		if (!v2.eq(data.pos, this.visualPosOld)) {
 			this.visualPosOld = v2.copy(isNew ? data.pos : this.pos);
@@ -9478,17 +9482,17 @@ var Loot = class {
 var LootBarn = class {
 	lootPool = new Pool(Loot);
 	closestLoot = null;
-	eJuNn(dt, activePlayer, map, audioManager, camera, debug) {
+	m_update(dt, activePlayer, map, audioManager, camera, debug) {
 		this.closestLoot = null;
 		let closestDist = Number.MAX_VALUE;
-		const loots = this.lootPool.lOGr();
+		const loots = this.lootPool.m_getPool();
 		for (let i = 0; i < loots.length; i++) {
 			const loot = loots[i];
 			if (loot.active) {
-				if (util.sameLayer(loot.layer, activePlayer.layer) && !activePlayer.glWLM.wer && (loot.ownerId == 0 || loot.ownerId == activePlayer.__id)) {
+				if (util.sameLayer(loot.layer, activePlayer.layer) && !activePlayer.m_netData.m_dead && (loot.ownerId == 0 || loot.ownerId == activePlayer.__id)) {
 					const pos = loot.pos;
-					const rad = device.touch ? activePlayer.KfW + loot.rad * GameConfig.player.touchLootRadMult : loot.rad;
-					const toPlayer = v2.sub(activePlayer.Obgct, pos);
+					const rad = device.touch ? activePlayer.m_rad + loot.rad * GameConfig.player.touchLootRadMult : loot.rad;
+					const toPlayer = v2.sub(activePlayer.m_pos, pos);
 					const distSq = v2.lengthSqr(toPlayer);
 					if (distSq < rad * rad && distSq < closestDist) {
 						closestDist = distSq;
@@ -9514,13 +9518,13 @@ var LootBarn = class {
 				const scaleIn = math.delerp(loot.ticker, 0, 1);
 				const scale = math.easeOutElastic(scaleIn, .75);
 				let pos = loot.pos;
-				if (camera.GYh) {
+				if (camera.m_interpEnabled) {
 					loot.posInterpTicker += dt;
-					const posT = math.clamp(loot.posInterpTicker / camera.syGZ, 0, 1);
+					const posT = math.clamp(loot.posInterpTicker / camera.m_interpInterval, 0, 1);
 					pos = v2.lerp(posT, loot.visualPosOld, loot.pos);
 				}
-				const screenPos = camera.InUgqy(pos);
-				const screenScale = camera.jIqEw(loot.imgScale * scale);
+				const screenPos = camera.m_pointToScreen(pos);
+				const screenScale = camera.m_pixels(loot.imgScale * scale);
 				loot.container.position.set(screenPos.x, screenPos.y);
 				loot.container.scale.set(screenScale, screenScale);
 			}
@@ -9693,7 +9697,7 @@ var ParticleBarn = class {
 	onMapLoad(map) {
 		this.valueAdjust = map.getMapDef().biome.valueAdjust;
 	}
-	MkE() {
+	m_free() {
 		for (let i = 0; i < this.particles.length; i++) {
 			const sprite = this.particles[i].sprite;
 			sprite.parent?.removeChild(sprite);
@@ -9734,7 +9738,7 @@ var ParticleBarn = class {
 		emitter.init(type, options);
 		return emitter;
 	}
-	eJuNn(dt, camera) {
+	m_update(dt, camera) {
 		for (let i = 0; i < this.emitters.length; i++) {
 			const e = this.emitters[i];
 			if (e.active && e.enabled) {
@@ -9772,12 +9776,12 @@ var ParticleBarn = class {
 				p.rot += p.rotVel * dt;
 				if (p.scaleUseExp) p.scale += dt * p.scaleExp;
 				if (p.alphaUseExp) p.alpha = math.max(p.alpha + dt * p.alphaExp, 0);
-				const pos = p.hasParent ? p.pos : camera.InUgqy(p.pos);
+				const pos = p.hasParent ? p.pos : camera.m_pointToScreen(p.pos);
 				let scale = p.scaleUseExp ? p.scale : math.remap(t, p.def.scale.lerp?.min, p.def.scale.lerp?.max, p.scale, p.scaleEnd);
 				let alpha = p.alphaUseExp ? p.alpha : math.remap(t, p.def.alpha.lerp.min, p.def.alpha.lerp.max, p.alpha, p.alphaEnd);
 				if (p.alphaIn && t < p.def.alphaIn.lerp.max) alpha = math.remap(t, p.def.alphaIn.lerp.min, p.def.alphaIn.lerp.max, p.alphaInStart, p.alphaInEnd);
 				if (p.emitterIdx >= 0) alpha *= this.emitters[p.emitterIdx].alpha;
-				if (!p.hasParent) scale = camera.jIqEw(scale);
+				if (!p.hasParent) scale = camera.m_pixels(scale);
 				p.sprite.position.set(pos.x, pos.y);
 				p.sprite.scale.set(scale, scale);
 				p.sprite.rotation = p.rot;
@@ -13232,7 +13236,7 @@ var Plane = class {
 		this.sprite.anchor.set(.5, .5);
 		this.sprite.visible = false;
 	}
-	BLojB(data, map) {
+	m_init(data, map) {
 		this.id = data.id;
 		this.pos = v2.copy(data.pos);
 		this.planeDir = v2.copy(data.planeDir);
@@ -13259,7 +13263,7 @@ var Plane = class {
 		this.sprite.visible = true;
 		this.sprite.rotation = Math.atan2(this.planeDir.x, this.planeDir.y);
 	}
-	MkE(audioManager) {
+	m_free(audioManager) {
 		if (this.spriteUpdateTime >= planeElevateTime) {
 			if (this.soundInstance) {
 				audioManager.stopSound(this.soundInstance);
@@ -13284,7 +13288,7 @@ var AirstrikeZone = class {
 		this.container = container;
 		container.addChild(this.gfx);
 	}
-	BLojB(pos, rad, duration) {
+	m_init(pos, rad, duration) {
 		this.active = true;
 		this.pos = v2.copy(pos);
 		this.rad = rad;
@@ -13294,7 +13298,7 @@ var AirstrikeZone = class {
 		this.renderRad = 0;
 		this.gfx.visible = true;
 	}
-	eJuNn(dt) {
+	m_update(dt) {
 		this.ticker += dt;
 		this.gfx.visible = true;
 		if (this.ticker >= this.duration) {
@@ -13330,8 +13334,8 @@ var PlaneBarn = class {
 	constructor(audioManager) {
 		this.audioManager = audioManager;
 	}
-	MkE() {
-		for (let i = 0; i < this.planes.length; i++) this.planes[i].MkE(this.audioManager);
+	m_free() {
+		for (let i = 0; i < this.planes.length; i++) this.planes[i].m_free(this.audioManager);
 	}
 	updatePlanes(planeData, map) {
 		for (let i = 0; i < this.planes.length; i++) this.planes[i].dirty = true;
@@ -13352,7 +13356,7 @@ var PlaneBarn = class {
 		}
 		for (let i = 0; i < this.planes.length; i++) {
 			const p = this.planes[i];
-			if (p.active && p.dirty) p.MkE(this.audioManager);
+			if (p.active && p.dirty) p.m_free(this.audioManager);
 		}
 	}
 	addPlane(data, map) {
@@ -13365,7 +13369,7 @@ var PlaneBarn = class {
 			p = new Plane();
 			this.planes.push(p);
 		}
-		p.BLojB(data, map);
+		p.m_init(data, map);
 		return p;
 	}
 	createAirstrikeZone(data) {
@@ -13378,10 +13382,10 @@ var PlaneBarn = class {
 			zone = new AirstrikeZone(this.airstrikeZoneContainer);
 			this.airstrikeZones.push(zone);
 		}
-		zone.BLojB(data.pos, data.rad, data.duration);
+		zone.m_init(data.pos, data.rad, data.duration);
 		return zone;
 	}
-	eJuNn(dt, camera, activePlayer, map, renderer) {
+	m_update(dt, camera, activePlayer, map, renderer) {
 		for (let i = 0; i < this.planes.length; i++) {
 			const p = this.planes[i];
 			if (p.active) {
@@ -13405,7 +13409,7 @@ var PlaneBarn = class {
 						p.soundUpdateThrottle = .1;
 					} else p.soundUpdateThrottle -= dt;
 				} else {
-					const distToPlane = v2.length(v2.sub(activePlayer.Obgct, p.pos));
+					const distToPlane = v2.length(v2.sub(activePlayer.m_pos, p.pos));
 					const maxRange = p.config.soundRangeMax * p.config.soundRangeMult;
 					let offset = 0;
 					if (p.type == GameConfig.Plane.Airstrike) {
@@ -13427,9 +13431,9 @@ var PlaneBarn = class {
 					});
 				}
 				renderer.addPIXIObj(p.sprite, layer, 1501, p.id);
-				const screenPos = camera.InUgqy(p.pos);
-				const screenScale = camera.jIqEw(p.rad / camera.rMBaI);
-				const activePlayerIndoors = map.insideBuildingCeiling(collider.createCircle(activePlayer.Obgct, .01), true);
+				const screenPos = camera.m_pointToScreen(p.pos);
+				const screenScale = camera.m_pixels(p.rad / camera.m_ppu);
+				const activePlayerIndoors = map.insideBuildingCeiling(collider.createCircle(activePlayer.m_pos, .01), true);
 				let alphaTarget = p.alpha;
 				if (activePlayer.layer == 1) alphaTarget = 0;
 				else if (activePlayerIndoors || activePlayer.layer & 1) alphaTarget = .15;
@@ -13443,7 +13447,7 @@ var PlaneBarn = class {
 		}
 		for (let i = 0; i < this.airstrikeZones.length; i++) {
 			const zone = this.airstrikeZones[i];
-			if (zone.active) zone.eJuNn(dt);
+			if (zone.active) zone.m_update(dt);
 		}
 	}
 	renderAirstrikeZones(uiManager, map) {
@@ -14202,15 +14206,15 @@ var Projectile = class {
 		this.sprite.anchor.set(.5, .5);
 		this.container.addChild(this.sprite);
 	}
-	BLojB() {
+	m_init() {
 		this.visualPosOld = v2.create(0, 0);
 		this.posInterpTicker = 0;
 	}
-	MkE() {
+	m_free() {
 		this.container.visible = false;
 		if (this.strobeSprite) this.strobeSprite.visible = false;
 	}
-	zgF(data, fullUpdate, isNew, ctx) {
+	m_updateData(data, fullUpdate, isNew, ctx) {
 		if (fullUpdate) {
 			const itemDef = GameObjectDefs.typeToDef(data.type, "throwable");
 			this.layer = data.layer;
@@ -14277,8 +14281,8 @@ var groundSounds = {
 };
 var ProjectileBarn = class {
 	projectilePool = new Pool(Projectile);
-	eJuNn(dt, particleBarn, audioManager, activePlayer, map, renderer, camera) {
-		const projectiles = this.projectilePool.lOGr();
+	m_update(dt, particleBarn, audioManager, activePlayer, map, renderer, camera) {
+		const projectiles = this.projectilePool.m_getPool();
 		for (let i = 0; i < projectiles.length; i++) {
 			const p = projectiles[i];
 			if (p.active) {
@@ -14296,7 +14300,7 @@ var ProjectileBarn = class {
 					pen: 0
 				};
 				const projCollider = collider.createCircle(p.pos, p.rad);
-				const obstacles = map.FDvy.lOGr();
+				const obstacles = map.m_obstaclePool.m_getPool();
 				for (let j = 0; j < obstacles.length; j++) {
 					const o = obstacles[j];
 					if (o.active && !o.dead && util.sameLayer(o.layer, p.layer)) {
@@ -14384,13 +14388,13 @@ var ProjectileBarn = class {
 				renderer.addPIXIObj(p.container, layer, zOrd);
 				const scale = p.imgScale * math.remap(p.posZ, 0, GameConfig.projectile.maxHeight, 1, 4.75);
 				let pos = p.pos;
-				if (camera.GYh) {
+				if (camera.m_interpEnabled) {
 					p.posInterpTicker += dt;
-					const posT = math.clamp(p.posInterpTicker / camera.syGZ, 0, 1);
+					const posT = math.clamp(p.posInterpTicker / camera.m_interpInterval, 0, 1);
 					pos = v2.lerp(posT, p.visualPosOld, p.pos);
 				}
-				const screenPos = camera.InUgqy(pos);
-				const screenScale = camera.jIqEw(scale);
+				const screenPos = camera.m_pointToScreen(pos);
+				const screenScale = camera.m_pixels(scale);
 				p.container.position.set(screenPos.x, screenPos.y);
 				p.container.scale.set(screenScale, screenScale);
 			}
@@ -14442,7 +14446,7 @@ var ShotBarn = class {
 		shot.apRounds = bullet.apRounds;
 		shot.highVelocity = bullet.highVelocity;
 	}
-	eJuNn(dt, activePlayerId, playerBarn, particleBarn, audioManager) {
+	m_update(dt, activePlayerId, playerBarn, particleBarn, audioManager) {
 		for (let i = 0; i < this.shots.length; i++) {
 			const shot = this.shots[i];
 			if (shot.active) {
@@ -14499,7 +14503,7 @@ var ShotBarn = class {
 					});
 					if (player) {
 						if (player.__id == activePlayerId && weaponDef.fireMode == "single" && weaponDef.pullDelay) {
-							const soundName = player.RnR.Lyvf[player.RnR.opb].ammo > 0 ? weaponDef.sound.cycle : weaponDef.sound.pull;
+							const soundName = player.m_localData.m_weapons[player.m_localData.m_curWeapIdx].ammo > 0 ? weaponDef.sound.cycle : weaponDef.sound.pull;
 							audioManager.stopSound(player.cycleSoundInstance);
 							player.cycleSoundInstance = audioManager.playSound(soundName);
 						}
@@ -14512,7 +14516,7 @@ var ShotBarn = class {
 				shot.ticker += dt;
 				if (shot.ticker >= shot.pullDelay) {
 					const player = playerBarn.getPlayerById(shot.playerId);
-					if (player && !player.glWLM.wer && player.glWLM.TlcWP == shot.weaponType && weaponDef.caseTiming == "shoot") createCasingParticle(shot.weaponType, Math.PI / 2 * -1, 1, player.glWLM.Obgct, player.glWLM.LFUhXt, player.renderLayer, player.renderZOrd + 1, particleBarn);
+					if (player && !player.m_netData.m_dead && player.m_netData.m_activeWeapon == shot.weaponType && weaponDef.caseTiming == "shoot") createCasingParticle(shot.weaponType, Math.PI / 2 * -1, 1, player.m_netData.m_pos, player.m_netData.m_dir, player.renderLayer, player.renderZOrd + 1, particleBarn);
 					shot.active = false;
 				}
 			}
@@ -14691,20 +14695,20 @@ var Player = class {
 	renderLayer = 0;
 	renderZOrd = 18;
 	renderZIdx = 0;
-	XEhIU;
-	glWLM;
-	RnR;
+	m_action;
+	m_netData;
+	m_localData;
 	throwableStatePrev;
-	KfW = GameConfig.player.radius;
-	YUr;
-	Obgct = v2.create(0, 0);
-	OFNgIv = v2.create(0, 0);
-	LFUhXt = v2.create(1, 0);
-	VFZ = v2.create(1, 0);
-	faA = v2.create(0, 0);
-	kjPq = v2.create(0, 0);
-	bLkn = v2.create(0, 0);
-	sVC = v2.create(0, 0);
+	m_rad = GameConfig.player.radius;
+	m_bodyRad;
+	m_pos = v2.create(0, 0);
+	m_posOld = v2.create(0, 0);
+	m_dir = v2.create(1, 0);
+	m_dirOld = v2.create(1, 0);
+	m_visualPos = v2.create(0, 0);
+	m_visualPosOld = v2.create(0, 0);
+	m_visualDir = v2.create(0, 0);
+	m_visualDirOld = v2.create(0, 0);
 	posInterpTicker = 0;
 	dirInterpolationTicker = 0;
 	layer = 0;
@@ -14757,15 +14761,15 @@ var Player = class {
 			});
 		}
 		this.throwableStatePrev = this.throwableState;
-		this.YUr = this.KfW;
-		this.faA = v2.create(0, 0);
-		this.kjPq = v2.create(0, 0);
-		this.bLkn = v2.create(0, 0);
-		this.sVC = v2.create(0, 0);
+		this.m_bodyRad = this.m_rad;
+		this.m_visualPos = v2.create(0, 0);
+		this.m_visualPosOld = v2.create(0, 0);
+		this.m_visualDir = v2.create(0, 0);
+		this.m_visualDirOld = v2.create(0, 0);
 		this.posInterpTicker = 0;
 		this.dirInterpolationTicker = 0;
 	}
-	BLojB() {
+	m_init() {
 		this.isNew = false;
 		this.wasInsideObstacle = false;
 		this.insideObstacleType = "";
@@ -14773,7 +14777,7 @@ var Player = class {
 		this.lastSwapIdx = -1;
 		this.hasteSeq = -1;
 		this.actionSoundInstance = null;
-		this.XEhIU = {
+		this.m_action = {
 			type: Action.None,
 			seq: -1,
 			seqOld: -1,
@@ -14785,47 +14789,47 @@ var Player = class {
 			throttleCount: 0,
 			throttleTicker: 0
 		};
-		this.glWLM = {
-			Obgct: v2.create(0, 0),
-			LFUhXt: v2.create(1, 0),
-			wVpvtJ: "",
-			ULdCdw: "",
-			plpS: "",
-			MhgVM: "",
-			TlcWP: "fists",
-			oVwj: 0,
-			wer: false,
-			PKQjLQ: false,
-			NEDCrk: Anim.None,
-			ooWa: 0,
-			WMWi: Action.None,
-			hyu: 0,
-			QpaETR: false,
-			LxiPp: false,
-			pci: false,
-			xsFzb: false,
-			wTd: 0,
-			gylFB: "",
-			Bpugf: HasteType.None,
-			sOg: 0,
-			JFps: "",
-			HfS: 1,
-			mWZGg: "",
-			amM: []
+		this.m_netData = {
+			m_pos: v2.create(0, 0),
+			m_dir: v2.create(1, 0),
+			m_outfit: "",
+			m_backpack: "",
+			m_helmet: "",
+			m_chest: "",
+			m_activeWeapon: "fists",
+			m_layer: 0,
+			m_dead: false,
+			m_downed: false,
+			m_animType: Anim.None,
+			m_animSeq: 0,
+			m_actionType: Action.None,
+			m_actionSeq: 0,
+			m_wearingPan: false,
+			m_healEffect: false,
+			m_adrenalineEffect: false,
+			m_frozen: false,
+			m_frozenOri: 0,
+			m_frozenType: "",
+			m_hasteType: HasteType.None,
+			m_hasteSeq: 0,
+			m_actionItem: "",
+			m_scale: 1,
+			m_role: "",
+			m_perks: []
 		};
-		this.RnR = {
-			kxtR: GameConfig.player.health,
-			pju: 0,
-			DBK: 0,
-			AxUd: "",
-			opb: 0,
-			uDnksc: {},
-			Lyvf: [],
-			bVeT: 0
+		this.m_localData = {
+			m_health: GameConfig.player.health,
+			m_zoom: 0,
+			m_boost: 0,
+			m_scope: "",
+			m_curWeapIdx: 0,
+			m_inventory: {},
+			m_weapons: [],
+			m_spectatorCount: 0
 		};
 		this.playAnim(Anim.None, -1);
 	}
-	MkE() {
+	m_free() {
 		this.container.visible = false;
 		this.auraContainer.visible = false;
 		for (const emitter of this.useItemEmitters) emitter.stop();
@@ -14843,129 +14847,129 @@ var Player = class {
 			this.adrenalineEmitter = null;
 		}
 	}
-	zgF(data, fullUpdate, isNew, _ctx) {
-		if (!v2.eq(data.pos, this.kjPq)) {
-			this.kjPq = v2.copy(isNew ? data.pos : this.Obgct);
+	m_updateData(data, fullUpdate, isNew, _ctx) {
+		if (!v2.eq(data.pos, this.m_visualPosOld)) {
+			this.m_visualPosOld = v2.copy(isNew ? data.pos : this.m_pos);
 			this.posInterpTicker = 0;
 		}
-		if (!v2.eq(data.dir, this.sVC)) {
-			this.sVC = v2.copy(isNew ? data.dir : this.LFUhXt);
+		if (!v2.eq(data.dir, this.m_visualDirOld)) {
+			this.m_visualDirOld = v2.copy(isNew ? data.dir : this.m_dir);
 			this.dirInterpolationTicker = 0;
 		}
-		this.glWLM.Obgct = v2.copy(data.pos);
-		this.glWLM.LFUhXt = v2.copy(data.dir);
+		this.m_netData.m_pos = v2.copy(data.pos);
+		this.m_netData.m_dir = v2.copy(data.dir);
 		if (fullUpdate) {
-			this.glWLM.wVpvtJ = data.outfit;
-			this.glWLM.ULdCdw = data.backpack;
-			this.glWLM.plpS = data.helmet;
-			this.glWLM.MhgVM = data.chest;
-			this.glWLM.TlcWP = data.activeWeapon;
-			this.glWLM.oVwj = data.layer;
-			this.glWLM.wer = data.dead;
-			this.glWLM.PKQjLQ = data.downed;
-			this.glWLM.NEDCrk = data.animType;
-			this.glWLM.ooWa = data.animSeq;
-			this.glWLM.WMWi = data.actionType;
-			this.glWLM.hyu = data.actionSeq;
-			this.glWLM.QpaETR = data.wearingPan;
-			this.glWLM.LxiPp = data.healEffect;
-			this.glWLM.pci = data.lastStandEffect;
-			this.glWLM.xsFzb = data.frozen;
-			this.glWLM.wTd = data.frozenOri;
-			if (this.glWLM.gylFB !== data.frozenType) this.updateFrozenImage = true;
-			this.glWLM.gylFB = data.frozenType;
-			this.glWLM.Bpugf = data.hasteType;
-			this.glWLM.sOg = data.hasteSeq;
-			this.glWLM.JFps = data.actionItem;
-			this.glWLM.HfS = data.scale;
-			this.glWLM.mWZGg = data.role;
-			if (!!isNew || !perksEqual(this.glWLM.amM, data.perks)) this.perksDirty = true;
-			this.glWLM.amM = data.perks;
+			this.m_netData.m_outfit = data.outfit;
+			this.m_netData.m_backpack = data.backpack;
+			this.m_netData.m_helmet = data.helmet;
+			this.m_netData.m_chest = data.chest;
+			this.m_netData.m_activeWeapon = data.activeWeapon;
+			this.m_netData.m_layer = data.layer;
+			this.m_netData.m_dead = data.dead;
+			this.m_netData.m_downed = data.downed;
+			this.m_netData.m_animType = data.animType;
+			this.m_netData.m_animSeq = data.animSeq;
+			this.m_netData.m_actionType = data.actionType;
+			this.m_netData.m_actionSeq = data.actionSeq;
+			this.m_netData.m_wearingPan = data.wearingPan;
+			this.m_netData.m_healEffect = data.healEffect;
+			this.m_netData.m_adrenalineEffect = data.lastStandEffect;
+			this.m_netData.m_frozen = data.frozen;
+			this.m_netData.m_frozenOri = data.frozenOri;
+			if (this.m_netData.m_frozenType !== data.frozenType) this.updateFrozenImage = true;
+			this.m_netData.m_frozenType = data.frozenType;
+			this.m_netData.m_hasteType = data.hasteType;
+			this.m_netData.m_hasteSeq = data.hasteSeq;
+			this.m_netData.m_actionItem = data.actionItem;
+			this.m_netData.m_scale = data.scale;
+			this.m_netData.m_role = data.role;
+			if (!!isNew || !perksEqual(this.m_netData.m_perks, data.perks)) this.perksDirty = true;
+			this.m_netData.m_perks = data.perks;
 			if (data.animSeq != this.anim.seq) this.playAnim(data.animType, data.animSeq);
-			this.XEhIU.type = data.actionType;
-			this.XEhIU.seq = data.actionSeq;
-			this.XEhIU.item = data.actionItem;
+			this.m_action.type = data.actionType;
+			this.m_action.seq = data.actionSeq;
+			this.m_action.item = data.actionItem;
 			this.visualsDirty = true;
 		}
 		if (isNew) {
 			this.isNew = true;
-			this.renderLayer = this.glWLM.oVwj;
+			this.renderLayer = this.m_netData.m_layer;
 			this.renderZOrd = 18;
 			this.renderZIdx = this.__id;
 		}
 	}
-	Bnz(data) {
-		const scopeOld = this.RnR.AxUd;
-		if (data.healthDirty) this.RnR.kxtR = data.health;
-		if (data.boostDirty) this.RnR.DBK = data.boost;
+	m_setLocalData(data) {
+		const scopeOld = this.m_localData.m_scope;
+		if (data.healthDirty) this.m_localData.m_health = data.health;
+		if (data.boostDirty) this.m_localData.m_boost = data.boost;
 		if (data.zoomDirty) {
-			this.RnR.pju = data.zoom;
+			this.m_localData.m_zoom = data.zoom;
 			this.zoomFast = false;
 		}
 		if (data.actionDirty) {
-			this.XEhIU.time = data.action.time;
-			this.XEhIU.duration = data.action.duration;
-			this.XEhIU.targetId = data.action.targetId;
+			this.m_action.time = data.action.time;
+			this.m_action.duration = data.action.duration;
+			this.m_action.targetId = data.action.targetId;
 		}
 		if (data.inventoryDirty) {
-			this.RnR.AxUd = data.scope;
-			this.RnR.uDnksc = {};
-			for (const item in GameConfig.bagSizes) if (GameConfig.bagSizes.hasOwnProperty(item)) this.RnR.uDnksc[item] = data.inventory[item];
+			this.m_localData.m_scope = data.scope;
+			this.m_localData.m_inventory = {};
+			for (const item in GameConfig.bagSizes) if (GameConfig.bagSizes.hasOwnProperty(item)) this.m_localData.m_inventory[item] = data.inventory[item];
 		}
 		if (data.weapsDirty) {
-			this.RnR.opb = data.curWeapIdx;
-			this.RnR.Lyvf = [];
+			this.m_localData.m_curWeapIdx = data.curWeapIdx;
+			this.m_localData.m_weapons = [];
 			for (let i = 0; i < GameConfig.WeaponSlot.Count; i++) {
 				const w = {
 					type: data.weapons[i].type,
 					ammo: data.weapons[i].ammo
 				};
-				this.RnR.Lyvf.push(w);
+				this.m_localData.m_weapons.push(w);
 			}
 		}
-		if (data.spectatorCountDirty) this.RnR.bVeT = data.spectatorCount;
-		if (this.RnR.AxUd != scopeOld) this.zoomFast = true;
+		if (data.spectatorCountDirty) this.m_localData.m_spectatorCount = data.spectatorCount;
+		if (this.m_localData.m_scope != scopeOld) this.zoomFast = true;
 	}
-	RwkV() {
-		let zoom = this.RnR.pju;
+	m_getZoom() {
+		let zoom = this.m_localData.m_zoom;
 		if (device.mobile) {
 			const stepIdx = desktopZoomRads.indexOf(zoom);
 			if (stepIdx !== -1) zoom = mobileZoomRads[stepIdx];
 		}
 		return zoom;
 	}
-	vvQOMR() {
-		if (this.glWLM.plpS) return GameObjectDefs.typeToDef(this.glWLM.plpS, "helmet").level;
+	m_getHelmetLevel() {
+		if (this.m_netData.m_helmet) return GameObjectDefs.typeToDef(this.m_netData.m_helmet, "helmet").level;
 		return 0;
 	}
-	JKqR() {
-		if (this.glWLM.MhgVM) return GameObjectDefs.typeToDef(this.glWLM.MhgVM, "chest").level;
+	m_getChestLevel() {
+		if (this.m_netData.m_chest) return GameObjectDefs.typeToDef(this.m_netData.m_chest, "chest").level;
 		return 0;
 	}
-	pbIeW() {
-		return GameObjectDefs.typeToDef(this.glWLM.ULdCdw, "backpack").level;
+	m_getBagLevel() {
+		return GameObjectDefs.typeToDef(this.m_netData.m_backpack, "backpack").level;
 	}
-	CnHf() {
-		return GameObjectDefs.typeToDef(this.glWLM.TlcWP).type;
+	m_equippedWeaponType() {
+		return GameObjectDefs.typeToDef(this.m_netData.m_activeWeapon).type;
 	}
-	DVx(slot) {
-		return this.RnR.Lyvf[slot].type !== "";
+	m_hasWeaponInSlot(slot) {
+		return this.m_localData.m_weapons[slot].type !== "";
 	}
 	getMeleeCollider() {
-		const meleeDef = GameObjectDefs.typeToDef(this.glWLM.TlcWP, "melee");
-		const ang = Math.atan2(this.LFUhXt.y, this.LFUhXt.x);
-		const off = v2.add(meleeDef.attack.offset, v2.mul(v2.create(1, 0), this.glWLM.HfS - 1));
-		const pos = v2.add(this.Obgct, v2.rotate(off, ang));
+		const meleeDef = GameObjectDefs.typeToDef(this.m_netData.m_activeWeapon, "melee");
+		const ang = Math.atan2(this.m_dir.y, this.m_dir.x);
+		const off = v2.add(meleeDef.attack.offset, v2.mul(v2.create(1, 0), this.m_netData.m_scale - 1));
+		const pos = v2.add(this.m_pos, v2.rotate(off, ang));
 		const rad = meleeDef.attack.rad;
 		return collider.createCircle(pos, rad);
 	}
-	DenYJc() {
-		return this.glWLM.QpaETR || this.glWLM.TlcWP == "pan" && this.currentAnim() != Anim.Melee;
+	m_hasActivePan() {
+		return this.m_netData.m_wearingPan || this.m_netData.m_activeWeapon == "pan" && this.currentAnim() != Anim.Melee;
 	}
-	IAYv() {
-		const panSurface = this.glWLM.QpaETR ? "unequipped" : "equipped";
+	m_getPanSegment() {
+		const panSurface = this.m_netData.m_wearingPan ? "unequipped" : "equipped";
 		let surface = GameObjectDefs.typeToDef("pan", "melee").reflectSurface[panSurface];
-		const scale = this.glWLM.HfS;
+		const scale = this.m_netData.m_scale;
 		if (scale !== 1) {
 			if (panSurface === "unequipped") surface = {
 				p0: v2.mul(surface.p0, scale),
@@ -14983,28 +14987,28 @@ var Player = class {
 		return surface;
 	}
 	canInteract(map) {
-		return !this.glWLM.wer && (!map.perkMode || this.glWLM.mWZGg);
+		return !this.m_netData.m_dead && (!map.perkMode || this.m_netData.m_role);
 	}
-	RYzy(isActivePlayer, isSpectating, ui2Manager) {
+	m_updatePerks(isActivePlayer, isSpectating, ui2Manager) {
 		for (let i = 0; i < this.perks.length; i++) this.perks[i].isNew = false;
 		if (this.perksDirty) {
 			if (isActivePlayer && !isSpectating) {
-				for (let i = 0; i < this.glWLM.amM.length; i++) {
-					const perk = this.glWLM.amM[i];
+				for (let i = 0; i < this.m_netData.m_perks.length; i++) {
+					const perk = this.m_netData.m_perks[i];
 					if (this.perks.findIndex((x) => {
 						return x.type == perk.type;
 					}) === -1) ui2Manager.addRareLootMessage(perk.type);
 				}
 				for (let i = 0; i < this.perks.length; i++) {
 					const perk = this.perks[i];
-					if (this.glWLM.amM.findIndex((x) => {
+					if (this.m_netData.m_perks.findIndex((x) => {
 						return x.type == perk.type;
 					}) === -1) ui2Manager.removeRareLootMessage(perk.type);
 				}
 			}
 			const perks = [];
-			for (let i = 0; i < this.glWLM.amM.length; i++) {
-				const perk = this.glWLM.amM[i];
+			for (let i = 0; i < this.m_netData.m_perks.length; i++) {
+				const perk = this.m_netData.m_perks[i];
 				const isNew = this.perks.findIndex((x) => {
 					return x.type == perk.type;
 				}) === -1;
@@ -15016,55 +15020,55 @@ var Player = class {
 			}
 			this.perks = perks;
 			this.perkTypes = [];
-			for (let i = 0; i < this.glWLM.amM.length; i++) this.perkTypes.push(this.glWLM.amM[i].type);
+			for (let i = 0; i < this.m_netData.m_perks.length; i++) this.perkTypes.push(this.m_netData.m_perks[i].type);
 			this.perksDirty = false;
 		}
 	}
-	qRUB(type) {
+	m_hasPerk(type) {
 		return this.perkTypes.includes(type);
 	}
-	eJuNn(dt, playerBarn, map, audioManager, particleBarn, inputBinds, camera, renderer, ui2Manager, activeId, preventInput, displayingStats, isSpectating) {
-		const curWeapDef = GameObjectDefs.typeToDef(this.glWLM.TlcWP);
+	m_update(dt, playerBarn, map, audioManager, particleBarn, inputBinds, camera, renderer, ui2Manager, activeId, preventInput, displayingStats, isSpectating) {
+		const curWeapDef = GameObjectDefs.typeToDef(this.m_netData.m_activeWeapon);
 		const isActivePlayer = this.__id == activeId;
 		const activePlayer = playerBarn.getPlayerById(activeId);
-		this.OFNgIv = v2.copy(this.Obgct);
-		this.VFZ = v2.copy(this.LFUhXt);
-		this.Obgct = v2.copy(this.glWLM.Obgct);
-this.Obgct._x = this.glWLM.Obgct.x;
-this.Obgct._y = this.glWLM.Obgct.y;
-		this.LFUhXt = v2.copy(this.glWLM.LFUhXt);
-		this.layer = this.glWLM.oVwj;
-		this.downed = this.glWLM.PKQjLQ;
-		this.KfW = this.glWLM.HfS * GameConfig.player.radius;
-		if (camera.GYh) {
+		this.m_posOld = v2.copy(this.m_pos);
+		this.m_dirOld = v2.copy(this.m_dir);
+		this.m_pos = v2.copy(this.m_netData.m_pos);
+this.m_pos._x = this.m_netData.m_pos.x;
+this.m_pos._y = this.m_netData.m_pos.y;
+		this.m_dir = v2.copy(this.m_netData.m_dir);
+		this.layer = this.m_netData.m_layer;
+		this.downed = this.m_netData.m_downed;
+		this.m_rad = this.m_netData.m_scale * GameConfig.player.radius;
+		if (camera.m_interpEnabled) {
 			this.posInterpTicker += dt;
-			const posT = math.clamp(this.posInterpTicker / camera.syGZ, 0, 1);
-			this.faA = v2.lerp(posT, this.kjPq, this.Obgct);
-			if (!camera.uWHw || !isActivePlayer || isSpectating || displayingStats) {
+			const posT = math.clamp(this.posInterpTicker / camera.m_interpInterval, 0, 1);
+			this.m_visualPos = v2.lerp(posT, this.m_visualPosOld, this.m_pos);
+			if (!camera.m_localRotationEnabled || !isActivePlayer || isSpectating || displayingStats) {
 				this.dirInterpolationTicker += dt;
-				const dirT = math.clamp(this.dirInterpolationTicker / camera.syGZ, 0, 1);
-				this.bLkn = v2.lerp(dirT, this.sVC, this.LFUhXt);
+				const dirT = math.clamp(this.dirInterpolationTicker / camera.m_interpInterval, 0, 1);
+				this.m_visualDir = v2.lerp(dirT, this.m_visualDirOld, this.m_dir);
 			}
 		} else {
-			this.faA = v2.copy(this.Obgct);
-			this.bLkn = v2.copy(this.LFUhXt);
+			this.m_visualPos = v2.copy(this.m_pos);
+			this.m_visualDir = v2.copy(this.m_dir);
 		}
-		if (!math.eqAbs(this.KfW, this.YUr)) {
-			const bodyRadDist = this.KfW - this.YUr;
+		if (!math.eqAbs(this.m_rad, this.m_bodyRad)) {
+			const bodyRadDist = this.m_rad - this.m_bodyRad;
 			let bodyRadStep = Math.abs(bodyRadDist) > 1e-4 ? bodyRadDist * dt * 6 : bodyRadDist;
 			if (this.isNew) bodyRadStep = bodyRadDist;
-			this.YUr += bodyRadStep;
+			this.m_bodyRad += bodyRadStep;
 			this.visualsDirty = true;
 		}
 		if (isActivePlayer) {
-			const viewEdge = camera.Qjir(v2.create(camera.btgd, 0));
-			const viewExtent = v2.sub(viewEdge, camera.Obgct);
-			this.viewAabb.min = v2.sub(camera.Obgct, viewExtent);
-			this.viewAabb.max = v2.add(camera.Obgct, viewExtent);
+			const viewEdge = camera.m_screenToPoint(v2.create(camera.m_screenWidth, 0));
+			const viewExtent = v2.sub(viewEdge, camera.m_pos);
+			this.viewAabb.min = v2.sub(camera.m_pos, viewExtent);
+			this.viewAabb.max = v2.add(camera.m_pos, viewExtent);
 		}
-		this.RYzy(isActivePlayer, isSpectating, ui2Manager);
-		const weapTypeDirty = this.weapTypeOld != this.glWLM.TlcWP;
-		this.weapTypeOld = this.glWLM.TlcWP;
+		this.m_updatePerks(isActivePlayer, isSpectating, ui2Manager);
+		const weapTypeDirty = this.weapTypeOld != this.m_netData.m_activeWeapon;
+		this.weapTypeOld = this.m_netData.m_activeWeapon;
 		this.lastThrowablePickupSfxTicker -= dt;
 		this.noCeilingRevealTicker -= dt;
 		const activeGroupId = playerBarn.getPlayerInfo(activeId).groupId;
@@ -15074,18 +15078,18 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		this.nameText.visible = !isActivePlayer && inSameGroup;
 		let insideObstacle = null;
 		let doorErrorObstacle = null;
-		const obstacles = map.FDvy.lOGr();
+		const obstacles = map.m_obstaclePool.m_getPool();
 		for (let i = 0; i < obstacles.length; i++) {
 			const obstacle = obstacles[i];
-			if (obstacle.active && !obstacle.dead && obstacle.layer == this.glWLM.oVwj) {
+			if (obstacle.active && !obstacle.dead && obstacle.layer == this.m_netData.m_layer) {
 				if (obstacle.isBush) {
-					const rad = this.KfW * .25;
-					if (collider.intersectCircle(obstacle.collider, this.Obgct, rad)) insideObstacle = obstacle;
+					const rad = this.m_rad * .25;
+					if (collider.intersectCircle(obstacle.collider, this.m_pos, rad)) insideObstacle = obstacle;
 				} else if (obstacle.isDoor) {
-					const rad = this.KfW + .25;
-					const toDoor = v2.sub(obstacle.pos, this.Obgct);
+					const rad = this.m_rad + .25;
+					const toDoor = v2.sub(obstacle.pos, this.m_pos);
 					const doorDir = v2.rotate(v2.create(1, 0), obstacle.rot);
-					if (collider.intersectCircle(obstacle.collider, this.Obgct, rad) && (obstacle.door.locked || obstacle.door.openOneWay && v2.dot(toDoor, doorDir) < 0)) doorErrorObstacle = obstacle;
+					if (collider.intersectCircle(obstacle.collider, this.m_pos, rad) && (obstacle.door.locked || obstacle.door.openOneWay && v2.dot(toDoor, doorDir) < 0)) doorErrorObstacle = obstacle;
 				}
 			}
 		}
@@ -15097,17 +15101,17 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			this.lastInsideObstacleTime = .2;
 			audioManager.playSound(obstacleDef.sound.enter, {
 				channel: "sfx",
-				soundPos: this.Obgct,
+				soundPos: this.m_pos,
 				fallOff: 1,
 				layer: this.layer,
 				filter: "muffled"
 			});
-			const moveDir = v2.normalizeSafe(v2.sub(this.OFNgIv, this.Obgct), v2.create(1, 0));
+			const moveDir = v2.normalizeSafe(v2.sub(this.m_posOld, this.m_pos), v2.create(1, 0));
 			const partDir = isInside ? 1 : -1;
 			const numParticles = Math.floor(util.random(3, 5));
 			for (let i = 0; i < numParticles; i++) {
 				const vel = v2.mul(v2.rotate(v2.mul(moveDir, partDir), (Math.random() - .5) * Math.PI / 1.5), util.random(6, 8));
-				particleBarn.addParticle(obstacleDef.hitParticle, this.layer, this.Obgct, vel);
+				particleBarn.addParticle(obstacleDef.hitParticle, this.layer, this.m_pos, vel);
 			}
 		}
 		this.wasInsideObstacle = isInside;
@@ -15119,23 +15123,23 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			const doorSfx = MapObjectDefs.typeToDef(doorErrorObstacle.type, "obstacle").door.sound.error;
 			audioManager.playSound(doorSfx, {
 				channel: "sfx",
-				soundPos: this.Obgct,
+				soundPos: this.m_pos,
 				fallOff: 1,
 				layer: this.layer,
 				filter: "muffled"
 			});
 		}
-		this.surface = map.getGroundSurface(this.Obgct, this.layer);
+		this.surface = map.getGroundSurface(this.m_pos, this.layer);
 		const inWater = this.surface.type == "water";
 		this.updateSubmersion(dt, map);
 		this.updateFrozenState(dt);
-		if (!this.glWLM.wer) {
-			this.stepDistance += v2.length(v2.sub(this.OFNgIv, this.Obgct));
+		if (!this.m_netData.m_dead) {
+			this.stepDistance += v2.length(v2.sub(this.m_posOld, this.m_pos));
 			if (this.stepDistance > 5 && inWater || inWater && !this.wasInWater) {
 				this.stepDistance = 0;
-				particleBarn.addRippleParticle(this.Obgct, this.layer, this.surface.data.rippleColor);
+				particleBarn.addRippleParticle(this.m_pos, this.layer, this.surface.data.rippleColor);
 				audioManager.playGroup("footstep_water", {
-					soundPos: this.Obgct,
+					soundPos: this.m_pos,
 					fallOff: 3,
 					layer: this.layer,
 					filter: "muffled"
@@ -15143,7 +15147,7 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			} else if (this.stepDistance > 4 && !inWater) {
 				this.stepDistance = 0;
 				audioManager.playGroup(`footstep_${this.surface.type}`, {
-					soundPos: this.Obgct,
+					soundPos: this.m_pos,
 					fallOff: 3,
 					layer: this.layer,
 					filter: "muffled"
@@ -15152,14 +15156,14 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			this.wasInWater = inWater;
 		}
 		this.bleedTicker -= dt;
-		if (!this.glWLM.wer && (this.glWLM.PKQjLQ && this.XEhIU.type == Action.None || this.qRUB("trick_drain")) && this.bleedTicker < 0) {
-			this.bleedTicker = this.qRUB("trick_drain") ? GameConfig.player.bleedTickRate * 3 : GameConfig.player.bleedTickRate;
-			const vel = v2.rotate(v2.mul(this.LFUhXt, -1), (Math.random() - .5) * Math.PI / 3);
+		if (!this.m_netData.m_dead && (this.m_netData.m_downed && this.m_action.type == Action.None || this.m_hasPerk("trick_drain")) && this.bleedTicker < 0) {
+			this.bleedTicker = this.m_hasPerk("trick_drain") ? GameConfig.player.bleedTickRate * 3 : GameConfig.player.bleedTickRate;
+			const vel = v2.rotate(v2.mul(this.m_dir, -1), (Math.random() - .5) * Math.PI / 3);
 			vel.y *= -1;
-			particleBarn.addParticle("bloodSplat", this.renderLayer, v2.create(0, 0), v2.mul(vel, camera.rMBaI), 1, Math.random() * Math.PI * 2, this.container, this.renderZOrd + 1);
+			particleBarn.addParticle("bloodSplat", this.renderLayer, v2.create(0, 0), v2.mul(vel, camera.m_ppu), 1, Math.random() * Math.PI * 2, this.container, this.renderZOrd + 1);
 			if (!displayingStats) audioManager.playSound("player_bullet_hit_02", {
 				channel: "hits",
-				soundPos: this.Obgct,
+				soundPos: this.m_pos,
 				fallOff: 3,
 				layer: this.layer,
 				filter: "muffled"
@@ -15167,13 +15171,13 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		}
 		this.gunSwitchCooldown -= dt;
 		this.fireDelay -= dt;
-		if (isActivePlayer && (weapTypeDirty || this.lastSwapIdx != this.RnR.opb)) {
+		if (isActivePlayer && (weapTypeDirty || this.lastSwapIdx != this.m_localData.m_curWeapIdx)) {
 			const lastWeapIdx = this.lastSwapIdx;
-			this.lastSwapIdx = this.RnR.opb;
-			const itemDef = GameObjectDefs.typeToDef(this.glWLM.TlcWP);
+			this.lastSwapIdx = this.m_localData.m_curWeapIdx;
+			const itemDef = GameObjectDefs.typeToDef(this.m_netData.m_activeWeapon);
 			if (itemDef.type == "melee" || itemDef.type == "throwable") {
 				if (itemDef.type != "throwable" || this.lastThrowablePickupSfxTicker <= 0) {
-					const soundPos = this.isLoadoutAvatar ? camera.Obgct : this.Obgct;
+					const soundPos = this.isLoadoutAvatar ? camera.m_pos : this.m_pos;
 					audioManager.playSound(itemDef.sound.deploy, {
 						channel: "sfx",
 						soundPos,
@@ -15184,7 +15188,7 @@ this.Obgct._y = this.glWLM.Obgct.y;
 				let switchSound = "gun_switch_01";
 				let deployFull = false;
 				if ((lastWeapIdx == 0 || lastWeapIdx == 1) && (this.lastSwapIdx == 0 || this.lastSwapIdx == 1) && this.fireDelay > 0) {
-					const lastWeapDef = GameObjectDefs.typeToDefSafe(this.RnR.Lyvf[lastWeapIdx].type);
+					const lastWeapDef = GameObjectDefs.typeToDefSafe(this.m_localData.m_weapons[lastWeapIdx].type);
 					if (itemDef && lastWeapDef && itemDef.deployGroup !== void 0 && lastWeapDef.deployGroup !== void 0 && itemDef.deployGroup == lastWeapDef.deployGroup) deployFull = true;
 				}
 				if (this.gunSwitchCooldown > 0 || deployFull) switchSound = itemDef.sound.deploy;
@@ -15195,23 +15199,23 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			}
 		}
 		if (!audioManager.isSoundPlaying(this.cycleSoundInstance)) this.cycleSoundInstance = null;
-		if (this.XEhIU.seq != this.XEhIU.seqOld && !this.isNew) {
+		if (this.m_action.seq != this.m_action.seqOld && !this.isNew) {
 			let playEffect = true;
-			if (!isActivePlayer && this.XEhIU.type != Action.None) {
-				this.XEhIU.throttleTicker = .5;
-				if (this.XEhIU.throttleCount < 5) this.XEhIU.throttleCount++;
+			if (!isActivePlayer && this.m_action.type != Action.None) {
+				this.m_action.throttleTicker = .5;
+				if (this.m_action.throttleCount < 5) this.m_action.throttleCount++;
 				else playEffect = false;
 			}
 			if (playEffect) this.playActionStartEffect(isActivePlayer, particleBarn, audioManager);
 		}
-		this.XEhIU.seqOld = this.XEhIU.seq;
+		this.m_action.seqOld = this.m_action.seq;
 		this.updateActionEffect(isActivePlayer, playerInfo, particleBarn, audioManager);
-		this.XEhIU.throttleTicker -= dt;
-		if (this.XEhIU.throttleTicker < 0 && this.XEhIU.throttleCount > 0) {
-			this.XEhIU.throttleCount--;
-			this.XEhIU.throttleTicker = .25;
+		this.m_action.throttleTicker -= dt;
+		if (this.m_action.throttleTicker < 0 && this.m_action.throttleCount > 0) {
+			this.m_action.throttleCount--;
+			this.m_action.throttleTicker = .25;
 		}
-		if (this.glWLM.Bpugf && this.glWLM.sOg != this.hasteSeq) {
+		if (this.m_netData.m_hasteType && this.m_netData.m_hasteSeq != this.hasteSeq) {
 			const fx = {
 				[HasteType.None]: {
 					particle: "",
@@ -15229,67 +15233,67 @@ this.Obgct._y = this.glWLM.Obgct.y;
 					particle: "inspire",
 					sound: "ability_stim_01"
 				}
-			}[this.glWLM.Bpugf];
+			}[this.m_netData.m_hasteType];
 			if (!this.isNew) audioManager.playSound(fx.sound, {
 				channel: "sfx",
-				soundPos: this.Obgct,
+				soundPos: this.m_pos,
 				fallOff: 1,
 				layer: this.layer,
 				filter: "muffled"
 			});
 			this.hasteEmitter?.stop();
 			this.hasteEmitter = particleBarn.addEmitter(fx.particle, {
-				pos: this.Obgct,
+				pos: this.m_pos,
 				layer: this.layer
 			});
-			this.hasteSeq = this.glWLM.sOg;
-		} else if (!this.glWLM.Bpugf && this.hasteEmitter) {
+			this.hasteSeq = this.m_netData.m_hasteSeq;
+		} else if (!this.m_netData.m_hasteType && this.hasteEmitter) {
 			this.hasteEmitter.stop();
 			this.hasteEmitter = null;
 		}
 		if (this.hasteEmitter) {
-			this.hasteEmitter.pos = v2.add(this.Obgct, v2.create(0, .1));
+			this.hasteEmitter.pos = v2.add(this.m_pos, v2.create(0, .1));
 			this.hasteEmitter.layer = this.renderLayer;
 			this.hasteEmitter.zOrd = this.renderZOrd + 1;
 		}
-		if (this.glWLM.LxiPp && !this.passiveHealEmitter) this.passiveHealEmitter = particleBarn.addEmitter("heal_basic", {
-			pos: this.Obgct,
+		if (this.m_netData.m_healEffect && !this.passiveHealEmitter) this.passiveHealEmitter = particleBarn.addEmitter("heal_basic", {
+			pos: this.m_pos,
 			layer: this.layer
 		});
-		else if (!this.glWLM.LxiPp && this.passiveHealEmitter) {
+		else if (!this.m_netData.m_healEffect && this.passiveHealEmitter) {
 			this.passiveHealEmitter.stop();
 			this.passiveHealEmitter = null;
 		}
 		if (this.passiveHealEmitter) {
-			this.passiveHealEmitter.pos = v2.add(this.Obgct, v2.create(0, .1));
+			this.passiveHealEmitter.pos = v2.add(this.m_pos, v2.create(0, .1));
 			this.passiveHealEmitter.layer = this.renderLayer;
 			this.passiveHealEmitter.zOrd = this.renderZOrd + 1;
 		}
 		const adrenalineEmitter = GameObjectDefs.typeToDef(playerInfo.loadout.boost, "boost_effect").emitter;
 		const adrenalineEmitterType = Array.isArray(adrenalineEmitter) ? adrenalineEmitter[0] : adrenalineEmitter;
-		if (this.glWLM.pci && (!this.adrenalineEmitter || this.adrenalineEmitter.type !== adrenalineEmitterType)) {
+		if (this.m_netData.m_adrenalineEffect && (!this.adrenalineEmitter || this.adrenalineEmitter.type !== adrenalineEmitterType)) {
 			this.adrenalineEmitter?.stop();
 			this.adrenalineEmitter = particleBarn.addEmitter(adrenalineEmitterType, {
 				color: 5089023,
-				pos: this.Obgct,
+				pos: this.m_pos,
 				layer: this.layer,
 				rateMult: .33
 			});
-		} else if (!this.glWLM.pci && this.adrenalineEmitter) {
+		} else if (!this.m_netData.m_adrenalineEffect && this.adrenalineEmitter) {
 			this.adrenalineEmitter.stop();
 			this.adrenalineEmitter = null;
 		}
 		if (this.adrenalineEmitter) {
-			this.adrenalineEmitter.pos = v2.add(this.Obgct, v2.create(0, .1));
+			this.adrenalineEmitter.pos = v2.add(this.m_pos, v2.create(0, .1));
 			this.adrenalineEmitter.layer = this.renderLayer;
 			this.adrenalineEmitter.zOrd = this.renderZOrd + 1;
 		}
 		if (isActivePlayer && !isSpectating) {
-			const curWeapIdx = this.RnR.opb;
-			const curWeap = this.RnR.Lyvf[curWeapIdx];
+			const curWeapIdx = this.m_localData.m_curWeapIdx;
+			const curWeap = this.m_localData.m_weapons[curWeapIdx];
 			const itemDef = GameObjectDefs.typeToDef(curWeap.type);
-			if (!this.playedDryFire && this.CnHf() == "gun" && (inputBinds.isBindPressed(Input.Fire) || inputBinds.isBindDown(Input.Fire) && itemDef.fireMode == "auto") && this.XEhIU.type == Action.None && !preventInput && !itemDef.ammoInfinite) {
-				const ammoLeft = this.RnR.uDnksc[itemDef.ammo] || 0;
+			if (!this.playedDryFire && this.m_equippedWeaponType() == "gun" && (inputBinds.isBindPressed(Input.Fire) || inputBinds.isBindDown(Input.Fire) && itemDef.fireMode == "auto") && this.m_action.type == Action.None && !preventInput && !itemDef.ammoInfinite) {
+				const ammoLeft = this.m_localData.m_inventory[itemDef.ammo] || 0;
 				const currentClip = curWeap.ammo;
 				if (ammoLeft == 0 && currentClip == 0) {
 					audioManager.playSound(itemDef.sound.empty);
@@ -15326,25 +15330,25 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		this.updateRenderLayer(isActivePlayer, activePlayer, map);
 		renderer.addPIXIObj(this.auraContainer, this.renderLayer, this.renderZOrd - 1, this.renderZIdx);
 		const auraLayerMatch = activePlayer.layer & 2 || (activePlayer.layer & 1) == 1 || (this.layer & 1) == 0;
-		this.auraContainer.visible = Boolean(!this.glWLM.wer && auraLayerMatch);
+		this.auraContainer.visible = Boolean(!this.m_netData.m_dead && auraLayerMatch);
 		renderer.addPIXIObj(this.container, this.renderLayer, this.renderZOrd, this.renderZIdx);
 		this.isNew = false;
 	}
 	render(camera, debug) {
-		const screenPos = camera.InUgqy(this.faA);
-		const screenScale = camera.jIqEw(1);
+		const screenPos = camera.m_pointToScreen(this.m_visualPos);
+		const screenScale = camera.m_pixels(1);
 		this.container.position.set(screenPos.x, screenPos.y);
 		this.container.scale.set(screenScale, screenScale);
-		this.container.visible = !this.glWLM.wer;
+		this.container.visible = !this.m_netData.m_dead;
 		this.auraContainer.position.set(screenPos.x, screenPos.y);
 		this.auraContainer.scale.set(screenScale, screenScale);
 	}
 	updateRenderLayer(isActivePlayer, activePlayer, map) {
-		const visualCol = collider.createCircle(this.Obgct, GameConfig.player.maxVisualRadius);
+		const visualCol = collider.createCircle(this.m_pos, GameConfig.player.maxVisualRadius);
 		let onMask = false;
 		let onStairs = false;
 		let occluded = false;
-		const structures = map.jVMWEq.lOGr();
+		const structures = map.m_structurePool.m_getPool();
 		for (let i = 0; i < structures.length; i++) {
 			const structure = structures[i];
 			if (structure.active) {
@@ -15354,10 +15358,10 @@ this.Obgct._y = this.glWLM.Obgct.y;
 					if (col) {
 						onStairs = true;
 						const stairTop = v2.add(stairs.center, v2.mul(stairs.downDir, -2.5));
-						let dir = v2.sub(stairTop, this.Obgct);
+						let dir = v2.sub(stairTop, this.m_pos);
 						const dist = v2.length(dir);
 						dir = dist > 1e-4 ? v2.div(dir, dist) : v2.create(1, 0);
-						occluded = collisionHelpers.intersectSegmentDist(map.FDvy.lOGr(), this.Obgct, dir, dist, .5, this.layer, false) < dist;
+						occluded = collisionHelpers.intersectSegmentDist(map.m_obstaclePool.m_getPool(), this.m_pos, dir, dist, .5, this.layer, false) < dist;
 					}
 					if (isActivePlayer && stairs.noCeilingReveal && col && this.layer != 0) this.noCeilingRevealTicker = .25;
 				}
@@ -15374,24 +15378,24 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			renderLayer |= 2;
 			renderZOrd += 100;
 		}
-		const renderZIdx = this.__id + (this.glWLM.PKQjLQ ? 0 : 262144) + (isActivePlayer ? 65536 : 0) + (this.KfW > 1 ? 131072 : 0);
+		const renderZIdx = this.__id + (this.m_netData.m_downed ? 0 : 262144) + (isActivePlayer ? 65536 : 0) + (this.m_rad > 1 ? 131072 : 0);
 		this.renderLayer = renderLayer;
 		this.renderZOrd = renderZOrd;
 		this.renderZIdx = renderZIdx;
 	}
 	updateVisuals(playerBarn, map) {
-		const outfitDef = GameObjectDefs.typeToDef(this.glWLM.wVpvtJ, "outfit");
+		const outfitDef = GameObjectDefs.typeToDef(this.m_netData.m_outfit, "outfit");
 		const outfitImg = outfitDef.skinImg;
-		const bodyScale = this.YUr / GameConfig.player.radius;
+		const bodyScale = this.m_bodyRad / GameConfig.player.radius;
 		this.bodySprite.texture = Texture.from(outfitImg.baseSprite);
 		this.bodySprite.tint = outfitDef.ghillie ? map.getMapDef().biome.colors.playerGhillie : outfitImg.baseTint;
 		this.bodySprite.scale.set(.25, .25);
 		this.bodySprite.visible = true;
-		if (this.glWLM.xsFzb && this.updateFrozenImage && this.glWLM.gylFB) {
-			const frozenSprites = GameObjectDefs.typeToDef(this.glWLM.gylFB, "explosion").frozenSprites || [];
+		if (this.m_netData.m_frozen && this.updateFrozenImage && this.m_netData.m_frozenType) {
+			const frozenSprites = GameObjectDefs.typeToDef(this.m_netData.m_frozenType, "explosion").frozenSprites || [];
 			if (frozenSprites.length > 0) {
 				const sprite = util.randomItem(frozenSprites);
-				const n = math.oriToRad(this.glWLM.wTd) + Math.PI * .5 + (Math.random() - .5) * Math.PI * .25;
+				const n = math.oriToRad(this.m_netData.m_frozenOri) + Math.PI * .5 + (Math.random() - .5) * Math.PI * .25;
 				this.bodyEffectSprite.texture = Texture.from(sprite);
 				this.bodyEffectSprite.rotation = n;
 				this.bodyEffectSprite.tint = 16777215;
@@ -15435,31 +15439,31 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		const footTint = outfitDef.ghillie ? map.getMapDef().biome.colors.playerGhillie : outfitImg.footTint;
 		setFootSprite(this.footLSprite, outfitImg.footSprite, footTint, this.downed);
 		setFootSprite(this.footRSprite, outfitImg.footSprite, footTint, this.downed);
-		if (this.qRUB("flak_jacket") && !outfitDef.ghillie) {
+		if (this.m_hasPerk("flak_jacket") && !outfitDef.ghillie) {
 			this.flakSprite.texture = Texture.from("player-armor-base-01.img");
 			this.flakSprite.scale.set(.215, .215);
 			this.flakSprite.tint = 3671558;
 			this.flakSprite.alpha = .7;
 			this.flakSprite.visible = true;
 		} else this.flakSprite.visible = false;
-		if (this.glWLM.MhgVM == "" || outfitDef.ghillie) this.chestSprite.visible = false;
+		if (this.m_netData.m_chest == "" || outfitDef.ghillie) this.chestSprite.visible = false;
 		else {
-			const chestSkin = GameObjectDefs.typeToDef(this.glWLM.MhgVM, "chest").skinImg;
+			const chestSkin = GameObjectDefs.typeToDef(this.m_netData.m_chest, "chest").skinImg;
 			this.chestSprite.texture = Texture.from(chestSkin.baseSprite);
 			this.chestSprite.scale.set(.25, .25);
 			this.chestSprite.tint = chestSkin.baseTint;
 			this.chestSprite.visible = true;
 		}
-		if (this.qRUB("steelskin") && !outfitDef.ghillie) {
+		if (this.m_hasPerk("steelskin") && !outfitDef.ghillie) {
 			this.steelskinSprite.texture = Texture.from("loot-melee-pan-black.img");
 			this.steelskinSprite.scale.set(.4, .4);
 			this.steelskinSprite.anchor.set(.575, .5);
 			this.steelskinSprite.tint = 16777215;
 			this.steelskinSprite.visible = true;
 		} else this.steelskinSprite.visible = false;
-		if (this.glWLM.plpS == "" || outfitDef.ghillie) this.helmetSprite.visible = false;
+		if (this.m_netData.m_helmet == "" || outfitDef.ghillie) this.helmetSprite.visible = false;
 		else {
-			const helmetSkin = GameObjectDefs.typeToDef(this.glWLM.plpS, "helmet").skinImg;
+			const helmetSkin = GameObjectDefs.typeToDef(this.m_netData.m_helmet, "helmet").skinImg;
 			const helmetOffset = (this.downed ? 1 : -1) * 3.33;
 			this.helmetSprite.texture = Texture.from(helmetSkin.baseSprite);
 			this.helmetSprite.position.set(helmetOffset, 0);
@@ -15470,13 +15474,13 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			this.helmetSprite.tint = helmetTint;
 			this.helmetSprite.visible = true;
 		}
-		if (this.pbIeW() > 0 && !outfitDef.ghillie && !this.downed) {
+		if (this.m_getBagLevel() > 0 && !outfitDef.ghillie && !this.downed) {
 			const bagOffsets = [
 				10.25,
 				11.5,
 				12.75
 			];
-			const bagLevel = this.pbIeW();
+			const bagLevel = this.m_getBagLevel();
 			const bagOffset = bagOffsets[math.min(bagLevel - 1, bagOffsets.length - 1)];
 			const scale = (.4 + bagLevel * .03) * .5;
 			this.backpackSprite.texture = Texture.from("player-circle-base-01.img");
@@ -15487,7 +15491,7 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			this.backpackSprite.texture = Texture.from(outfitImg.backpackSprite);
 			this.backpackSprite.tint = outfitImg.backpackTint;
 		} else this.backpackSprite.visible = false;
-		if (this.glWLM.QpaETR) {
+		if (this.m_netData.m_wearingPan) {
 			const imgDef = GameObjectDefs.typeToDef("pan", "melee").hipImg;
 			this.hipSprite.texture = Texture.from(imgDef.sprite);
 			this.hipSprite.position.set(imgDef.pos.x, imgDef.pos.y);
@@ -15496,12 +15500,12 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			this.hipSprite.tint = imgDef.tint;
 			this.hipSprite.visible = true;
 		} else this.hipSprite.visible = false;
-		const activeWeapDef = GameObjectDefs.typeToDef(this.glWLM.TlcWP);
+		const activeWeapDef = GameObjectDefs.typeToDef(this.m_netData.m_activeWeapon);
 		if (activeWeapDef.type == "gun") {
-			this.gunRSprites.setType(this.glWLM.TlcWP, bodyScale);
+			this.gunRSprites.setType(this.m_netData.m_activeWeapon, bodyScale);
 			this.gunRSprites.setVisible(true);
 			if (activeWeapDef.isDual) {
-				this.gunLSprites.setType(this.glWLM.TlcWP, bodyScale);
+				this.gunLSprites.setType(this.m_netData.m_activeWeapon, bodyScale);
 				this.gunLSprites.setVisible(true);
 			} else this.gunLSprites.setVisible(false);
 			const handRIdx = this.bodyContainer.getChildIndex(this.handRContainer);
@@ -15528,7 +15532,7 @@ this.Obgct._y = this.glWLM.Obgct.y;
 				this.bodyContainer.addChildAt(this.handRContainer, bodyEffectIdx);
 			}
 		}
-		if (activeWeapDef.type == "melee" && this.glWLM.TlcWP != "fists") {
+		if (activeWeapDef.type == "melee" && this.m_netData.m_activeWeapon != "fists") {
 			const imgDef = activeWeapDef.worldImg;
 			this.meleeSprite.texture = Texture.from(imgDef.sprite);
 			this.meleeSprite.rotation = imgDef.rot;
@@ -15568,12 +15572,12 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			this.objectRSprite.visible = false;
 		}
 		if (this.downed) this.backpackSprite.visible = false;
-		if (this.XEhIU.type != Action.UseItem && this.XEhIU.type != Action.Revive || this.glWLM.wer || this.glWLM.PKQjLQ && !this.qRUB("self_revive") || !this.qRUB("aoe_heal")) {
+		if (this.m_action.type != Action.UseItem && this.m_action.type != Action.Revive || this.m_netData.m_dead || this.m_netData.m_downed && !this.m_hasPerk("self_revive") || !this.m_hasPerk("aoe_heal")) {
 			this.auraPulseTicker = 0;
 			this.auraPulseDir = 1;
 			this.auraCircle.visible = false;
 		} else {
-			const actionItemDef = GameObjectDefs.typeToDefSafe(this.XEhIU.item);
+			const actionItemDef = GameObjectDefs.typeToDefSafe(this.m_action.item);
 			const sprite = actionItemDef?.aura ? actionItemDef.aura.sprite : "part-aura-circle-01.img";
 			const tint = actionItemDef?.aura ? actionItemDef.aura.tint : 16711935;
 			const auraScale = .125;
@@ -15584,8 +15588,8 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			this.auraCircle.tint = tint;
 			this.auraCircle.visible = true;
 		}
-		if (this.glWLM.mWZGg != "" && GameObjectDefs.typeToDef(this.glWLM.mWZGg, "role").visorImg && this.glWLM.plpS != "" && !outfitDef.ghillie) {
-			const visorSkin = GameObjectDefs.typeToDef(this.glWLM.mWZGg, "role").visorImg;
+		if (this.m_netData.m_role != "" && GameObjectDefs.typeToDef(this.m_netData.m_role, "role").visorImg && this.m_netData.m_helmet != "" && !outfitDef.ghillie) {
+			const visorSkin = GameObjectDefs.typeToDef(this.m_netData.m_role, "role").visorImg;
 			if (visorSkin) {
 				const helmetOffset = (this.downed ? 1 : -1) * 3.33;
 				this.visorSprite.texture = Texture.from(visorSkin.baseSprite);
@@ -15599,7 +15603,7 @@ this.Obgct._y = this.glWLM.Obgct.y;
 	}
 	updateAura(dt, isActivePlayer, activePlayer) {
 		let inView = true;
-		if (!isActivePlayer) inView = coldet.testCircleAabb(this.Obgct, this.KfW, activePlayer.viewAabb.min, activePlayer.viewAabb.max);
+		if (!isActivePlayer) inView = coldet.testCircleAabb(this.m_pos, this.m_rad, activePlayer.viewAabb.min, activePlayer.viewAabb.max);
 		this.auraViewFade = math.lerp(dt * 6, this.auraViewFade, inView ? 1 : 0);
 		if (this.auraCircle.visible) {
 			this.auraPulseTicker = math.clamp(this.auraPulseTicker + dt * this.auraPulseDir * 1.5, 0, 1);
@@ -15618,13 +15622,13 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		updateSprite(this.handRContainer, this.bones[Bones.HandR]);
 		updateSprite(this.footLContainer, this.bones[Bones.FootL]);
 		updateSprite(this.footRContainer, this.bones[Bones.FootR]);
-		const activeWeapDef = GameObjectDefs.typeToDef(this.glWLM.TlcWP);
+		const activeWeapDef = GameObjectDefs.typeToDef(this.m_netData.m_activeWeapon);
 		if (activeWeapDef.type === "melee" && activeWeapDef.worldImg) {
 			const meleeBone = this.bones[Bones.MeleeR];
 			const imgDef = activeWeapDef.worldImg;
 			const pos = v2.add(meleeBone.pos, imgDef.pos);
 			this.meleeSprite.pivot.set(-pos.x, -pos.y);
-			const bodyScale = this.YUr / GameConfig.player.radius;
+			const bodyScale = this.m_bodyRad / GameConfig.player.radius;
 			this.meleeSprite.rotation = imgDef.rot + meleeBone.rot;
 			this.meleeSprite.position.set(-meleeBone.pivot.x, -meleeBone.pivot.y);
 			this.meleeSprite.scale.set(imgDef.scale.x / bodyScale, imgDef.scale.y / bodyScale);
@@ -15639,24 +15643,24 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		this.handRContainer.position.x -= this.gunRecoilR * 1.125;
 		const mouseY = inputManager.mousePos.y;
 		const mouseX = inputManager.mousePos.x;
-		if (!device.mobile && camera.uWHw && isActivePlayer && !isSpectating && !displayingStats) this.bodyContainer.rotation = Math.atan2(window.game.wVSTPB.mousePos.y - window.innerHeight / 2, window.game.wVSTPB.mousePos.x - window.innerWidth / 2);
-		else this.bodyContainer.rotation = -Math.atan2(this.bLkn.y, this.bLkn.x);
+		if (!device.mobile && camera.m_localRotationEnabled && isActivePlayer && !isSpectating && !displayingStats) this.bodyContainer.rotation = Math.atan2(window.game.m_input.mousePos.y - window.innerHeight / 2, window.game.m_input.mousePos.x - window.innerWidth / 2);
+		else this.bodyContainer.rotation = -Math.atan2(this.m_visualDir.y, this.m_visualDir.x);
 	}
 	playActionStartEffect(isActivePlayer, particleBarn, audioManager) {
 		let actionSound = null;
-		switch (this.XEhIU.type) {
+		switch (this.m_action.type) {
 			case Action.Reload:
 			case Action.ReloadAlt:
 				{
-					const actionItemDef = GameObjectDefs.typeToDef(this.XEhIU.item, "gun");
+					const actionItemDef = GameObjectDefs.typeToDef(this.m_action.item, "gun");
 					if (actionItemDef) actionSound = {
-						sound: this.XEhIU.type == Action.ReloadAlt ? actionItemDef.sound.reloadAlt : actionItemDef.sound.reload,
+						sound: this.m_action.type == Action.ReloadAlt ? actionItemDef.sound.reloadAlt : actionItemDef.sound.reload,
 						channel: isActivePlayer ? "activePlayer" : "otherPlayers"
 					};
 				}
 				break;
 			case Action.UseItem: {
-				const actionItemDef = GameObjectDefs.typeToDef(this.XEhIU.item);
+				const actionItemDef = GameObjectDefs.typeToDef(this.m_action.item);
 				if (actionItemDef) actionSound = {
 					sound: actionItemDef.sound.use,
 					channel: isActivePlayer ? "activePlayer" : "otherPlayers"
@@ -15666,27 +15670,27 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		audioManager.stopSound(this.actionSoundInstance);
 		if (actionSound && this.playActionStartSfx) this.actionSoundInstance = audioManager.playSound(actionSound.sound, {
 			channel: actionSound.channel,
-			soundPos: this.Obgct,
+			soundPos: this.m_pos,
 			fallOff: 2,
 			layer: this.layer,
 			filter: "muffled"
 		});
-		if (this.XEhIU.type == Action.Reload || this.XEhIU.type == Action.ReloadAlt) {
-			const actionItemDef = GameObjectDefs.typeToDef(this.XEhIU.item, "gun");
+		if (this.m_action.type == Action.Reload || this.m_action.type == Action.ReloadAlt) {
+			const actionItemDef = GameObjectDefs.typeToDef(this.m_action.item, "gun");
 			if (actionItemDef && actionItemDef.caseTiming == "reload") for (let n = 0; n < actionItemDef.maxReload; n++) {
 				const shellDir = n % 2 == 0 ? -1 : 1;
 				const shellAngle = Math.PI + Math.PI / 4 * shellDir;
 				const shellSpeedMult = actionItemDef.maxReload <= 2 ? 1 : math.lerp(Math.random(), .8, 1.2);
-				createCasingParticle(this.XEhIU.item, shellAngle, shellSpeedMult, this.Obgct, this.LFUhXt, this.renderLayer, this.renderZOrd + 1, particleBarn);
+				createCasingParticle(this.m_action.item, shellAngle, shellSpeedMult, this.m_pos, this.m_dir, this.renderLayer, this.renderZOrd + 1, particleBarn);
 			}
 		}
 	}
 	updateActionEffect(isActivePlayer, playerInfo, particleBarn, audioManager) {
 		let emitterTypes = [];
 		const emitterProps = {};
-		switch (this.XEhIU.type) {
+		switch (this.m_action.type) {
 			case Action.UseItem: {
-				const actionItemDef = GameObjectDefs.typeToDef(this.XEhIU.item);
+				const actionItemDef = GameObjectDefs.typeToDef(this.m_action.item);
 				const loadout = playerInfo.loadout;
 				if (actionItemDef.type == "heal") {
 					const effect = GameObjectDefs.typeToDef(loadout.heal, "heal_effect");
@@ -15695,7 +15699,7 @@ this.Obgct._y = this.glWLM.Obgct.y;
 					const effect = GameObjectDefs.typeToDef(loadout.boost, "boost_effect");
 					emitterTypes = Array.isArray(effect.emitter) ? effect.emitter : [effect.emitter];
 				}
-				if (this.qRUB("aoe_heal")) {
+				if (this.m_hasPerk("aoe_heal")) {
 					emitterProps.scale = 1.5;
 					emitterProps.radius = GameConfig.player.medicHealRange / emitterProps.scale;
 					emitterProps.rateMult = .25;
@@ -15715,13 +15719,13 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			this.useItemEmitters = emitterTypes.map((type) => {
 				return particleBarn.addEmitter(type, {
 					...emitterProps,
-					pos: this.Obgct,
+					pos: this.m_pos,
 					layer: this.layer
 				});
 			});
 		}
 		for (const emitter of this.useItemEmitters) {
-			emitter.pos = v2.add(this.Obgct, v2.create(0, .1));
+			emitter.pos = v2.add(this.m_pos, v2.create(0, .1));
 			emitter.layer = this.renderLayer;
 			emitter.zOrd = this.renderZOrd + 1;
 		}
@@ -15730,7 +15734,7 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			this.useItemEmitters = [];
 		}
 		if (!audioManager.isSoundPlaying(this.actionSoundInstance)) this.actionSoundInstance = null;
-		if (this.actionSoundInstance && !isActivePlayer) audioManager.updateSound(this.actionSoundInstance, "otherPlayers", this.Obgct, {
+		if (this.actionSoundInstance && !isActivePlayer) audioManager.updateSound(this.actionSoundInstance, "otherPlayers", this.m_pos, {
 			layer: this.layer,
 			fallOff: 2,
 			filter: "muffled"
@@ -15744,7 +15748,7 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		}
 	}
 	selectIdlePose() {
-		const curWeapDef = GameObjectDefs.typeToDefSafe(this.glWLM.TlcWP);
+		const curWeapDef = GameObjectDefs.typeToDefSafe(this.m_netData.m_activeWeapon);
 		let idlePose = "fists";
 		if (this.downed) idlePose = "downed";
 		else if ("anim" in curWeapDef && curWeapDef.anim.idlePose) idlePose = curWeapDef.anim.idlePose;
@@ -15773,19 +15777,19 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			case Anim.CrawlForward: return anim("crawl_forward", true);
 			case Anim.CrawlBackward: return anim("crawl_backward", true);
 			case Anim.Melee: {
-				const def = GameObjectDefs.typeToDefSafe(this.glWLM.TlcWP);
+				const def = GameObjectDefs.typeToDefSafe(this.m_netData.m_activeWeapon);
 				if (!def.anim?.attackAnims) return anim("fists", true);
 				const anims = def.anim.attackAnims;
 				const selected = util.randomItem(anims);
 				return anim(selected, selected == "fists" && anims.length == 1);
 			}
 			case Anim.DeployMelee: {
-				const def = GameObjectDefs.typeToDefSafe(this.glWLM.TlcWP);
+				const def = GameObjectDefs.typeToDefSafe(this.m_netData.m_activeWeapon);
 				if (!def.anim?.deployAnims) return anim("fists", true);
 				return anim(util.randomItem(def.anim.deployAnims), false);
 			}
 			case Anim.IdleMelee: {
-				const def = GameObjectDefs.typeToDefSafe(this.glWLM.TlcWP);
+				const def = GameObjectDefs.typeToDefSafe(this.m_netData.m_activeWeapon);
 				if (!def.anim?.idleAnims) return anim("fists", true);
 				return anim(util.randomItem(def.anim.idleAnims), false);
 			}
@@ -15853,10 +15857,10 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		}
 	}
 	animPlaySound(animCtx, args) {
-		const sound = GameObjectDefs.typeToDef(this.glWLM.TlcWP).sound[args.sound];
+		const sound = GameObjectDefs.typeToDef(this.m_netData.m_activeWeapon).sound[args.sound];
 		if (sound) animCtx.audioManager.playSound(sound, {
 			channel: "sfx",
-			soundPos: this.Obgct,
+			soundPos: this.m_pos,
 			fallOff: 3,
 			layer: this.layer,
 			filter: "muffled"
@@ -15866,20 +15870,20 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		this.throwableState = args.state;
 	}
 	animThrowableParticles(animCtx, _args) {
-		if (GameObjectDefs.typeToDef(this.glWLM.TlcWP, "throwable").useThrowParticles) {
-			const pinOff = v2.rotate(v2.create(.75, .75), Math.atan2(this.LFUhXt.y, this.LFUhXt.x));
-			animCtx.particleBarn.addParticle("fragPin", this.renderLayer, v2.add(this.Obgct, pinOff), v2.mul(v2.rotate(this.LFUhXt, Math.PI * .5), 4.5), 1, Math.random() * Math.PI * 2, null, this.renderZOrd + 1);
-			const leverOff = v2.rotate(v2.create(.75, -.75), Math.atan2(this.LFUhXt.y, this.LFUhXt.x));
-			animCtx.particleBarn.addParticle("fragLever", this.renderLayer, v2.add(this.Obgct, leverOff), v2.mul(v2.rotate(this.LFUhXt, -Math.PI * .25), 3.5), 1, Math.random() * Math.PI * 2, null, this.renderZOrd + 1);
+		if (GameObjectDefs.typeToDef(this.m_netData.m_activeWeapon, "throwable").useThrowParticles) {
+			const pinOff = v2.rotate(v2.create(.75, .75), Math.atan2(this.m_dir.y, this.m_dir.x));
+			animCtx.particleBarn.addParticle("fragPin", this.renderLayer, v2.add(this.m_pos, pinOff), v2.mul(v2.rotate(this.m_dir, Math.PI * .5), 4.5), 1, Math.random() * Math.PI * 2, null, this.renderZOrd + 1);
+			const leverOff = v2.rotate(v2.create(.75, -.75), Math.atan2(this.m_dir.y, this.m_dir.x));
+			animCtx.particleBarn.addParticle("fragLever", this.renderLayer, v2.add(this.m_pos, leverOff), v2.mul(v2.rotate(this.m_dir, -Math.PI * .25), 3.5), 1, Math.random() * Math.PI * 2, null, this.renderZOrd + 1);
 		}
 	}
 	animMeleeCollision(animCtx, args) {
-		const meleeDef = GameObjectDefs.typeToDefSafe(this.glWLM.TlcWP);
+		const meleeDef = GameObjectDefs.typeToDefSafe(this.m_netData.m_activeWeapon);
 		if (meleeDef?.type !== "melee") return;
 		const meleeCol = this.getMeleeCollider();
-		const meleeDist = meleeCol.rad + v2.length(v2.sub(this.Obgct, meleeCol.pos));
+		const meleeDist = meleeCol.rad + v2.length(v2.sub(this.m_pos, meleeCol.pos));
 		const hits = [];
-		let obstacles = animCtx.map.FDvy.lOGr().filter((obj) => {
+		let obstacles = animCtx.map.m_obstaclePool.m_getPool().filter((obj) => {
 			return coldet.test(obj.collider, meleeCol);
 		});
 		for (let i = 0; i < obstacles.length; i++) {
@@ -15891,8 +15895,8 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			let res = collider.intersectCircle(obstacle.collider, meleeCol.pos, meleeCol.rad);
 			if (!res) continue;
 			if (meleeDef.cleave) {
-				const meleeDir = v2.normalizeSafe(v2.sub(obstacle.pos, this.Obgct), v2.create(1, 0));
-				const wallCheck = collisionHelpers.intersectSegment(animCtx.map.FDvy.lOGr(), this.Obgct, meleeDir, meleeDist, obstacle.height, this.layer, false);
+				const meleeDir = v2.normalizeSafe(v2.sub(obstacle.pos, this.m_pos), v2.create(1, 0));
+				const wallCheck = collisionHelpers.intersectSegment(animCtx.map.m_obstaclePool.m_getPool(), this.m_pos, meleeDir, meleeDist, obstacle.height, this.layer, false);
 				if (wallCheck && wallCheck.id !== obstacle.__id) continue;
 			}
 			const obstacleDef = MapObjectDefs.typeToDef(obstacle.type, "obstacle");
@@ -15911,26 +15915,26 @@ this.Obgct._y = this.glWLM.Obgct.y;
 			});
 		}
 		const ourTeamId = animCtx.playerBarn.getPlayerInfo(this.__id).teamId;
-		const players = animCtx.playerBarn.playerPool.lOGr();
+		const players = animCtx.playerBarn.playerPool.m_getPool();
 		for (let i = 0; i < players.length; i++) {
 			const playerCol = players[i];
 			if (!playerCol.active) continue;
-			if (playerCol.__id === this.__id || playerCol.glWLM.wer) continue;
+			if (playerCol.__id === this.__id || playerCol.m_netData.m_dead) continue;
 			if (!util.sameLayer(playerCol.layer, this.layer)) continue;
-			const res = coldet.intersectCircleCircle(meleeCol.pos, meleeCol.rad, playerCol.Obgct, playerCol.KfW);
+			const res = coldet.intersectCircleCircle(meleeCol.pos, meleeCol.rad, playerCol.m_pos, playerCol.m_rad);
 			if (!res) continue;
-			const meleeDir = v2.normalizeSafe(v2.sub(playerCol.Obgct, this.Obgct), v2.create(1, 0));
-			const lineRes = coldet.intersectSegmentCircle(this.Obgct, v2.add(this.Obgct, v2.mul(meleeDir, meleeDist)), playerCol.Obgct, playerCol.KfW);
-			const pt = lineRes ? lineRes.point : playerCol.Obgct;
-			const distToPlayer = v2.length(v2.sub(pt, this.Obgct));
-			if (collisionHelpers.intersectSegmentDist(obstacles, this.Obgct, meleeDir, meleeDist, GameConfig.player.meleeHeight, this.layer, false) < distToPlayer) continue;
+			const meleeDir = v2.normalizeSafe(v2.sub(playerCol.m_pos, this.m_pos), v2.create(1, 0));
+			const lineRes = coldet.intersectSegmentCircle(this.m_pos, v2.add(this.m_pos, v2.mul(meleeDir, meleeDist)), playerCol.m_pos, playerCol.m_rad);
+			const pt = lineRes ? lineRes.point : playerCol.m_pos;
+			const distToPlayer = v2.length(v2.sub(pt, this.m_pos));
+			if (collisionHelpers.intersectSegmentDist(obstacles, this.m_pos, meleeDir, meleeDist, GameConfig.player.meleeHeight, this.layer, false) < distToPlayer) continue;
 			const teamId = animCtx.playerBarn.getPlayerInfo(playerCol.__id).teamId;
 			const vel = v2.rotate(meleeDir, (Math.random() - .5) * Math.PI / 3);
 			const hitSound = meleeDef.sound[args.playerHit] || meleeDef.sound.playerHit;
 			hits.push({
 				pen: res.pen,
 				prio: teamId == ourTeamId ? 2 : 0,
-				pos: v2.copy(playerCol.Obgct),
+				pos: v2.copy(playerCol.m_pos),
 				vel,
 				layer: playerCol.renderLayer,
 				zOrd: playerCol.renderZOrd,
@@ -15982,8 +15986,8 @@ this.Obgct._y = this.glWLM.Obgct.y;
 		let submersionAmount = 0;
 		if (inWater) {
 			const river = this.surface?.data.river;
-			const inRiver = river && !map.isInOcean(this.Obgct);
-			const dist = inRiver ? river.distanceToShore(this.Obgct) : map.distanceToShore(this.Obgct);
+			const inRiver = river && !map.isInOcean(this.m_pos);
+			const dist = inRiver ? river.distanceToShore(this.m_pos) : map.distanceToShore(this.m_pos);
 			const maxDist = inRiver ? 12 : 16;
 			submersionAmount = math.remap(dist, 0, maxDist, .6, 1);
 		}
@@ -16011,12 +16015,12 @@ this.Obgct._y = this.glWLM.Obgct.y;
 	}
 	updateFrozenState(dt) {
 		const fadeDuration = .25;
-		if (this.glWLM.xsFzb) this.frozenTicker = fadeDuration;
+		if (this.m_netData.m_frozen) this.frozenTicker = fadeDuration;
 		else {
 			this.frozenTicker -= dt;
 			this.updateFrozenImage = true;
 		}
-		this.bodyEffectSprite.alpha = this.glWLM.xsFzb ? 1 : math.remap(this.frozenTicker, 0, fadeDuration, 0, 1);
+		this.bodyEffectSprite.alpha = this.m_netData.m_frozen ? 1 : math.remap(this.frozenTicker, 0, fadeDuration, 0, 1);
 		this.bodyEffectSprite.visible = this.frozenTicker > 0;
 	}
 	addRecoil(amount, leftHand, rightHand) {
@@ -16025,12 +16029,12 @@ this.Obgct._y = this.glWLM.Obgct.y;
 	}
 	isUnderground(map) {
 		if (this.layer != 1) return false;
-		const structures = map.jVMWEq.lOGr();
+		const structures = map.m_structurePool.m_getPool();
 		for (let i = 0; i < structures.length; i++) {
 			const s = structures[i];
 			if (s.layers.length >= 2) {
 				const layer = s.layers[1];
-				if (collider.intersectCircle(layer.collision, this.Obgct, this.KfW)) return layer.underground;
+				if (collider.intersectCircle(layer.collision, this.m_pos, this.m_rad)) return layer.underground;
 			}
 		}
 		return true;
@@ -16044,21 +16048,21 @@ var PlayerBarn = class {
 	groupInfo = {};
 	playerStatus = {};
 	anonPlayerNames = false;
-	eJuNn(dt, activeId, renderer, particleBarn, camera, map, inputBinds, audioManager, ui2Manager, preventInput, displayingStats, isSpectating) {
-		const players = this.playerPool.lOGr();
+	m_update(dt, activeId, renderer, particleBarn, camera, map, inputBinds, audioManager, ui2Manager, preventInput, displayingStats, isSpectating) {
+		const players = this.playerPool.m_getPool();
 		for (let i = 0; i < players.length; i++) {
 			const p = players[i];
-			if (p.active) p.eJuNn(dt, this, map, audioManager, particleBarn, inputBinds, camera, renderer, ui2Manager, activeId, preventInput, displayingStats, isSpectating);
+			if (p.active) p.m_update(dt, this, map, audioManager, particleBarn, inputBinds, camera, renderer, ui2Manager, activeId, preventInput, displayingStats, isSpectating);
 		}
 		const activeInfo = this.getPlayerInfo(activeId);
 		const activePlayer = this.getPlayerById(activeId);
 		this.setPlayerStatus(activeId, {
-			pos: v2.copy(activePlayer.glWLM.Obgct),
-			health: activePlayer.RnR.kxtR,
+			pos: v2.copy(activePlayer.m_netData.m_pos),
+			health: activePlayer.m_localData.m_health,
 			disconnected: false,
-			dead: activePlayer.glWLM.wer,
-			downed: activePlayer.glWLM.PKQjLQ,
-			role: activePlayer.glWLM.mWZGg,
+			dead: activePlayer.m_netData.m_dead,
+			downed: activePlayer.m_netData.m_downed,
+			role: activePlayer.m_netData.m_role,
 			visible: true
 		});
 		const statusUpdateRate = getPlayerStatusUpdateRate(map.factionMode);
@@ -16069,11 +16073,11 @@ var PlayerBarn = class {
 			const playerInfo = this.getPlayerInfo(playerId);
 			const player = this.getPlayerById(playerId);
 			if (player) {
-				status.posDelta = v2.length(v2.sub(player.glWLM.Obgct, status.pos));
-				status.posTarget = v2.copy(player.glWLM.Obgct);
+				status.posDelta = v2.length(v2.sub(player.m_netData.m_pos, status.pos));
+				status.posTarget = v2.copy(player.m_netData.m_pos);
 				status.posInterp = math.clamp(status.posInterp + dt * .2, dt / statusUpdateRate, 1);
-				status.dead = player.glWLM.wer;
-				status.downed = player.glWLM.PKQjLQ;
+				status.dead = player.m_netData.m_dead;
+				status.downed = player.m_netData.m_downed;
 			} else status.posInterp = dt / statusUpdateRate;
 			const move = v2.sub(status.posTarget, status.pos);
 			const moveLen = v2.length(move);
@@ -16088,15 +16092,15 @@ var PlayerBarn = class {
 			status.minimapVisible = status.minimapAlpha > .01;
 		}
 	}
-	aTWTA(camera, debug) {
-		const players = this.playerPool.lOGr();
+	m_render(camera, debug) {
+		const players = this.playerPool.m_getPool();
 		for (let i = 0; i < players.length; i++) {
 			const p = players[i];
 			if (p.active) p.render(camera, debug);
 		}
 	}
 	getPlayerById(id) {
-		const pool = this.playerPool.lOGr();
+		const pool = this.playerPool.m_getPool();
 		for (let i = 0; i < pool.length; i++) {
 			const p = pool[i];
 			if (p.active && p.__id === id) return p;
@@ -16258,22 +16262,22 @@ var PlayerBarn = class {
 	addDeathEffect(targetId, killerId, audioManager, particleBarn) {
 		const target = this.getPlayerById(targetId);
 		const killer = this.getPlayerById(killerId);
-		if (target && killer?.qRUB("turkey_shoot")) {
+		if (target && killer?.m_hasPerk("turkey_shoot")) {
 			audioManager.playGroup("cluck", {
-				soundPos: target.Obgct,
+				soundPos: target.m_pos,
 				layer: target.layer,
 				muffled: true
 			});
 			audioManager.playSound("feather_01", {
 				channel: "sfx",
-				soundPos: target.Obgct,
+				soundPos: target.m_pos,
 				layer: target.layer,
 				muffled: true
 			});
 			const numParticles = Math.floor(util.random(30, 35));
 			for (let i = 0; i < numParticles; i++) {
 				const vel = v2.randomUnit(util.random(5, 15));
-				particleBarn.addParticle("turkeyFeathersDeath", target.layer, target.Obgct, vel);
+				particleBarn.addParticle("turkeyFeathersDeath", target.layer, target.m_pos, vel);
 			}
 		}
 	}
@@ -16285,29 +16289,29 @@ var Smoke = class {
 	__id;
 	__type;
 	active;
-	Ohis;
-	Obgct;
-	KfW;
-	oVwj;
-	NSPCRC;
-	BLojB() {}
-	MkE() {
-		this.Ohis.fadeOut();
-		this.Ohis = null;
+	m_particle;
+	m_pos;
+	m_rad;
+	m_layer;
+	m_interior;
+	m_init() {}
+	m_free() {
+		this.m_particle.fadeOut();
+		this.m_particle = null;
 	}
-	zgF(data, fullUpdate, isNew, ctx) {
-		this.Obgct = v2.copy(data.pos);
-		this.KfW = data.rad;
+	m_updateData(data, fullUpdate, isNew, ctx) {
+		this.m_pos = v2.copy(data.pos);
+		this.m_rad = data.rad;
 		if (fullUpdate) {
-			this.oVwj = data.layer;
-			this.NSPCRC = data.interior;
+			this.m_layer = data.layer;
+			this.m_interior = data.interior;
 		}
 		if (isNew) {
-			this.Ohis = ctx.smokeBarn.sLp();
-			this.Ohis?.BLojB(this.Obgct, this.KfW, this.oVwj, this.NSPCRC);
+			this.m_particle = ctx.smokeBarn.m_allocParticle();
+			this.m_particle?.m_init(this.m_pos, this.m_rad, this.m_layer, this.m_interior);
 		}
-		this.Ohis.posTarget = v2.copy(this.Obgct);
-		this.Ohis.radTarget = this.KfW;
+		this.m_particle.posTarget = v2.copy(this.m_pos);
+		this.m_particle.radTarget = this.m_rad;
 	}
 };
 var particles = ["part-smoke-02.img", "part-smoke-03.img"];
@@ -16331,7 +16335,7 @@ var SmokeParticle = class {
 		this.sprite.anchor = new Point(.5, .5);
 		this.sprite.visible = false;
 	}
-	BLojB(pos, rad, layer, interior) {
+	m_init(pos, rad, layer, interior) {
 		this.pos = v2.copy(pos);
 		this.posTarget = v2.copy(this.pos);
 		this.rad = rad;
@@ -16350,26 +16354,26 @@ var SmokeParticle = class {
 	}
 };
 var SmokeBarn = class {
-	rTw = new Pool(Smoke);
-	EDHE = [];
+	m_smokePool = new Pool(Smoke);
+	m_particles = [];
 	zIdx = 2147483647;
-	sLp() {
+	m_allocParticle() {
 		let particle = null;
-		for (let i = 0; i < this.EDHE.length; i++) if (!this.EDHE[i].active) {
-			particle = this.EDHE[i];
+		for (let i = 0; i < this.m_particles.length; i++) if (!this.m_particles[i].active) {
+			particle = this.m_particles[i];
 			break;
 		}
 		if (!particle) {
 			particle = new SmokeParticle();
-			this.EDHE.push(particle);
+			this.m_particles.push(particle);
 		}
 		particle.active = true;
 		particle.zIdx = this.zIdx--;
 		return particle;
 	}
-	eJuNn(dt, camera, activePlayer, map, renderer) {
-		for (let m = 0; m < this.EDHE.length; m++) {
-			const p = this.EDHE[m];
+	m_update(dt, camera, activePlayer, map, renderer) {
+		for (let m = 0; m < this.m_particles.length; m++) {
+			const p = this.m_particles[m];
 			if (p.active) {
 				p.rad = math.lerp(dt * 3, p.rad, p.radTarget);
 				p.pos = v2.lerp(dt * 3, p.pos, p.posTarget);
@@ -16382,8 +16386,8 @@ var SmokeBarn = class {
 				if ((!!util.sameLayer(p.layer, activePlayer.layer) || !!(activePlayer.layer & 2)) && (p.layer == 1 || !(activePlayer.layer & 2) || !map.insideStructureMask(collider.createCircle(p.pos, 1)))) layer |= 2;
 				const zOrd = p.interior ? 500 : 1e3;
 				renderer.addPIXIObj(p.sprite, layer, zOrd, p.zIdx);
-				const screenPos = camera.InUgqy(p.pos);
-				const screenScale = camera.jIqEw(p.rad * 2 / camera.rMBaI);
+				const screenPos = camera.m_pointToScreen(p.pos);
+				const screenScale = camera.m_pixels(p.rad * 2 / camera.m_ppu);
 				p.sprite.position.set(screenPos.x, screenPos.y);
 				p.sprite.scale.set(screenScale, screenScale);
 				p.sprite.rotation = p.rot;
@@ -16438,7 +16442,7 @@ var Renderer = class {
 		for (let i = 0; i < 4; i++) this.layers.push(new RenderGroup(`layer_${i}`));
 		this.ground.alpha = 0;
 	}
-	MkE() {
+	m_free() {
 		this.layerMask.parent?.removeChild(this.layerMask);
 		this.layerMask.destroy(true);
 		this.debugLayerMask?.destroy(true);
@@ -16449,10 +16453,10 @@ var Renderer = class {
 				type: "addChild",
 				stack: (/* @__PURE__ */ new Error()).stack,
 				browser: navigator.userAgent,
-				playing: this.game.Wrdq,
-				gameOver: this.game.Kaj,
-				spectating: this.game.AHday,
-				time: this.game.FmRKT,
+				playing: this.game.m_playing,
+				gameOver: this.game.m_gameOver,
+				spectating: this.game.m_spectating,
+				time: this.game.m_playingTicker,
 				mode: this.game.teamMode,
 				layer,
 				zOrd,
@@ -16483,7 +16487,7 @@ var Renderer = class {
 		const undergroundColor = map.mapLoaded ? map.getMapDef().biome.colors.underground : 1772803;
 		this.ground.clear();
 		this.ground.beginFill(undergroundColor);
-		this.ground.drawRect(0, 0, camera.btgd, camera.aJoZKR);
+		this.ground.drawRect(0, 0, camera.m_screenWidth, camera.m_screenHeight);
 		this.ground.endFill();
 		this.layerMaskDirty = true;
 	}
@@ -16493,8 +16497,8 @@ var Renderer = class {
 			mask.clear();
 			if (this.layerMaskActive) {
 				mask.beginFill(16777215, 1);
-				mask.drawRect(0, 0, camera.btgd, camera.aJoZKR);
-				const structures = map.jVMWEq.lOGr();
+				mask.drawRect(0, 0, camera.m_screenWidth, camera.m_screenHeight);
+				const structures = map.m_structurePool.m_getPool();
 				for (let i = 0; i < structures.length; i++) {
 					const structure = structures[i];
 					if (!structure.active) continue;
@@ -16502,8 +16506,8 @@ var Renderer = class {
 						const m = structure.mask[j];
 						const halfExtents = v2.mul(v2.sub(m.max, m.min), .5);
 						const center = v2.add(m.min, halfExtents);
-						const bottomLeft = camera.InUgqy(v2.sub(center, halfExtents));
-						const topRight = camera.InUgqy(v2.add(center, halfExtents));
+						const bottomLeft = camera.m_pointToScreen(v2.sub(center, halfExtents));
+						const topRight = camera.m_pointToScreen(v2.add(center, halfExtents));
 						mask.drawRect(bottomLeft.x, bottomLeft.y, topRight.x - bottomLeft.x, topRight.y - bottomLeft.y);
 					}
 				}
@@ -16515,7 +16519,7 @@ var Renderer = class {
 				mask.clear();
 				mask.beginFill(16777215, 1);
 				drawRect(mask, 0, 0, Constants.MaxPosition, Constants.MaxPosition);
-				const structures = map.jVMWEq.lOGr();
+				const structures = map.m_structurePool.m_getPool();
 				for (let i = 0; i < structures.length; i++) {
 					const structure = structures[i];
 					if (!structure.active) continue;
@@ -16534,8 +16538,8 @@ var Renderer = class {
 				}
 				mask.endFill();
 			}
-			const p0 = camera.InUgqy(v2.create(0, 0));
-			const s = camera.OQyq(1);
+			const p0 = camera.m_pointToScreen(v2.create(0, 0));
+			const s = camera.m_scaleToScreen(1);
 			mask.position.set(p0.x, p0.y);
 			mask.scale.set(s, -s);
 		}
@@ -16550,7 +16554,7 @@ var Renderer = class {
 		const mask = this.debugLayerMask;
 		mask.clear();
 		mask.beginFill(16711935, .5);
-		const structures = map.jVMWEq.lOGr();
+		const structures = map.m_structurePool.m_getPool();
 		for (let i = 0; i < structures.length; i++) {
 			const structure = structures[i];
 			if (structure.active) for (let j = 0; j < structure.mask.length; j++) {
@@ -16561,12 +16565,12 @@ var Renderer = class {
 			}
 		}
 		mask.endFill();
-		const p0 = camera.InUgqy(v2.create(0, 0));
-		const s = camera.OQyq(1);
+		const p0 = camera.m_pointToScreen(v2.create(0, 0));
+		const s = camera.m_scaleToScreen(1);
 		mask.position.set(p0.x, p0.y);
 		mask.scale.set(s, -s);
 	}
-	eJuNn(dt, camera, map, debugLayerMaskEnabled) {
+	m_update(dt, camera, map, debugLayerMaskEnabled) {
 		const alphaTarget = this.layer > 0 ? 1 : 0;
 		this.layerAlpha += step(this.layerAlpha, alphaTarget, dt * 12);
 		const groundTarget = this.layer == 1 && this.underground ? 1 : 0;
@@ -16704,7 +16708,7 @@ var Touch = class {
 		return this.getMovement(camera);
 	}
 	getAimMovement(activePlayer, camera) {
-		const isHoldingThrowable = activePlayer.RnR.opb == GameConfig.WeaponSlot.Throwable;
+		const isHoldingThrowable = activePlayer.m_localData.m_curWeapIdx == GameConfig.WeaponSlot.Throwable;
 		return this.getAim(isHoldingThrowable, camera);
 	}
 	setAimDir(dir) {
@@ -16786,7 +16790,7 @@ var Touch = class {
 			touched: pad.touched
 		};
 	}
-	eJuNn(_dt, activePlayer, map, camera, renderer) {
+	m_update(_dt, activePlayer, map, camera, renderer) {
 		for (let i = 0; i < this.touchPads.length; i++) {
 			const pad = this.touchPads[i];
 			pad.centerSprite.position.x = pad.centerPos.x;
@@ -16803,7 +16807,7 @@ var Touch = class {
 		this.lineSprites.update(this, activePlayer, map, camera, renderer);
 	}
 	isLeftSideTouch(posX, camera) {
-		return posX < camera.btgd * .5;
+		return posX < camera.m_screenWidth * .5;
 	}
 	getConstrainedPos(posDown, pos, dist) {
 		if (dist <= this.padPosRange) return pos;
@@ -17030,19 +17034,19 @@ var LineSprites = class {
 	update(touch, activePlayer, map, camera, renderer) {
 		const visible = device.touch && touch.touchingAim && touch.touchAimLine;
 		if (visible) {
-			const curWeap = activePlayer.glWLM.TlcWP;
+			const curWeap = activePlayer.m_netData.m_activeWeapon;
 			const curWeapDef = GameObjectDefs.typeToDef(curWeap);
 			let maxRange = 30;
 			if (curWeapDef.type == "gun") {
 				const bulletDist = BulletDefs[curWeapDef.bulletType].distance;
 				maxRange = curWeapDef.barrelLength + bulletDist;
 			}
-			const cameraZoom = activePlayer.RwkV();
+			const cameraZoom = activePlayer.m_getZoom();
 			const cameraRad = Math.sqrt(cameraZoom * 1.414 * cameraZoom);
 			maxRange = math.min(maxRange, cameraRad);
-			const start = v2.copy(activePlayer.Obgct);
-			let end = v2.add(start, v2.mul(activePlayer.LFUhXt, maxRange));
-			const obstacles = map.FDvy.lOGr();
+			const start = v2.copy(activePlayer.m_pos);
+			let end = v2.add(start, v2.mul(activePlayer.m_dir, maxRange));
+			const obstacles = map.m_obstaclePool.m_getPool();
 			for (let i = 0; i < obstacles.length; i++) {
 				const obstacle = obstacles[i];
 				if (!!obstacle.active && !obstacle.dead && obstacle.height >= GameConfig.bullet.height && !!obstacle.collidable && !obstacle.isWindow && util.sameLayer(activePlayer.layer, obstacle.layer) && (curWeapDef.type != "throwable" || obstacle.height > GameConfig.projectile.maxHeight)) {
@@ -17068,14 +17072,14 @@ var LineSprites = class {
 			for (let i = 0; i < this.dots.length; i++) {
 				const dot = this.dots[i];
 				const offset = startOffset + i * increment;
-				const pos = v2.add(activePlayer.Obgct, v2.mul(activePlayer.LFUhXt, offset));
+				const pos = v2.add(activePlayer.m_pos, v2.mul(activePlayer.m_dir, offset));
 				const scale = .01171875;
 				dot.position.set(pos.x, pos.y);
 				dot.scale.set(scale, scale);
 				dot.visible = i < dotCount;
 			}
-			const p0 = camera.InUgqy(v2.create(0, 0));
-			const p1 = camera.InUgqy(v2.create(1, 1));
+			const p0 = camera.m_pointToScreen(v2.create(0, 0));
+			const p1 = camera.m_pointToScreen(v2.create(1, 1));
 			const R = v2.sub(p1, p0);
 			this.container.position.set(p0.x, p0.y);
 			this.container.scale.set(R.x, R.y);
@@ -17175,6 +17179,9 @@ var MapIndicatorBarn = class {
 //#endregion
 //#region src/objects/mapSprite.ts
 var SortableSprite = class extends Sprite {
+	/**
+	*  zindex: A higher value will mean it will be rendered on top of other displayObjects within the same container.
+	*/
 	__zOrder = -1;
 	constructor() {
 		super();
@@ -17357,7 +17364,7 @@ var PieTimer = window.pieTimerClass = class PieTimer {
 		this.counterText.text = math.max(0, this.duration - this.elapsed).toFixed(1);
 		this.labelText.position.y = 87.5;
 		this.labelText.text = this.label;
-		this.container.position.set(camera.btgd / 2, camera.aJoZKR / 3 * this.screenScaleFactor + this.mobileOffset);
+		this.container.position.set(camera.m_screenWidth / 2, camera.m_screenHeight / 3 * this.screenScaleFactor + this.mobileOffset);
 		this.container.visible = true;
 	}
 };
@@ -17404,7 +17411,7 @@ var UiManager = class {
 	touch;
 	inputBinds;
 	inputBindUi;
-	gju = new PieTimer();
+	m_pieTimer = new PieTimer();
 	gameElem = (0, import_jquery.default)("#ui-game");
 	statsMain = (0, import_jquery.default)("#ui-stats");
 	statsElem = (0, import_jquery.default)("#ui-stats-bg");
@@ -17622,8 +17629,8 @@ var UiManager = class {
 			e.stopPropagation();
 		});
 		(0, import_jquery.default)("#btn-game-quit").on("click", () => {
-			this.game.kuFfR = true;
-			this.game.frAKt = 1;
+			this.game.m_updatePass = true;
+			this.game.m_updatePassDelay = 1;
 			this.quitGame();
 		});
 		this.specStatsButton.on("click", () => {
@@ -17718,7 +17725,7 @@ var UiManager = class {
 		this.container.addChild(this.display.border);
 		const minimapMargin = this.getMinimapMargin();
 		const minimapSize = this.getMinimapSize();
-		this.minimapPos = v2.create(minimapMargin + minimapSize / 2, game.WmBQFm.aJoZKR - minimapSize / 2 - minimapMargin);
+		this.minimapPos = v2.create(minimapMargin + minimapSize / 2, game.m_camera.m_screenHeight - minimapSize / 2 - minimapMargin);
 		this.muteButtonImage = this.muteButton.find("img");
 		const muteAudio = this.audioManager.mute;
 		this.muteButtonImage.attr("src", muteAudio ? this.muteOffImg : this.muteOnImg);
@@ -17758,7 +17765,7 @@ var UiManager = class {
 		}
 		this.init();
 	}
-	MkE() {
+	m_free() {
 		this.gasRenderer.free();
 		this.clearUI();
 		this.roleMenuConfirm.off("click");
@@ -17799,7 +17806,7 @@ var UiManager = class {
 		(0, import_jquery.default)("#ui-center").off("mouseenter mouseleave");
 		this.inputBinds.menuHovered = false;
 		if (!this.hudVisible) this.cycleHud();
-		this.gju.destroy();
+		this.m_pieTimer.destroy();
 		this.clearStatsElems();
 		this.setRoleMenuActive(false);
 		this.init();
@@ -17822,7 +17829,7 @@ var UiManager = class {
 		(0, import_jquery.default)("#ui-kill-leader-container").css("display", displayLeader ? "block" : "none");
 		if (!device.mobile) (0, import_jquery.default)("#ui-killfeed-wrapper").css("top", displayLeader ? "60px" : "12px");
 	}
-	eJuNn(dt, player, map, gas, playerBarn, camera, teamMode, factionMode) {
+	m_update(dt, player, map, gas, playerBarn, camera, teamMode, factionMode) {
 		const localPlayer = player;
 		if (this.weapsDirty) this.resetWeapSlotStyling();
 		this.weapsDirty = false;
@@ -17844,30 +17851,30 @@ var UiManager = class {
 			const strSeconds = `0${this.gasState.time % 60}`.slice(-2);
 			this.gasTimer.html(`${minutes}:${strSeconds}`);
 		}
-		this.spectatorCount = player.RnR.bVeT;
+		this.spectatorCount = player.m_localData.m_spectatorCount;
 		this.updateSpectatorCountDisplay(false);
-		if (player.glWLM.wer && !this.dead) {
+		if (player.m_netData.m_dead && !this.dead) {
 			this.dead = true;
-			this.gju.stop();
+			this.m_pieTimer.stop();
 		}
 		if (localPlayer.downed || this.dead) this.resetWeapSlotStyling();
-		if (this.actionSeq != player.XEhIU.seq && (this.actionSeq = player.XEhIU.seq, this.gju.stop(), player.XEhIU.type != Action.None && !this.displayingStats)) {
+		if (this.actionSeq != player.m_action.seq && (this.actionSeq = player.m_action.seq, this.m_pieTimer.stop(), player.m_action.type != Action.None && !this.displayingStats)) {
 			let desc = "";
 			let actionTxt1 = "";
 			let actionTxt2 = "";
-			switch (player.XEhIU.type) {
+			switch (player.m_action.type) {
 				case Action.Reload:
 				case Action.ReloadAlt:
-					if (GameObjectDefs.typeExists(player.XEhIU.item)) actionTxt1 = this.localization.translate("game-reloading");
+					if (GameObjectDefs.typeExists(player.m_action.item)) actionTxt1 = this.localization.translate("game-reloading");
 					break;
 				case Action.UseItem:
-					if (GameObjectDefs.typeExists(player.XEhIU.item)) {
+					if (GameObjectDefs.typeExists(player.m_action.item)) {
 						actionTxt1 = this.localization.translate("game-using");
-						actionTxt2 = this.localization.translate(`game-${player.XEhIU.item}`);
+						actionTxt2 = this.localization.translate(`game-${player.m_action.item}`);
 					}
 					break;
 				case Action.Revive: {
-					const targetName = playerBarn.getPlayerInfo(player.XEhIU.targetId).name;
+					const targetName = playerBarn.getPlayerInfo(player.m_action.targetId).name;
 					actionTxt1 = this.localization.translate("game-reviving");
 					actionTxt2 = localPlayer.downed ? "" : targetName;
 					break;
@@ -17881,17 +17888,17 @@ var UiManager = class {
 					desc += actionTxt2 ? `${actionTxt2} ` : "";
 					desc += actionTxt1 ? ` ${actionTxt1}` : "";
 				}
-				this.gju.start(desc, player.XEhIU.time, player.XEhIU.duration);
+				this.m_pieTimer.start(desc, player.m_action.time, player.m_action.duration);
 			}
 		}
 		if (!this.bigmapDisplayed) {
-			this.mapSprite.x = this.minimapPos.x + this.mapSprite.width / 2 - player.faA.x / map.width * this.mapSprite.width;
-			this.mapSprite.y = this.minimapPos.y - this.mapSprite.height / 2 + player.faA.y / map.height * this.mapSprite.height;
+			this.mapSprite.x = this.minimapPos.x + this.mapSprite.width / 2 - player.m_visualPos.x / map.width * this.mapSprite.width;
+			this.mapSprite.y = this.minimapPos.y - this.mapSprite.height / 2 + player.m_visualPos.y / map.height * this.mapSprite.height;
 		}
-		const camExtents = v2.create(camera.btgd * .5 / camera.WMfjV(), camera.aJoZKR * .5 / camera.WMfjV());
+		const camExtents = v2.create(camera.m_screenWidth * .5 / camera.m_z(), camera.m_screenHeight * .5 / camera.m_z());
 		const camAabb = {
-			min: v2.sub(camera.Obgct, camExtents),
-			max: v2.add(camera.Obgct, camExtents)
+			min: v2.sub(camera.m_pos, camExtents),
+			max: v2.add(camera.m_pos, camExtents)
 		};
 		const groupId = playerBarn.getPlayerInfo(player.__id).groupId;
 		const groupInfo = playerBarn.getGroupInfo(groupId);
@@ -17900,7 +17907,7 @@ var UiManager = class {
 				playerId: player.__id,
 				groupId,
 				spectating: this.spectating,
-				playing: this.game.FmRKT,
+				playing: this.game.m_playingTicker,
 				groupInfo: playerBarn.groupInfo
 			};
 			errorLogManager.logError("badTeamInfo_1", err);
@@ -17930,10 +17937,10 @@ var UiManager = class {
 					let hideIndicator = true;
 					if ((!isLocalPlayer || indicator.displayAll) && !factionMode) {
 						const playerPos = playerStatus.pos;
-						const dir = v2.normalizeSafe(v2.sub(playerPos, camera.Obgct), v2.create(1, 0));
-						const edge = coldet.intersectRayAabb(camera.Obgct, dir, camAabb.min, camAabb.max);
+						const dir = v2.normalizeSafe(v2.sub(playerPos, camera.m_pos), v2.create(1, 0));
+						const edge = coldet.intersectRayAabb(camera.m_pos, dir, camAabb.min, camAabb.max);
 						const rot = Math.atan2(dir.y, -dir.x) - Math.PI * .5;
-						const screenEdge = camera.InUgqy(edge);
+						const screenEdge = camera.m_pointToScreen(edge);
 						const onscreen = coldet.testCircleAabb(playerPos, GameConfig.player.radius, camAabb.min, camAabb.max);
 						if (!playerStatus.dead && !onscreen) {
 							let off = 32;
@@ -17944,8 +17951,8 @@ var UiManager = class {
 							}
 							hideIndicator = false;
 							elem.css({
-								left: math.clamp(screenEdge.x, off, camera.btgd - off),
-								top: math.clamp(screenEdge.y, off, camera.aJoZKR - off - 0),
+								left: math.clamp(screenEdge.x, off, camera.m_screenWidth - off),
+								top: math.clamp(screenEdge.y, off, camera.m_screenHeight - off - 0),
 								transform
 							});
 							if (!indicator.displayed) {
@@ -17992,7 +17999,7 @@ var UiManager = class {
 		} else if (teamMode == TeamMode.Solo) this.spectateOptionsWrapper.css({ top: 12 });
 		this.updatePlayerMapSprites(player, playerBarn, map);
 		this.mapSpriteBarn.update(dt, this, map);
-		this.gju.update(dt, camera);
+		this.m_pieTimer.update(dt, camera);
 		if (this.roleMenuActive) {
 			this.roleMenuTicker -= dt;
 			const seconds = Math.ceil(this.roleMenuTicker);
@@ -18143,10 +18150,10 @@ var UiManager = class {
 	getWorldPosFromMapPos(screenPos, map, camera) {
 		let insideMap = false;
 		if (this.bigmapDisplayed) {
-			const xBuffer = (camera.btgd - this.mapSprite.width) / 2;
-			let yBuffer = (camera.aJoZKR - this.mapSprite.height) / 2;
+			const xBuffer = (camera.m_screenWidth - this.mapSprite.width) / 2;
+			let yBuffer = (camera.m_screenHeight - this.mapSprite.height) / 2;
 			if (device.uiLayout == device.UiLayout.Sm && !device.isLandscape) yBuffer = 0;
-			insideMap = screenPos.x > xBuffer && screenPos.x < camera.btgd - xBuffer && screenPos.y > yBuffer && screenPos.y < camera.aJoZKR - yBuffer;
+			insideMap = screenPos.x > xBuffer && screenPos.x < camera.m_screenWidth - xBuffer && screenPos.y > yBuffer && screenPos.y < camera.m_screenHeight - yBuffer;
 		} else if (this.minimapDisplayed) {
 			const thisMinimapSize = this.getMinimapSize();
 			const thisMinimapMargin = this.getMinimapMargin();
@@ -18178,7 +18185,7 @@ var UiManager = class {
 		SDK.enterMenuAdState();
 	}
 	clearUI() {
-		this.gju.stop();
+		this.m_pieTimer.stop();
 		this.displayMapLarge(true);
 		this.displayMiniMap();
 		this.clearStatsElems();
@@ -18233,7 +18240,7 @@ var UiManager = class {
 		return `<div class="ui-stats-header-right"><span class="ui-stats-header-stat">${this.teamModeToString(teamMode)} </span><span class="ui-stats-header-value">#${teamRank}</span></div><div class="ui-stats-header-left"><span class="ui-stats-header-stat">${this.localization.translate("game-team-kills")} </span><span class="ui-stats-header-value">${teamKills}</span></div>`;
 	}
 	quitGame() {
-		this.game.Kaj = true;
+		this.game.m_gameOver = true;
 		this.refreshMainPageAds();
 		this.game.onQuit();
 	}
@@ -18241,7 +18248,7 @@ var UiManager = class {
 		if (!spectating || teamId == localTeamId || gameOver) {
 			this.toggleEscMenu(true);
 			this.displayingStats = true;
-			this.gju.stop();
+			this.m_pieTimer.stop();
 			this.displayMapLarge(true);
 			this.clearStatsElems();
 			this.setSpectating(false, teamMode);
@@ -18376,7 +18383,7 @@ var UiManager = class {
 		this.clearStatsElems();
 		this.statsMain.css("display", "block");
 		this.statsLogo.css("display", "none");
-		this.gju.stop();
+		this.m_pieTimer.stop();
 		this.displayingStats = true;
 		this.statsHeader.html((() => {
 			let t = this.localization.translate("game-You");
@@ -18445,7 +18452,7 @@ var UiManager = class {
 			this.spectatedPlayerName = helpers.htmlEscape(name);
 			this.spectatedPlayerText.find("#spectate-player").html(this.spectatedPlayerName);
 			this.actionSeq = -1;
-			this.gju.stop();
+			this.m_pieTimer.stop();
 		}
 	}
 	setSpectating(spectating, teamMode) {
@@ -18519,7 +18526,7 @@ var UiManager = class {
 		(0, import_jquery.default)(this.visibilityMode == 2 ? ".js-ui-hud-show" : mapHidden).css("display", this.bigmapDisplayed ? "none" : "block");
 		(0, import_jquery.default)(".js-ui-map-show").css("display", this.bigmapDisplayed ? "block" : "none");
 		this.updateSpectatorCountDisplay(true);
-		this.redraw(this.game.WmBQFm);
+		this.redraw(this.game.m_camera);
 	}
 	updateSpectatorCountDisplay(dirty) {
 		const displayCounter = !this.bigmapDisplayed && this.spectatorCount > 0;
@@ -18612,7 +18619,7 @@ var UiManager = class {
 		this.waitingForPlayers = waiting;
 		this.waitingText.css("display", waiting ? "block" : "none");
 	}
-	aTWTA(playerPos, gas, map, planeBarn) {
+	m_render(playerPos, gas, map, planeBarn) {
 		const circle = gas.getCircle(1);
 		const gasPos = this.getMapPosFromWorldPos(circle.pos, map);
 		const gasEdge = this.getMapPosFromWorldPos(v2.add(circle.pos, v2.create(circle.rad, 0)), map);
@@ -18698,17 +18705,17 @@ var UiManager = class {
 		this.teamSelectors = [];
 	}
 	resize(map, camera) {
-		this.screenScaleFactor = device.uiLayout == device.UiLayout.Sm ? .5626 : math.min(1, math.clamp(camera.btgd / 1280, .75, 1) * math.clamp(camera.aJoZKR / 1024, .75, 1));
-		this.gju.resize(this.touch, this.screenScaleFactor);
+		this.screenScaleFactor = device.uiLayout == device.UiLayout.Sm ? .5626 : math.min(1, math.clamp(camera.m_screenWidth / 1280, .75, 1) * math.clamp(camera.m_screenHeight / 1024, .75, 1));
+		this.m_pieTimer.resize(this.touch, this.screenScaleFactor);
 		this.gasRenderer.resize();
 		this.mapSprite.texture = map.getMapTexture();
-		const roleMenuScale = math.min(1, math.min(camera.btgd / 1200, camera.aJoZKR / 900));
+		const roleMenuScale = math.min(1, math.min(camera.m_screenWidth / 1200, camera.m_screenHeight / 900));
 		this.roleMenuElem.css("transform", `translateX(-50%) translateY(-50%) scale(${roleMenuScale})`);
 		this.redraw(camera);
 	}
 	redraw(camera) {
-		const screenWidth = camera.btgd;
-		const screenHeight = camera.aJoZKR;
+		const screenWidth = camera.m_screenWidth;
+		const screenHeight = camera.m_screenHeight;
 		const thisMinimapMargin = this.getMinimapMargin();
 		let thisMinimapMarginXAdjust = 0;
 		let thisMinimapMarginYAdjust = 0;
@@ -19238,7 +19245,7 @@ var UiManager2 = class {
 		};
 		window.addEventListener("keyup", this.onKeyUp);
 	}
-	MkE() {
+	m_free() {
 		for (let i = 0; i < this.eventListeners.length; i++) {
 			const e = this.eventListeners[i];
 			e.elem.removeEventListener(e.event, e.fn);
@@ -19257,7 +19264,7 @@ var UiManager2 = class {
 	flushInput() {
 		this.uiEvents = [];
 	}
-	eJuNn(dt, activePlayer, spectating, playerBarn, lootBarn, map, inputBinds) {
+	m_update(dt, activePlayer, spectating, playerBarn, lootBarn, map, inputBinds) {
 		const state = this.newState;
 		state.mobile = device.mobile;
 		state.touch = device.touch;
@@ -19307,28 +19314,28 @@ var UiManager2 = class {
 			offset += math.min(ticker / .25, 1);
 			if (device.mobile) line.opacity = ticker < 6.5 ? 1 : 0;
 		}
-		state.health = activePlayer.glWLM.wer ? 0 : math.max(activePlayer.RnR.kxtR, 1);
-		state.boost = activePlayer.RnR.DBK;
-		state.downed = activePlayer.glWLM.PKQjLQ;
+		state.health = activePlayer.m_netData.m_dead ? 0 : math.max(activePlayer.m_localData.m_health, 1);
+		state.boost = activePlayer.m_localData.m_boost;
+		state.downed = activePlayer.m_netData.m_downed;
 		let interactionType = 0;
 		let interactionObject = null;
 		let interactionUsable = true;
 		if (activePlayer.canInteract(map)) {
 			let closestObj = null;
 			let closestPen = 0;
-			const obstacles = map.FDvy.lOGr();
+			const obstacles = map.m_obstaclePool.m_getPool();
 			for (let i = 0; i < obstacles.length; i++) {
 				const obstacle = obstacles[i];
 				if (obstacle.active && !obstacle.dead && util.sameLayer(obstacle.layer, activePlayer.layer)) {
 					const interact = obstacle.getInteraction(activePlayer);
 					if (interact) {
 						if (obstacle.isButton && obstacle.button.isVat) {
-							if (v2.distance(activePlayer.Obgct, obstacle.pos) + activePlayer.KfW < interact.rad * obstacle.scale) {
+							if (v2.distance(activePlayer.m_pos, obstacle.pos) + activePlayer.m_rad < interact.rad * obstacle.scale) {
 								closestObj = obstacle;
 								closestPen = 0;
 							}
 						} else {
-							const res = collider.intersectCircle(obstacle.collider, activePlayer.glWLM.Obgct, interact.rad + activePlayer.KfW);
+							const res = collider.intersectCircle(obstacle.collider, activePlayer.m_netData.m_pos, interact.rad + activePlayer.m_rad);
 							if (res && res.pen >= closestPen) {
 								closestObj = obstacle;
 								closestPen = res.pen;
@@ -19343,30 +19350,30 @@ var UiManager2 = class {
 				interactionUsable = true;
 			}
 			const loot = lootBarn.getClosestLoot();
-			if (loot && !activePlayer.glWLM.PKQjLQ) {
+			if (loot && !activePlayer.m_netData.m_downed) {
 				const itemDef = GameObjectDefs.typeToDef(loot.type);
-				const hasPrimaryWeapon = activePlayer.DVx(GameConfig.WeaponSlot.Primary);
-				const hasSecondaryWeapon = activePlayer.DVx(GameConfig.WeaponSlot.Secondary);
+				const hasPrimaryWeapon = activePlayer.m_hasWeaponInSlot(GameConfig.WeaponSlot.Primary);
+				const hasSecondaryWeapon = activePlayer.m_hasWeaponInSlot(GameConfig.WeaponSlot.Secondary);
 				const hasBothWeapons = hasPrimaryWeapon && hasSecondaryWeapon;
-				const usable = itemDef.type != "gun" || !hasBothWeapons || activePlayer.CnHf() == "gun";
+				const usable = itemDef.type != "gun" || !hasBothWeapons || activePlayer.m_equippedWeaponType() == "gun";
 				let canReplaceArmor = false;
-				if (state.touch && itemDef.type == "helmet" && activePlayer.vvQOMR() == itemDef.level && loot.type != activePlayer.glWLM.plpS || itemDef.type == "chest" && activePlayer.JKqR() == itemDef.level && loot.type != activePlayer.glWLM.MhgVM) canReplaceArmor = true;
+				if (state.touch && itemDef.type == "helmet" && activePlayer.m_getHelmetLevel() == itemDef.level && loot.type != activePlayer.m_netData.m_helmet || itemDef.type == "chest" && activePlayer.m_getChestLevel() == itemDef.level && loot.type != activePlayer.m_netData.m_chest) canReplaceArmor = true;
 				if (usable || device.uiLayout == device.UiLayout.Sm) {
 					interactionType = 2;
 					interactionObject = loot;
 				}
 				interactionUsable = usable && (!state.touch || itemDef.type == "gun" || itemDef.type == "melee" || itemDef.type == "outfit" || itemDef.type == "perk" || canReplaceArmor);
 			}
-			const canSelfRevive = activePlayer.qRUB("self_revive");
-			if (activePlayer.XEhIU.type == Action.None && (!activePlayer.glWLM.PKQjLQ || canSelfRevive)) {
+			const canSelfRevive = activePlayer.m_hasPerk("self_revive");
+			if (activePlayer.m_action.type == Action.None && (!activePlayer.m_netData.m_downed || canSelfRevive)) {
 				const ourTeamId = playerBarn.getPlayerInfo(activePlayer.__id).teamId;
-				const players = playerBarn.playerPool.lOGr();
+				const players = playerBarn.playerPool.m_getPool();
 				for (let i = 0; i < players.length; i++) {
 					const player = players[i];
 					if (player.active) {
 						const theirTeamId = playerBarn.getPlayerInfo(player.__id).teamId;
-						if ((player.__id != activePlayer.__id || canSelfRevive) && ourTeamId == theirTeamId && player.glWLM.PKQjLQ && !player.glWLM.wer && player.XEhIU.type != Action.Revive) {
-							if (v2.length(v2.sub(player.glWLM.Obgct, activePlayer.glWLM.Obgct)) < GameConfig.player.reviveRange && util.sameLayer(player.layer, activePlayer.layer)) {
+						if ((player.__id != activePlayer.__id || canSelfRevive) && ourTeamId == theirTeamId && player.m_netData.m_downed && !player.m_netData.m_dead && player.m_action.type != Action.Revive) {
+							if (v2.length(v2.sub(player.m_netData.m_pos, activePlayer.m_netData.m_pos)) < GameConfig.player.reviveRange && util.sameLayer(player.layer, activePlayer.layer)) {
 								interactionType = 3;
 								interactionObject = player;
 								interactionUsable = true;
@@ -19375,12 +19382,12 @@ var UiManager2 = class {
 					}
 				}
 			}
-			if (activePlayer.XEhIU.type == Action.Revive && activePlayer.glWLM.PKQjLQ && !canSelfRevive) {
+			if (activePlayer.m_action.type == Action.Revive && activePlayer.m_netData.m_downed && !canSelfRevive) {
 				interactionType = 0;
 				interactionObject = null;
 				interactionUsable = false;
 			}
-			if ((activePlayer.XEhIU.type == Action.UseItem || activePlayer.XEhIU.type == Action.Revive && (!activePlayer.glWLM.PKQjLQ || !!canSelfRevive)) && !spectating) {
+			if ((activePlayer.m_action.type == Action.UseItem || activePlayer.m_action.type == Action.Revive && (!activePlayer.m_netData.m_downed || !!canSelfRevive)) && !spectating) {
 				interactionType = 1;
 				interactionObject = null;
 				interactionUsable = true;
@@ -19399,14 +19406,14 @@ var UiManager2 = class {
 			const animationWidth = Math.sin(animationTime);
 			item.width = animationWidth < .001 ? 0 : animationWidth;
 		}
-		for (let weaponIndex = 0; weaponIndex < activePlayer.RnR.Lyvf.length; weaponIndex++) {
-			const playerWeapon = activePlayer.RnR.Lyvf[weaponIndex];
+		for (let weaponIndex = 0; weaponIndex < activePlayer.m_localData.m_weapons.length; weaponIndex++) {
+			const playerWeapon = activePlayer.m_localData.m_weapons[weaponIndex];
 			const weaponState = state.weapons[weaponIndex];
 			weaponState.type = playerWeapon.type;
 			weaponState.ammo = playerWeapon.ammo;
-			if (weaponIndex == GameConfig.WeaponSlot.Throwable) weaponState.ammo = activePlayer.RnR.uDnksc[playerWeapon.type] || 0;
+			if (weaponIndex == GameConfig.WeaponSlot.Throwable) weaponState.ammo = activePlayer.m_localData.m_inventory[playerWeapon.type] || 0;
 			const wasEquipped = weaponState.equipped;
-			weaponState.equipped = weaponIndex == activePlayer.RnR.opb;
+			weaponState.equipped = weaponIndex == activePlayer.m_localData.m_curWeapIdx;
 			weaponState.selectable = (playerWeapon.type != "" || weaponIndex == GameConfig.WeaponSlot.Primary || weaponIndex == GameConfig.WeaponSlot.Secondary) && !spectating;
 			const targetOpacity = weaponState.equipped ? 1 : .6;
 			const opacityDelta = targetOpacity - weaponState.opacity;
@@ -19421,26 +19428,26 @@ var UiManager2 = class {
 			const weaponInputBind = inputBinds.getBind(weaponState.bind);
 			weaponState.bindStr = weaponInputBind ? weaponInputBind.toString() : "";
 		}
-		const playerWeaponState = state.weapons[activePlayer.RnR.opb];
+		const playerWeaponState = state.weapons[activePlayer.m_localData.m_curWeapIdx];
 		const weaponDef = GameObjectDefs.typeToDef(playerWeaponState.type);
 		const currentAmmo = playerWeaponState.ammo;
 		let remainingWeaponAmmo = 0;
-		if (weaponDef.type === "gun") remainingWeaponAmmo = weaponDef.ammoInfinite || activePlayer.qRUB("endless_ammo") && !weaponDef.ignoreEndlessAmmo ? Number.MAX_VALUE : activePlayer.RnR.uDnksc[weaponDef.ammo];
+		if (weaponDef.type === "gun") remainingWeaponAmmo = weaponDef.ammoInfinite || activePlayer.m_hasPerk("endless_ammo") && !weaponDef.ignoreEndlessAmmo ? Number.MAX_VALUE : activePlayer.m_localData.m_inventory[weaponDef.ammo];
 		state.ammo.current = currentAmmo;
 		state.ammo.remaining = remainingWeaponAmmo;
 		state.ammo.displayCurrent = weaponDef.type != "melee";
 		state.ammo.displayRemaining = remainingWeaponAmmo > 0;
 		for (let scopeIndex = 0; scopeIndex < state.scopes.length; scopeIndex++) {
 			const scopeState = state.scopes[scopeIndex];
-			scopeState.visible = activePlayer.RnR.uDnksc[scopeState.type] > 0;
-			scopeState.equipped = scopeState.visible && activePlayer.RnR.AxUd == scopeState.type;
+			scopeState.visible = activePlayer.m_localData.m_inventory[scopeState.type] > 0;
+			scopeState.equipped = scopeState.visible && activePlayer.m_localData.m_scope == scopeState.type;
 			scopeState.selectable = scopeState.visible && !spectating;
 		}
-		const playerBagLevel = activePlayer.pbIeW();
+		const playerBagLevel = activePlayer.m_getBagLevel();
 		for (let lootIndex = 0; lootIndex < state.loot.length; lootIndex++) {
 			const lootState = state.loot[lootIndex];
 			const previousLootCount = lootState.count;
-			lootState.count = activePlayer.RnR.uDnksc[lootState.type] || 0;
+			lootState.count = activePlayer.m_localData.m_inventory[lootState.type] || 0;
 			lootState.maximum = GameConfig.bagSizes[lootState.type][playerBagLevel];
 			lootState.selectable = lootState.count > 0 && !spectating;
 			if (lootState.count > previousLootCount) lootState.ticker = 0;
@@ -19453,12 +19460,12 @@ var UiManager2 = class {
 			let equippedItem = "";
 			switch (gearState.type) {
 				case "chest":
-					equippedItem = activePlayer.glWLM.MhgVM;
+					equippedItem = activePlayer.m_netData.m_chest;
 					break;
 				case "helmet":
-					equippedItem = activePlayer.glWLM.plpS;
+					equippedItem = activePlayer.m_netData.m_helmet;
 					break;
-				case "backpack": if ((equippedItem = activePlayer.glWLM.ULdCdw) === "backpack00") {
+				case "backpack": if ((equippedItem = activePlayer.m_netData.m_backpack) === "backpack00") {
 					equippedItem = "";
 					break;
 				}
@@ -19897,7 +19904,7 @@ var UiManager2 = class {
 			case 0: return "";
 			case 1: return this.localization.translate("game-cancel");
 			case 3:
-				if (object && player && (object == player || player.downed) && player.qRUB("self_revive")) return this.localization.translate("game-revive-self");
+				if (object && player && (object == player || player.downed) && player.m_hasPerk("self_revive")) return this.localization.translate("game-revive-self");
 				return this.localization.translate("game-revive-teammate");
 			case 4: {
 				const x = object.getInteraction(player);
@@ -19955,63 +19962,63 @@ function loadStaticDomImages() {
 //#endregion
 //#region src/game.ts
 var Game = class {
-	FpL;
-	jDYUC;
-	Zbga;
-	xsdrK;
-	wVSTPB;
-	GFXle;
-	XjPt;
-	MMds;
-	gaz;
+	m_pixi;
+	m_audioManager;
+	m_localization;
+	m_config;
+	m_input;
+	m_inputBinds;
+	m_inputBindUi;
+	m_ambience;
+	m_resourceManager;
 	onJoin;
 	onQuit;
 	initialized = false;
 	teamMode = TeamMode.Solo;
 	victoryMusic = null;
-	RbFu = null;
+	m_connection = null;
 	connecting = false;
 	connected = false;
-	PHSUM;
-	WmBQFm;
-	qpQR;
-	oGDwCY;
-	mFics;
-	BSCABs;
-	bZEWIr;
-	HLt;
-	AXL;
-	Jbthd;
-	RTN;
-	agvujx;
-	wkMlZ;
-	yjto;
-	bbtw;
-	YrXyh;
-	NmYQl;
-	tPhO;
-	ILu;
-	BjG;
-	WRQYxH;
-	ZAEWB;
-	Pvgkb;
-	vAwEd;
-	kuFfR;
-	frAKt;
-	Wrdq;
-	Kaj;
-	AHday;
-	VzDWyu;
-	ogFijo;
-	FmRKT;
-	BiFz;
-	Pohs;
-	rmgsm;
-	ONGIE;
-	Dwp;
-	SydkJ;
-	IJrn;
-	gCjeR;
+	m_touch;
+	m_camera;
+	m_renderer;
+	m_particleBarn;
+	m_decalBarn;
+	m_map;
+	m_playerBarn;
+	m_bulletBarn;
+	m_flareBarn;
+	m_projectileBarn;
+	m_explosionBarn;
+	m_planeBarn;
+	m_airdropBarn;
+	m_smokeBarn;
+	m_deadBodyBarn;
+	m_lootBarn;
+	m_gas;
+	m_uiManager;
+	m_ui2Manager;
+	m_emoteBarn;
+	m_shotBarn;
+	m_objectCreator;
+	m_debugDisplay;
+	m_canvasMode;
+	m_updatePass;
+	m_updatePassDelay;
+	m_playing;
+	m_gameOver;
+	m_spectating;
+	m_inputMsgTimeout;
+	m_prevInputMsg;
+	m_playingTicker;
+	m_updateRecvCount;
+	m_localId;
+	m_activeId;
+	m_activePlayer;
+	m_validateAlpha;
+	m_targetZoom;
+	m_debugZoom;
+	m_useDebugZoom;
 	editor;
 	debugHUD;
 	seq;
@@ -20021,36 +20028,36 @@ var Game = class {
 	debugPingTime;
 	lastUpdateTime;
 	updateIntervals;
-	constructor(FpL, jDYUC, Zbga, xsdrK, wVSTPB, GFXle, XjPt, MMds, gaz, onJoin, onQuit) {
-		this.FpL = FpL;
-		this.jDYUC = jDYUC;
-		this.Zbga = Zbga;
-		this.xsdrK = xsdrK;
-		this.wVSTPB = wVSTPB;
-		this.GFXle = GFXle;
-		this.XjPt = XjPt;
-		this.MMds = MMds;
-		this.gaz = gaz;
+	constructor(m_pixi, m_audioManager, m_localization, m_config, m_input, m_inputBinds, m_inputBindUi, m_ambience, m_resourceManager, onJoin, onQuit) {
+		this.m_pixi = m_pixi;
+		this.m_audioManager = m_audioManager;
+		this.m_localization = m_localization;
+		this.m_config = m_config;
+		this.m_input = m_input;
+		this.m_inputBinds = m_inputBinds;
+		this.m_inputBindUi = m_inputBindUi;
+		this.m_ambience = m_ambience;
+		this.m_resourceManager = m_resourceManager;
 		this.onJoin = onJoin;
 		this.onQuit = onQuit;
 	}
 	tryJoinGame(url, joinToken, onConnectFail) {
 		if (this.connecting || this.connected || this.initialized) return;
-		if (this.RbFu) {
-			this.RbFu.resetAndClose();
-			this.RbFu = null;
+		if (this.m_connection) {
+			this.m_connection.resetAndClose();
+			this.m_connection = null;
 		}
 		this.connecting = true;
 		this.connected = false;
 		try {
-			this.RbFu = new WebsocketConnection(url);
-			this.RbFu.onError = () => {
-				this.RbFu?.close();
+			this.m_connection = new WebsocketConnection(url);
+			this.m_connection.onError = () => {
+				this.m_connection?.close();
 			};
-			this.RbFu.onOpen = () => {
+			this.m_connection.onOpen = () => {
 				this.connecting = false;
 				this.connected = true;
-				const name = this.xsdrK.get("playerName");
+				const name = this.m_config.get("playerName");
 				const joinMessage = new JoinMsg();
 				joinMessage.protocol = GameConfig.protocolVersion;
 				joinMessage.joinToken = joinToken;
@@ -20059,27 +20066,27 @@ var Game = class {
 				joinMessage.isMobile = device.mobile || window.mobile;
 window.basicDataInfo = joinMessage;
 				joinMessage.bot = false;
-				joinMessage.loadout = this.xsdrK.get("loadout");
-				this.tyWPf(MsgType.Join, joinMessage, 8192);
+				joinMessage.loadout = this.m_config.get("loadout");
+				this.m_sendMessage(MsgType.Join, joinMessage, 8192);
 			};
-			this.RbFu.onMessage = (data) => {
+			this.m_connection.onMessage = (data) => {
 				const msgStream = new MsgStream(data);
 				while (true) {
 					const type = msgStream.deserializeMsgType();
 					if (type == MsgType.None) break;
-					this.Sqsfg(type, msgStream.getStream());
+					this.m_onMsg(type, msgStream.getStream());
 					msgStream.stream.readAlignToNextByte();
 				}
 				this.debugHUD?.netInGraph.addEntry(msgStream.stream.buffer.byteLength);
 			};
-			this.RbFu.onClose = (_, reason) => {
-				const displayingStats = this.tPhO?.displayingStats;
+			this.m_connection.onClose = (_, reason) => {
+				const displayingStats = this.m_uiManager?.displayingStats;
 				const connecting = this.connecting;
 				const connected = this.connected;
 				this.connecting = false;
 				this.connected = false;
 				if (connecting) onConnectFail();
-				else if (connected && !this.Kaj && !displayingStats) {
+				else if (connected && !this.m_gameOver && !displayingStats) {
 					const errMsg = reason || "host_closed";
 					this.onQuit(errMsg);
 				}
@@ -20092,84 +20099,84 @@ window.basicDataInfo = joinMessage;
 		}
 	}
 	init() {
-		this.vAwEd = this.FpL.renderer.type == RENDERER_TYPE.CANVAS;
+		this.m_canvasMode = this.m_pixi.renderer.type == RENDERER_TYPE.CANVAS;
 window.game = this;
-		this.PHSUM = new Touch(this.wVSTPB, this.xsdrK);
-		this.WmBQFm = new Camera();
-		this.qpQR = new Renderer(this, this.vAwEd);
-		this.oGDwCY = new ParticleBarn(this.qpQR);
-		this.mFics = new DecalBarn();
-		this.BSCABs = new Map(this.mFics);
-		this.bZEWIr = new PlayerBarn();
-		this.HLt = new BulletBarn();
-		this.AXL = new FlareBarn();
-		this.Jbthd = new ProjectileBarn();
-		this.RTN = new ExplosionBarn();
-		this.agvujx = new PlaneBarn(this.jDYUC);
-		this.wkMlZ = new AirdropBarn();
-		this.yjto = new SmokeBarn();
-		this.bbtw = new DeadBodyBarn();
-		this.YrXyh = new LootBarn();
-		this.NmYQl = new Gas(this.vAwEd);
-		this.tPhO = new UiManager(this, this.jDYUC, this.oGDwCY, this.agvujx, this.Zbga, this.vAwEd, this.PHSUM, this.GFXle, this.XjPt);
-		this.ILu = new UiManager2(this.Zbga, this.GFXle);
-		this.BjG = new EmoteBarn(this.jDYUC, this.tPhO, this.bZEWIr, this.WmBQFm, this.BSCABs);
-		this.WRQYxH = new ShotBarn();
-		this.debugHUD = new DebugHUD(this.xsdrK);
+		this.m_touch = new Touch(this.m_input, this.m_config);
+		this.m_camera = new Camera();
+		this.m_renderer = new Renderer(this, this.m_canvasMode);
+		this.m_particleBarn = new ParticleBarn(this.m_renderer);
+		this.m_decalBarn = new DecalBarn();
+		this.m_map = new Map(this.m_decalBarn);
+		this.m_playerBarn = new PlayerBarn();
+		this.m_bulletBarn = new BulletBarn();
+		this.m_flareBarn = new FlareBarn();
+		this.m_projectileBarn = new ProjectileBarn();
+		this.m_explosionBarn = new ExplosionBarn();
+		this.m_planeBarn = new PlaneBarn(this.m_audioManager);
+		this.m_airdropBarn = new AirdropBarn();
+		this.m_smokeBarn = new SmokeBarn();
+		this.m_deadBodyBarn = new DeadBodyBarn();
+		this.m_lootBarn = new LootBarn();
+		this.m_gas = new Gas(this.m_canvasMode);
+		this.m_uiManager = new UiManager(this, this.m_audioManager, this.m_particleBarn, this.m_planeBarn, this.m_localization, this.m_canvasMode, this.m_touch, this.m_inputBinds, this.m_inputBindUi);
+		this.m_ui2Manager = new UiManager2(this.m_localization, this.m_inputBinds);
+		this.m_emoteBarn = new EmoteBarn(this.m_audioManager, this.m_uiManager, this.m_playerBarn, this.m_camera, this.m_map);
+		this.m_shotBarn = new ShotBarn();
+		this.debugHUD = new DebugHUD(this.m_config);
 		const TypeToPool = {
-			[ObjectType.Player]: this.bZEWIr.playerPool,
-			[ObjectType.Obstacle]: this.BSCABs.FDvy,
-			[ObjectType.Loot]: this.YrXyh.lootPool,
-			[ObjectType.DeadBody]: this.bbtw.deadBodyPool,
-			[ObjectType.Building]: this.BSCABs.cMUHHl,
-			[ObjectType.Structure]: this.BSCABs.jVMWEq,
-			[ObjectType.Decal]: this.mFics.decalPool,
-			[ObjectType.Projectile]: this.Jbthd.projectilePool,
-			[ObjectType.Smoke]: this.yjto.rTw,
-			[ObjectType.Airdrop]: this.wkMlZ.airdropPool
+			[ObjectType.Player]: this.m_playerBarn.playerPool,
+			[ObjectType.Obstacle]: this.m_map.m_obstaclePool,
+			[ObjectType.Loot]: this.m_lootBarn.lootPool,
+			[ObjectType.DeadBody]: this.m_deadBodyBarn.deadBodyPool,
+			[ObjectType.Building]: this.m_map.m_buildingPool,
+			[ObjectType.Structure]: this.m_map.m_structurePool,
+			[ObjectType.Decal]: this.m_decalBarn.decalPool,
+			[ObjectType.Projectile]: this.m_projectileBarn.projectilePool,
+			[ObjectType.Smoke]: this.m_smokeBarn.m_smokePool,
+			[ObjectType.Airdrop]: this.m_airdropBarn.airdropPool
 		};
-		this.ZAEWB = new Creator();
-		for (const type in TypeToPool) if (TypeToPool.hasOwnProperty(type)) this.ZAEWB.WPZ(type, TypeToPool[type]);
-		this.Pvgkb = new Graphics();
+		this.m_objectCreator = new Creator();
+		for (const type in TypeToPool) if (TypeToPool.hasOwnProperty(type)) this.m_objectCreator.m_registerType(type, TypeToPool[type]);
+		this.m_debugDisplay = new Graphics();
 		const pixiContainers = [
-			this.BSCABs.display.ground,
-			this.qpQR.layers[0],
-			this.qpQR.ground,
-			this.qpQR.layers[1],
-			this.qpQR.layers[2],
-			this.qpQR.layers[3],
-			this.Pvgkb,
-			this.NmYQl.gasRenderer.display,
-			this.PHSUM.container,
-			this.BjG.container,
-			this.tPhO.container,
-			this.tPhO.gju.container,
-			this.BjG.indContainer,
+			this.m_map.display.ground,
+			this.m_renderer.layers[0],
+			this.m_renderer.ground,
+			this.m_renderer.layers[1],
+			this.m_renderer.layers[2],
+			this.m_renderer.layers[3],
+			this.m_debugDisplay,
+			this.m_gas.gasRenderer.display,
+			this.m_touch.container,
+			this.m_emoteBarn.container,
+			this.m_uiManager.container,
+			this.m_uiManager.m_pieTimer.container,
+			this.m_emoteBarn.indContainer,
 			this.debugHUD.container
 		];
 		for (let i = 0; i < pixiContainers.length; i++) {
 			const container = pixiContainers[i];
 			if (container) {
 				container.interactiveChildren = false;
-				this.FpL.stage.addChild(container);
+				this.m_pixi.stage.addChild(container);
 			}
 		}
-		this.Wrdq = false;
-		this.Kaj = false;
-		this.AHday = false;
-		this.VzDWyu = 0;
-		this.ogFijo = new InputMsg();
-		this.FmRKT = 0;
-		this.BiFz = 0;
-		this.kuFfR = false;
-		this.frAKt = 0;
-		this.Pohs = 0;
-		this.rmgsm = 0;
-		this.ONGIE = null;
-		this.Dwp = false;
-		this.SydkJ = 1;
-		this.IJrn = 1;
-		this.gCjeR = false;
+		this.m_playing = false;
+		this.m_gameOver = false;
+		this.m_spectating = false;
+		this.m_inputMsgTimeout = 0;
+		this.m_prevInputMsg = new InputMsg();
+		this.m_playingTicker = 0;
+		this.m_updateRecvCount = 0;
+		this.m_updatePass = false;
+		this.m_updatePassDelay = 0;
+		this.m_localId = 0;
+		this.m_activeId = 0;
+		this.m_activePlayer = null;
+		this.m_validateAlpha = false;
+		this.m_targetZoom = 1;
+		this.m_debugZoom = 1;
+		this.m_useDebugZoom = false;
 		this.seq = 0;
 		this.seqInFlight = false;
 		this.seqSendTime = 0;
@@ -20177,104 +20184,104 @@ window.game = this;
 		this.updateIntervals = [];
 		this.lastUpdateTime = 0;
 		this.debugPingTime = 0;
-		this.WmBQFm.DwcYA(this.xsdrK.get("screenShake"));
-		this.WmBQFm.DvxO(this.xsdrK.get("interpolation"));
-		this.WmBQFm.PvzX(this.xsdrK.get("localRotation"));
-		this.bZEWIr.anonPlayerNames = this.xsdrK.get("anonPlayerNames");
+		this.m_camera.m_setShakeEnabled(this.m_config.get("screenShake"));
+		this.m_camera.m_setInterpEnabled(this.m_config.get("interpolation"));
+		this.m_camera.m_setRotationEnabled(this.m_config.get("localRotation"));
+		this.m_playerBarn.anonPlayerNames = this.m_config.get("anonPlayerNames");
 		this.initialized = true;
 	}
 	free() {
-		if (this.RbFu) {
-			this.RbFu.resetAndClose();
-			this.RbFu = null;
+		if (this.m_connection) {
+			this.m_connection.resetAndClose();
+			this.m_connection = null;
 		}
 		this.connecting = false;
 		this.connected = false;
 		if (this.initialized) {
 			this.initialized = false;
-			this.kuFfR = false;
-			this.frAKt = 0;
-			this.BjG.MkE();
-			this.ILu.MkE();
-			this.tPhO.MkE();
-			this.NmYQl.MkE();
-			this.wkMlZ.MkE();
-			this.agvujx.MkE();
-			this.BSCABs.MkE();
-			this.oGDwCY.MkE();
-			this.qpQR.MkE();
-			this.wVSTPB.MkE();
-			this.jDYUC.stopAll();
-			while (this.FpL.stage.children.length > 0) {
-				const c = this.FpL.stage.children[0];
-				this.FpL.stage.removeChild(c);
+			this.m_updatePass = false;
+			this.m_updatePassDelay = 0;
+			this.m_emoteBarn.m_free();
+			this.m_ui2Manager.m_free();
+			this.m_uiManager.m_free();
+			this.m_gas.m_free();
+			this.m_airdropBarn.m_free();
+			this.m_planeBarn.m_free();
+			this.m_map.m_free();
+			this.m_particleBarn.m_free();
+			this.m_renderer.m_free();
+			this.m_input.m_free();
+			this.m_audioManager.stopAll();
+			while (this.m_pixi.stage.children.length > 0) {
+				const c = this.m_pixi.stage.children[0];
+				this.m_pixi.stage.removeChild(c);
 				c.destroy({ children: true });
 			}
 		}
 	}
 	warnPageReload() {
-		return this.initialized && this.Wrdq && !this.AHday && !this.tPhO.displayingStats;
+		return this.initialized && this.m_playing && !this.m_spectating && !this.m_uiManager.displayingStats;
 	}
 	update(dt) {
-		this.debugHUD.eJuNn(dt, this);
+		this.debugHUD.m_update(dt, this);
 		let debug = {};
-		const smokeParticles = this.yjto.EDHE;
-		if (this.Wrdq) this.FmRKT += dt;
-		this.bZEWIr.eJuNn(dt, this.rmgsm, this.qpQR, this.oGDwCY, this.WmBQFm, this.BSCABs, this.GFXle, this.jDYUC, this.ILu, this.BjG.wheelKeyTriggered, this.tPhO.displayingStats, this.AHday);
+		const smokeParticles = this.m_smokeBarn.m_particles;
+		if (this.m_playing) this.m_playingTicker += dt;
+		this.m_playerBarn.m_update(dt, this.m_activeId, this.m_renderer, this.m_particleBarn, this.m_camera, this.m_map, this.m_inputBinds, this.m_audioManager, this.m_ui2Manager, this.m_emoteBarn.wheelKeyTriggered, this.m_uiManager.displayingStats, this.m_spectating);
 		this.updateAmbience();
-		this.WmBQFm.Obgct = v2.copy(this.ONGIE.faA);
-		this.WmBQFm.Zdg();
-		const zoom = this.ONGIE.RwkV();
-		const minDim = math.min(this.WmBQFm.btgd, this.WmBQFm.aJoZKR);
-		const maxDim = math.max(this.WmBQFm.btgd, this.WmBQFm.aJoZKR);
+		this.m_camera.m_pos = v2.copy(this.m_activePlayer.m_visualPos);
+		this.m_camera.m_applyShake();
+		const zoom = this.m_activePlayer.m_getZoom();
+		const minDim = math.min(this.m_camera.m_screenWidth, this.m_camera.m_screenHeight);
+		const maxDim = math.max(this.m_camera.m_screenWidth, this.m_camera.m_screenHeight);
 		const maxScreenDim = math.max(minDim * (16 / 9), maxDim);
-		this.WmBQFm.SydkJ = maxScreenDim * .5 / (zoom * this.WmBQFm.rMBaI);
-		const zoomLerpIn = this.ONGIE.zoomFast ? 3 : 2;
-		const zoomLerpOut = this.ONGIE.zoomFast ? 3 : 1.4;
-		const zoomLerp = this.WmBQFm.SydkJ > this.WmBQFm.pju ? zoomLerpIn : zoomLerpOut;
-		this.WmBQFm.pju = math.lerp(dt * zoomLerp, this.WmBQFm.pju, this.WmBQFm.SydkJ);
-		this.jDYUC.cameraPos = v2.copy(this.WmBQFm.Obgct);
-		if (this.wVSTPB.keyPressed(Key.Escape)) this.tPhO.toggleEscMenu();
-		if (this.GFXle.isBindPressed(Input.ToggleMap) || this.wVSTPB.keyPressed(Key.G) && !this.GFXle.isKeyBound(Key.G)) this.tPhO.displayMapLarge(false);
-		if (this.GFXle.isBindPressed(Input.CycleUIMode)) this.tPhO.cycleVisibilityMode();
-		if (this.GFXle.isBindPressed(Input.HideUI) || this.wVSTPB.keyPressed(Key.Escape) && !this.tPhO.hudVisible) this.tPhO.cycleHud();
-		const playerPos = this.ONGIE.Obgct;
-		const mousePos = v2.create(this.ONGIE.Obgct.x + (this.wVSTPB.mousePos.x - this.WmBQFm.btgd * .5) / this.WmBQFm.WMfjV(), this.ONGIE.Obgct.y + (this.WmBQFm.aJoZKR * .5 - this.wVSTPB.mousePos.y) / this.WmBQFm.WMfjV());
+		this.m_camera.m_targetZoom = maxScreenDim * .5 / (zoom * this.m_camera.m_ppu);
+		const zoomLerpIn = this.m_activePlayer.zoomFast ? 3 : 2;
+		const zoomLerpOut = this.m_activePlayer.zoomFast ? 3 : 1.4;
+		const zoomLerp = this.m_camera.m_targetZoom > this.m_camera.m_zoom ? zoomLerpIn : zoomLerpOut;
+		this.m_camera.m_zoom = math.lerp(dt * zoomLerp, this.m_camera.m_zoom, this.m_camera.m_targetZoom);
+		this.m_audioManager.cameraPos = v2.copy(this.m_camera.m_pos);
+		if (this.m_input.keyPressed(Key.Escape)) this.m_uiManager.toggleEscMenu();
+		if (this.m_inputBinds.isBindPressed(Input.ToggleMap) || this.m_input.keyPressed(Key.G) && !this.m_inputBinds.isKeyBound(Key.G)) this.m_uiManager.displayMapLarge(false);
+		if (this.m_inputBinds.isBindPressed(Input.CycleUIMode)) this.m_uiManager.cycleVisibilityMode();
+		if (this.m_inputBinds.isBindPressed(Input.HideUI) || this.m_input.keyPressed(Key.Escape) && !this.m_uiManager.hudVisible) this.m_uiManager.cycleHud();
+		const playerPos = this.m_activePlayer.m_pos;
+		const mousePos = v2.create(this.m_activePlayer.m_pos.x + (this.m_input.mousePos.x - this.m_camera.m_screenWidth * .5) / this.m_camera.m_z(), this.m_activePlayer.m_pos.y + (this.m_camera.m_screenHeight * .5 - this.m_input.mousePos.y) / this.m_camera.m_z());
 		const toMousePos = v2.sub(mousePos, playerPos);
 		let toMouseLen = v2.length(toMousePos);
 		let toMouseDir = toMouseLen > 1e-5 ? v2.div(toMousePos, toMouseLen) : v2.create(1, 0);
-		if (this.BjG.wheelDisplayed) {
-			toMouseLen = this.ogFijo.toMouseLen;
-			toMouseDir = this.ogFijo.toMouseDir;
+		if (this.m_emoteBarn.wheelDisplayed) {
+			toMouseLen = this.m_prevInputMsg.toMouseLen;
+			toMouseDir = this.m_prevInputMsg.toMouseDir;
 		}
 		const inputMsg = new InputMsg();
 		inputMsg.seq = this.seq;
-		if (!this.AHday) {
+		if (!this.m_spectating) {
 			if (device.touch) {
-				const touchPlayerMovement = this.PHSUM.getTouchMovement(this.WmBQFm);
-				const touchAimMovement = this.PHSUM.getAimMovement(this.ONGIE, this.WmBQFm);
+				const touchPlayerMovement = this.m_touch.getTouchMovement(this.m_camera);
+				const touchAimMovement = this.m_touch.getAimMovement(this.m_activePlayer, this.m_camera);
 				let aimDir = v2.copy(touchAimMovement.aimMovement.toAimDir);
-				this.PHSUM.turnDirTicker -= dt;
-				if (this.PHSUM.moveDetected && !touchAimMovement.touched) {
+				this.m_touch.turnDirTicker -= dt;
+				if (this.m_touch.moveDetected && !touchAimMovement.touched) {
 					const touchDir = v2.normalizeSafe(touchPlayerMovement.toMoveDir, v2.create(1, 0));
-					const modifiedAimDir = this.PHSUM.turnDirTicker < 0 ? touchDir : touchAimMovement.aimMovement.toAimDir;
-					this.PHSUM.setAimDir(modifiedAimDir);
+					const modifiedAimDir = this.m_touch.turnDirTicker < 0 ? touchDir : touchAimMovement.aimMovement.toAimDir;
+					this.m_touch.setAimDir(modifiedAimDir);
 					aimDir = modifiedAimDir;
 				}
-				if (touchAimMovement.touched) this.PHSUM.turnDirTicker = this.PHSUM.turnDirCooldown;
-				if (this.PHSUM.moveDetected) {
+				if (touchAimMovement.touched) this.m_touch.turnDirTicker = this.m_touch.turnDirCooldown;
+				if (this.m_touch.moveDetected) {
 					inputMsg.touchMoveDir = v2.normalizeSafe(touchPlayerMovement.toMoveDir, v2.create(1, 0));
 					inputMsg.touchMoveLen = Math.round(math.clamp(touchPlayerMovement.toMoveLen, 0, 1) * 255);
 				} else inputMsg.touchMoveLen = 0;
 				inputMsg.touchMoveActive = true;
 				const aimLen = touchAimMovement.aimMovement.toAimLen;
-				inputMsg.toMouseLen = math.clamp(aimLen / this.PHSUM.padPosRange, 0, 1) * GameConfig.player.throwableMaxMouseDist;
+				inputMsg.toMouseLen = math.clamp(aimLen / this.m_touch.padPosRange, 0, 1) * GameConfig.player.throwableMaxMouseDist;
 				inputMsg.toMouseDir = aimDir;
 			} else {
-				inputMsg.moveLeft = this.GFXle.isBindDown(Input.MoveLeft) || this.wVSTPB.keyDown(Key.Left) && !this.GFXle.isKeyBound(Key.Left);
-				inputMsg.moveRight = this.GFXle.isBindDown(Input.MoveRight) || this.wVSTPB.keyDown(Key.Right) && !this.GFXle.isKeyBound(Key.Right);
-				inputMsg.moveUp = this.GFXle.isBindDown(Input.MoveUp) || this.wVSTPB.keyDown(Key.Up) && !this.GFXle.isKeyBound(Key.Up);
-				inputMsg.moveDown = this.GFXle.isBindDown(Input.MoveDown) || this.wVSTPB.keyDown(Key.Down) && !this.GFXle.isKeyBound(Key.Down);
+				inputMsg.moveLeft = this.m_inputBinds.isBindDown(Input.MoveLeft) || this.m_input.keyDown(Key.Left) && !this.m_inputBinds.isKeyBound(Key.Left);
+				inputMsg.moveRight = this.m_inputBinds.isBindDown(Input.MoveRight) || this.m_input.keyDown(Key.Right) && !this.m_inputBinds.isKeyBound(Key.Right);
+				inputMsg.moveUp = this.m_inputBinds.isBindDown(Input.MoveUp) || this.m_input.keyDown(Key.Up) && !this.m_inputBinds.isKeyBound(Key.Up);
+				inputMsg.moveDown = this.m_inputBinds.isBindDown(Input.MoveDown) || this.m_input.keyDown(Key.Down) && !this.m_inputBinds.isKeyBound(Key.Down);
 				inputMsg.toMouseDir = v2.copy(toMouseDir);
 				inputMsg.toMouseLen = toMouseLen;
 			}
@@ -20282,9 +20289,9 @@ window.game = this;
 			inputMsg.touchMoveLen = math.clamp(inputMsg.touchMoveLen, 0, 255);
 			inputMsg.toMouseDir = v2.normalizeSafe(inputMsg.toMouseDir, v2.create(1, 0));
 			inputMsg.toMouseLen = math.clamp(inputMsg.toMouseLen, 0, Constants.MouseMaxDist);
-			inputMsg.shootStart = this.GFXle.isBindPressed(Input.Fire) || this.PHSUM.shotDetected;
-			inputMsg.shootHold = this.GFXle.isBindDown(Input.Fire) || this.PHSUM.shotDetected;
-			inputMsg.portrait = this.WmBQFm.btgd < this.WmBQFm.aJoZKR;
+			inputMsg.shootStart = this.m_inputBinds.isBindPressed(Input.Fire) || this.m_touch.shotDetected;
+			inputMsg.shootHold = this.m_inputBinds.isBindDown(Input.Fire) || this.m_touch.shotDetected;
+			inputMsg.portrait = this.m_camera.m_screenWidth < this.m_camera.m_screenHeight;
 			const checkInputs = [
 				Input.Reload,
 				Input.Revive,
@@ -20305,9 +20312,9 @@ window.game = this;
 			];
 			for (let i = 0; i < checkInputs.length; i++) {
 				const input = checkInputs[i];
-				if (this.GFXle.isBindPressed(input)) inputMsg.addInput(input);
+				if (this.m_inputBinds.isBindPressed(input)) inputMsg.addInput(input);
 			}
-			if (this.GFXle.isBindPressed(Input.Interact)) {
+			if (this.m_inputBinds.isBindPressed(Input.Interact)) {
 				const inputs = [];
 				const interactBinds = [
 					Input.Revive,
@@ -20316,22 +20323,22 @@ window.game = this;
 				];
 				for (let i = 0; i < interactBinds.length; i++) {
 					const b = interactBinds[i];
-					if (!this.GFXle.getBind(b)) inputs.push(b);
+					if (!this.m_inputBinds.getBind(b)) inputs.push(b);
 				}
 				if (inputs.length == interactBinds.length) inputMsg.addInput(Input.Interact);
 				else for (let i = 0; i < inputs.length; i++) inputMsg.addInput(inputs[i]);
 			}
-			if (this.GFXle.isBindPressed(Input.SwapWeapSlots) || this.tPhO.swapWeapSlots) {
+			if (this.m_inputBinds.isBindPressed(Input.SwapWeapSlots) || this.m_uiManager.swapWeapSlots) {
 				inputMsg.addInput(Input.SwapWeapSlots);
-				this.ONGIE.gunSwitchCooldown = 0;
+				this.m_activePlayer.gunSwitchCooldown = 0;
 			}
-			if (this.tPhO.reloadTouched) inputMsg.addInput(Input.Reload);
-			if (this.tPhO.interactionTouched) {
+			if (this.m_uiManager.reloadTouched) inputMsg.addInput(Input.Reload);
+			if (this.m_uiManager.interactionTouched) {
 				inputMsg.addInput(Input.Interact);
 				inputMsg.addInput(Input.Cancel);
 			}
-			for (let i = 0; i < this.ILu.uiEvents.length; i++) {
-				const e = this.ILu.uiEvents[i];
+			for (let i = 0; i < this.m_ui2Manager.uiEvents.length; i++) {
+				const e = this.m_ui2Manager.uiEvents[i];
 				if (e.action == "use") {
 					if (e.type == "weapon") {
 						const input = {
@@ -20344,67 +20351,67 @@ window.game = this;
 					} else inputMsg.useItem = e.data;
 				}
 			}
-			if (this.GFXle.isBindPressed(Input.UseBandage)) inputMsg.useItem = "bandage";
-			else if (this.GFXle.isBindPressed(Input.UseHealthKit)) inputMsg.useItem = "healthkit";
-			else if (this.GFXle.isBindPressed(Input.UseSoda)) inputMsg.useItem = "soda";
-			else if (this.GFXle.isBindPressed(Input.UsePainkiller)) inputMsg.useItem = "painkiller";
+			if (this.m_inputBinds.isBindPressed(Input.UseBandage)) inputMsg.useItem = "bandage";
+			else if (this.m_inputBinds.isBindPressed(Input.UseHealthKit)) inputMsg.useItem = "healthkit";
+			else if (this.m_inputBinds.isBindPressed(Input.UseSoda)) inputMsg.useItem = "soda";
+			else if (this.m_inputBinds.isBindPressed(Input.UsePainkiller)) inputMsg.useItem = "painkiller";
 			let playDropSound = false;
-			for (let X = 0; X < this.ILu.uiEvents.length; X++) {
-				const uiEvent = this.ILu.uiEvents[X];
+			for (let X = 0; X < this.m_ui2Manager.uiEvents.length; X++) {
+				const uiEvent = this.m_ui2Manager.uiEvents[X];
 				if (uiEvent.action == "drop") {
 					const dropMsg = new DropItemMsg();
 					if (uiEvent.type == "weapon") {
 						const eventData = uiEvent.data;
-						dropMsg.item = this.ONGIE.RnR.Lyvf[eventData].type;
+						dropMsg.item = this.m_activePlayer.m_localData.m_weapons[eventData].type;
 						dropMsg.weapIdx = eventData;
 					} else if (uiEvent.type == "perk") {
 						const eventData = uiEvent.data;
-						const J = this.ONGIE.glWLM.amM;
+						const J = this.m_activePlayer.m_netData.m_perks;
 						const Q = J.length > eventData ? J[eventData] : null;
 						if (Q?.droppable) dropMsg.item = Q.type;
-					} else dropMsg.item = uiEvent.data == "helmet" ? this.ONGIE.glWLM.plpS : uiEvent.data == "chest" ? this.ONGIE.glWLM.MhgVM : uiEvent.data;
+					} else dropMsg.item = uiEvent.data == "helmet" ? this.m_activePlayer.m_netData.m_helmet : uiEvent.data == "chest" ? this.m_activePlayer.m_netData.m_chest : uiEvent.data;
 					if (dropMsg.item != "") {
-						this.tyWPf(MsgType.DropItem, dropMsg, 128);
+						this.m_sendMessage(MsgType.DropItem, dropMsg, 128);
 						if (dropMsg.item != "fists") playDropSound = true;
 					}
 				}
 			}
-			if (playDropSound) this.jDYUC.playSound("loot_drop_01", { channel: "ui" });
-			if (this.tPhO.roleSelected) {
+			if (playDropSound) this.m_audioManager.playSound("loot_drop_01", { channel: "ui" });
+			if (this.m_uiManager.roleSelected) {
 				const roleSelectMessage = new PerkModeRoleSelectMsg();
-				roleSelectMessage.role = this.tPhO.roleSelected;
-				this.tyWPf(MsgType.PerkModeRoleSelect, roleSelectMessage, 128);
-				this.xsdrK.set("perkModeRole", roleSelectMessage.role);
+				roleSelectMessage.role = this.m_uiManager.roleSelected;
+				this.m_sendMessage(MsgType.PerkModeRoleSelect, roleSelectMessage, 128);
+				this.m_config.set("perkModeRole", roleSelectMessage.role);
 			}
 		}
-		let specAction = this.tPhO.specAction;
-		if (specAction === SpectateAction.None && this.AHday) {
-			if (this.wVSTPB.keyPressed(Key.Right)) specAction = SpectateAction.Next;
-			else if (this.wVSTPB.keyPressed(Key.Left)) specAction = SpectateAction.Prev;
+		let specAction = this.m_uiManager.specAction;
+		if (specAction === SpectateAction.None && this.m_spectating) {
+			if (this.m_input.keyPressed(Key.Right)) specAction = SpectateAction.Next;
+			else if (this.m_input.keyPressed(Key.Left)) specAction = SpectateAction.Prev;
 		}
 		if (specAction !== SpectateAction.None) {
 			const specMsg = new SpectateMsg();
 			specMsg.action = specAction;
-			this.tyWPf(MsgType.Spectate, specMsg, 128);
-			this.tPhO.specAction = SpectateAction.None;
+			this.m_sendMessage(MsgType.Spectate, specMsg, 128);
+			this.m_uiManager.specAction = SpectateAction.None;
 		}
-		this.tPhO.reloadTouched = false;
-		this.tPhO.interactionTouched = false;
-		this.tPhO.swapWeapSlots = false;
-		this.tPhO.roleSelected = "";
+		this.m_uiManager.reloadTouched = false;
+		this.m_uiManager.interactionTouched = false;
+		this.m_uiManager.swapWeapSlots = false;
+		this.m_uiManager.roleSelected = "";
 		let diff = false;
 		for (const k in inputMsg) if (inputMsg.hasOwnProperty(k)) {
 			if (k == "inputs") diff = inputMsg[k].length > 0;
 			else if (k == "toMouseDir" || k == "touchMoveDir") {
-				const dot = math.clamp(v2.dot(inputMsg[k], this.ogFijo[k]), -1, 1);
+				const dot = math.clamp(v2.dot(inputMsg[k], this.m_prevInputMsg[k]), -1, 1);
 				diff = math.rad2deg(Math.acos(dot)) > .1;
-			} else if (k == "toMouseLen") diff = Math.abs(this.ogFijo[k] - inputMsg[k]) > .5;
-			else if (k == "shootStart") diff = inputMsg[k] || inputMsg[k] != this.ogFijo[k];
-			else if (this.ogFijo[k] != inputMsg[k]) diff = true;
+			} else if (k == "toMouseLen") diff = Math.abs(this.m_prevInputMsg[k] - inputMsg[k]) > .5;
+			else if (k == "shootStart") diff = inputMsg[k] || inputMsg[k] != this.m_prevInputMsg[k];
+			else if (this.m_prevInputMsg[k] != inputMsg[k]) diff = true;
 			if (diff) break;
 		}
-		this.VzDWyu -= dt;
-		if (diff || this.VzDWyu < 0) {
+		this.m_inputMsgTimeout -= dt;
+		if (diff || this.m_inputMsgTimeout < 0) {
 			if (!this.seqInFlight) {
 				this.seq = (this.seq + 1) % 256;
 				this.seqSendTime = Date.now();
@@ -20412,47 +20419,47 @@ window.game = this;
 				inputMsg.seq = this.seq;
 			}
 			this._newGameControls = window.initGameControls(inputMsg);
-this.tyWPf(MsgType.Input, this._newGameControls, 128);
-this.VzDWyu = 1;
-this.ogFijo = this._newGameControls;
+this.m_sendMessage(MsgType.Input, this._newGameControls, 128);
+this.m_inputMsgTimeout = 1;
+this.m_prevInputMsg = this._newGameControls;
 		}
-		this.ILu.flushInput();
-		this.BSCABs.eJuNn(dt, this.ONGIE, this.bZEWIr, this.oGDwCY, this.jDYUC, this.MMds, this.qpQR, this.WmBQFm, smokeParticles, debug);
-		this.YrXyh.eJuNn(dt, this.ONGIE, this.BSCABs, this.jDYUC, this.WmBQFm, debug);
-		this.HLt.eJuNn(dt, this.bZEWIr, this.BSCABs, this.WmBQFm, this.ONGIE, this.qpQR, this.oGDwCY, this.jDYUC);
-		this.AXL.eJuNn(dt, this.BSCABs, this.ONGIE, this.qpQR);
-		this.Jbthd.eJuNn(dt, this.oGDwCY, this.jDYUC, this.ONGIE, this.BSCABs, this.qpQR, this.WmBQFm);
-		this.RTN.eJuNn(dt, this.BSCABs, this.bZEWIr, this.WmBQFm, this.oGDwCY, this.jDYUC, debug);
-		this.wkMlZ.eJuNn(dt, this.ONGIE, this.WmBQFm, this.BSCABs, this.oGDwCY, this.qpQR, this.jDYUC);
-		this.agvujx.eJuNn(dt, this.WmBQFm, this.ONGIE, this.BSCABs, this.qpQR);
-		this.yjto.eJuNn(dt, this.WmBQFm, this.ONGIE, this.BSCABs, this.qpQR);
-		this.WRQYxH.eJuNn(dt, this.rmgsm, this.bZEWIr, this.oGDwCY, this.jDYUC);
-		this.oGDwCY.eJuNn(dt, this.WmBQFm);
-		this.bbtw.eJuNn(dt, this.bZEWIr, this.ONGIE, this.BSCABs, this.WmBQFm, this.qpQR);
-		this.mFics.eJuNn(dt, this.WmBQFm, this.qpQR);
-		this.tPhO.eJuNn(dt, this.ONGIE, this.BSCABs, this.NmYQl, this.bZEWIr, this.WmBQFm, this.teamMode, this.BSCABs.factionMode);
-		this.ILu.eJuNn(dt, this.ONGIE, this.AHday, this.bZEWIr, this.YrXyh, this.BSCABs, this.GFXle);
-		this.BjG.eJuNn(dt, this.Pohs, this.ONGIE, this.teamMode, this.bbtw, this.BSCABs, this.qpQR, this.wVSTPB, this.GFXle, this.AHday);
-		this.PHSUM.eJuNn(dt, this.ONGIE, this.BSCABs, this.WmBQFm, this.qpQR);
-		this.qpQR.eJuNn(dt, this.WmBQFm, this.BSCABs, debug?.structures?.layerMasks);
-		for (let i = 0; i < this.BjG.newPings.length; i++) {
-			const ping = this.BjG.newPings[i];
+		this.m_ui2Manager.flushInput();
+		this.m_map.m_update(dt, this.m_activePlayer, this.m_playerBarn, this.m_particleBarn, this.m_audioManager, this.m_ambience, this.m_renderer, this.m_camera, smokeParticles, debug);
+		this.m_lootBarn.m_update(dt, this.m_activePlayer, this.m_map, this.m_audioManager, this.m_camera, debug);
+		this.m_bulletBarn.m_update(dt, this.m_playerBarn, this.m_map, this.m_camera, this.m_activePlayer, this.m_renderer, this.m_particleBarn, this.m_audioManager);
+		this.m_flareBarn.m_update(dt, this.m_map, this.m_activePlayer, this.m_renderer);
+		this.m_projectileBarn.m_update(dt, this.m_particleBarn, this.m_audioManager, this.m_activePlayer, this.m_map, this.m_renderer, this.m_camera);
+		this.m_explosionBarn.m_update(dt, this.m_map, this.m_playerBarn, this.m_camera, this.m_particleBarn, this.m_audioManager, debug);
+		this.m_airdropBarn.m_update(dt, this.m_activePlayer, this.m_camera, this.m_map, this.m_particleBarn, this.m_renderer, this.m_audioManager);
+		this.m_planeBarn.m_update(dt, this.m_camera, this.m_activePlayer, this.m_map, this.m_renderer);
+		this.m_smokeBarn.m_update(dt, this.m_camera, this.m_activePlayer, this.m_map, this.m_renderer);
+		this.m_shotBarn.m_update(dt, this.m_activeId, this.m_playerBarn, this.m_particleBarn, this.m_audioManager);
+		this.m_particleBarn.m_update(dt, this.m_camera);
+		this.m_deadBodyBarn.m_update(dt, this.m_playerBarn, this.m_activePlayer, this.m_map, this.m_camera, this.m_renderer);
+		this.m_decalBarn.m_update(dt, this.m_camera, this.m_renderer);
+		this.m_uiManager.m_update(dt, this.m_activePlayer, this.m_map, this.m_gas, this.m_playerBarn, this.m_camera, this.teamMode, this.m_map.factionMode);
+		this.m_ui2Manager.m_update(dt, this.m_activePlayer, this.m_spectating, this.m_playerBarn, this.m_lootBarn, this.m_map, this.m_inputBinds);
+		this.m_emoteBarn.m_update(dt, this.m_localId, this.m_activePlayer, this.teamMode, this.m_deadBodyBarn, this.m_map, this.m_renderer, this.m_input, this.m_inputBinds, this.m_spectating);
+		this.m_touch.m_update(dt, this.m_activePlayer, this.m_map, this.m_camera, this.m_renderer);
+		this.m_renderer.m_update(dt, this.m_camera, this.m_map, debug?.structures?.layerMasks);
+		for (let i = 0; i < this.m_emoteBarn.newPings.length; i++) {
+			const ping = this.m_emoteBarn.newPings[i];
 			const msg = new EmoteMsg();
 			msg.type = ping.type;
 			msg.pos = ping.pos;
 			msg.isPing = true;
-			this.tyWPf(MsgType.Emote, msg, 128);
+			this.m_sendMessage(MsgType.Emote, msg, 128);
 		}
-		this.BjG.newPings = [];
-		for (let i = 0; i < this.BjG.newEmotes.length; i++) {
-			const emote = this.BjG.newEmotes[i];
+		this.m_emoteBarn.newPings = [];
+		for (let i = 0; i < this.m_emoteBarn.newEmotes.length; i++) {
+			const emote = this.m_emoteBarn.newEmotes[i];
 			const msg = new EmoteMsg();
 			msg.type = emote.type;
 			msg.pos = emote.pos;
 			msg.isPing = false;
-			this.tyWPf(MsgType.Emote, msg, 128);
+			this.m_sendMessage(MsgType.Emote, msg, 128);
 		}
-		this.BjG.newEmotes = [];
+		this.m_emoteBarn.newEmotes = [];
 		const now = Date.now();
 		if (now > this.debugPingTime) {
 			this.debugPingTime = now + 2e4;
@@ -20482,35 +20489,35 @@ this.ogFijo = this._newGameControls;
 			}
 			this.updateIntervals = [];
 		}
-		this.aTWTA(dt, debug);
+		this.m_render(dt, debug);
 	}
-	aTWTA(dt, debug) {
-		const grassColor = this.BSCABs.mapLoaded ? this.BSCABs.getMapDef().biome.colors.grass : 8433481;
-		this.FpL.renderer.background.color = grassColor;
-		this.bZEWIr.aTWTA(this.WmBQFm, debug);
-		this.HLt.aTWTA(this.WmBQFm);
-		this.AXL.aTWTA(this.WmBQFm);
-		this.mFics.aTWTA(this.WmBQFm, debug, this.ONGIE.layer);
-		this.BSCABs.aTWTA(this.WmBQFm);
-		this.NmYQl.aTWTA(dt, this.WmBQFm);
-		this.tPhO.aTWTA(this.ONGIE.Obgct, this.NmYQl, this.BSCABs, this.agvujx);
-		this.BjG.aTWTA(this.WmBQFm);
+	m_render(dt, debug) {
+		const grassColor = this.m_map.mapLoaded ? this.m_map.getMapDef().biome.colors.grass : 8433481;
+		this.m_pixi.renderer.background.color = grassColor;
+		this.m_playerBarn.m_render(this.m_camera, debug);
+		this.m_bulletBarn.m_render(this.m_camera);
+		this.m_flareBarn.m_render(this.m_camera);
+		this.m_decalBarn.m_render(this.m_camera, debug, this.m_activePlayer.layer);
+		this.m_map.m_render(this.m_camera);
+		this.m_gas.m_render(dt, this.m_camera);
+		this.m_uiManager.m_render(this.m_activePlayer.m_pos, this.m_gas, this.m_map, this.m_planeBarn);
+		this.m_emoteBarn.m_render(this.m_camera);
 	}
 	updateAmbience() {
-		const playerPos = this.ONGIE.Obgct;
+		const playerPos = this.m_activePlayer.m_pos;
 		let wavesWeight = 0;
 		let riverWeight = 0;
 		let windWeight = 1;
-		if (this.BSCABs.isInOcean(playerPos)) {
+		if (this.m_map.isInOcean(playerPos)) {
 			wavesWeight = 1;
 			riverWeight = 0;
 			windWeight = 0;
 		} else {
-			const dist = this.BSCABs.distanceToShore(playerPos);
+			const dist = this.m_map.distanceToShore(playerPos);
 			wavesWeight = math.delerp(dist, 50, 0);
 			riverWeight = 0;
-			for (let i = 0; i < this.BSCABs.terrain.rivers.length; i++) {
-				const river = this.BSCABs.terrain.rivers[i];
+			for (let i = 0; i < this.m_map.terrain.rivers.length; i++) {
+				const river = this.m_map.terrain.rivers[i];
 				const closestPointT = river.spline.getClosestTtoPoint(playerPos);
 				const closestPoint = river.spline.getPos(closestPointT);
 				const distanceToRiver = v2.length(v2.sub(closestPoint, playerPos));
@@ -20519,25 +20526,25 @@ this.ogFijo = this._newGameControls;
 				const riverStrength = math.clamp(river.waterWidth / 8, .25, 1);
 				riverWeight = math.max(normalizedDistance * riverStrength, riverWeight);
 			}
-			if (this.ONGIE.layer == 1) riverWeight = 0;
+			if (this.m_activePlayer.layer == 1) riverWeight = 0;
 			windWeight = 1;
 		}
-		this.MMds.getTrack("wind").weight = windWeight;
-		this.MMds.getTrack("river").weight = riverWeight;
-		this.MMds.getTrack("waves").weight = wavesWeight;
+		this.m_ambience.getTrack("wind").weight = windWeight;
+		this.m_ambience.getTrack("river").weight = riverWeight;
+		this.m_ambience.getTrack("waves").weight = wavesWeight;
 	}
 	resize() {
-		this.WmBQFm.btgd = device.screenWidth;
-		this.WmBQFm.aJoZKR = device.screenHeight;
-		this.BSCABs.resize(this.FpL.renderer, this.vAwEd);
-		this.NmYQl.resize();
-		this.tPhO.resize(this.BSCABs, this.WmBQFm);
-		this.PHSUM.resize();
-		this.qpQR.resize(this.BSCABs, this.WmBQFm);
+		this.m_camera.m_screenWidth = device.screenWidth;
+		this.m_camera.m_screenHeight = device.screenHeight;
+		this.m_map.resize(this.m_pixi.renderer, this.m_canvasMode);
+		this.m_gas.resize();
+		this.m_uiManager.resize(this.m_map, this.m_camera);
+		this.m_touch.resize();
+		this.m_renderer.resize(this.m_map, this.m_camera);
 	}
-	GcS(msg) {
+	m_processGameUpdate(msg) {
 		const now = Date.now();
-		this.BiFz++;
+		this.m_updateRecvCount++;
 		if (msg.ack == this.seq && this.seqInFlight) {
 			this.seqInFlight = false;
 			const ping = now - this.seqSendTime;
@@ -20546,203 +20553,203 @@ this.ogFijo = this._newGameControls;
 		}
 		if (this.lastUpdateTime > 0) {
 			const interval = now - this.lastUpdateTime;
-			this.WmBQFm.syGZ = interval / 1e3;
+			this.m_camera.m_interpInterval = interval / 1e3;
 			this.debugHUD.updateIntervalGraph.addEntry(interval);
 			this.updateIntervals.push(interval);
 		}
 		this.lastUpdateTime = now;
 		const ctx = {
-			audioManager: this.jDYUC,
-			renderer: this.qpQR,
-			particleBarn: this.oGDwCY,
-			map: this.BSCABs,
-			smokeBarn: this.yjto,
-			decalBarn: this.mFics
+			audioManager: this.m_audioManager,
+			renderer: this.m_renderer,
+			particleBarn: this.m_particleBarn,
+			map: this.m_map,
+			smokeBarn: this.m_smokeBarn,
+			decalBarn: this.m_decalBarn
 		};
-		if (msg.activePlayerIdDirty) this.rmgsm = msg.activePlayerId;
-		for (let i = 0; i < msg.playerInfos.length; i++) this.bZEWIr.setPlayerInfo(msg.playerInfos[i]);
+		if (msg.activePlayerIdDirty) this.m_activeId = msg.activePlayerId;
+		for (let i = 0; i < msg.playerInfos.length; i++) this.m_playerBarn.setPlayerInfo(msg.playerInfos[i]);
 		for (let i = 0; i < msg.deletedPlayerIds.length; i++) {
 			const playerId = msg.deletedPlayerIds[i];
-			this.bZEWIr.deletePlayerInfo(playerId);
+			this.m_playerBarn.deletePlayerInfo(playerId);
 		}
-		if (msg.playerInfos.length > 0 || msg.deletedPlayerIds.length > 0) this.bZEWIr.recomputeTeamData();
+		if (msg.playerInfos.length > 0 || msg.deletedPlayerIds.length > 0) this.m_playerBarn.recomputeTeamData();
 		if (msg.playerStatusDirty) {
-			const teamId = this.bZEWIr.getPlayerInfo(this.rmgsm).teamId;
-			this.bZEWIr.updatePlayerStatus(teamId, msg.playerStatus, this.BSCABs.factionMode);
+			const teamId = this.m_playerBarn.getPlayerInfo(this.m_activeId).teamId;
+			this.m_playerBarn.updatePlayerStatus(teamId, msg.playerStatus, this.m_map.factionMode);
 		}
 		if (msg.groupStatusDirty) {
-			const groupId = this.bZEWIr.getPlayerInfo(this.rmgsm).groupId;
-			this.bZEWIr.updateGroupStatus(groupId, msg.groupStatus);
+			const groupId = this.m_playerBarn.getPlayerInfo(this.m_activeId).groupId;
+			this.m_playerBarn.updateGroupStatus(groupId, msg.groupStatus);
 		}
-		for (let i = 0; i < msg.delObjIds.length; i++) this.ZAEWB.sPPe(msg.delObjIds[i]);
+		for (let i = 0; i < msg.delObjIds.length; i++) this.m_objectCreator.m_deleteObj(msg.delObjIds[i]);
 		for (let i = 0; i < msg.fullObjects.length; i++) {
 			const obj = msg.fullObjects[i];
-			this.ZAEWB.QRV(obj.__type, obj.__id, obj, ctx);
+			this.m_objectCreator.m_updateObjFull(obj.__type, obj.__id, obj, ctx);
 		}
 		for (let i = 0; i < msg.partObjects.length; i++) {
 			const obj = msg.partObjects[i];
-			const clientType = this.ZAEWB.cPn(obj.__id)?.__type ?? 0;
+			const clientType = this.m_objectCreator.m_getObjById(obj.__id)?.__type ?? 0;
 			if (obj.__type !== clientType) {
 				const errString = `updateObjPart: type mismatch, received ${obj.__type}, client has ${clientType};`;
 				errorLogManager.logError(errString, {
 					id: obj.__id,
-					ids: Object.keys(this.ZAEWB.ridmVe),
+					ids: Object.keys(this.m_objectCreator.m_idToObj),
 					msg
 				});
 				console.error(errString);
 				continue;
 			}
-			this.ZAEWB.efsMP(obj.__id, obj, ctx);
+			this.m_objectCreator.m_updateObjPart(obj.__id, obj, ctx);
 		}
-		this.AHday = this.rmgsm != this.Pohs;
-		this.ONGIE = this.bZEWIr.getPlayerById(this.rmgsm);
-		this.ONGIE.Bnz(msg.activePlayerData);
-		if (msg.activePlayerData.weapsDirty) this.tPhO.weapsDirty = true;
-		if (this.AHday) {
-			this.tPhO.setSpectateTarget(this.rmgsm, this.Pohs, this.teamMode, this.bZEWIr);
-			this.PHSUM.hideAll();
+		this.m_spectating = this.m_activeId != this.m_localId;
+		this.m_activePlayer = this.m_playerBarn.getPlayerById(this.m_activeId);
+		this.m_activePlayer.m_setLocalData(msg.activePlayerData);
+		if (msg.activePlayerData.weapsDirty) this.m_uiManager.weapsDirty = true;
+		if (this.m_spectating) {
+			this.m_uiManager.setSpectateTarget(this.m_activeId, this.m_localId, this.teamMode, this.m_playerBarn);
+			this.m_touch.hideAll();
 		}
-		this.ONGIE.layer = this.ONGIE.glWLM.oVwj;
-		this.qpQR.setActiveLayer(this.ONGIE.layer);
-		this.jDYUC.activeLayer = this.ONGIE.layer;
-		const underground = this.ONGIE.isUnderground(this.BSCABs);
-		this.qpQR.setUnderground(underground);
-		this.jDYUC.underground = underground;
-		if (msg.gasDirty) this.NmYQl.setFullState(msg.gasT, msg.gasData, this.tPhO);
-		if (msg.gasTDirty) this.NmYQl.setProgress(msg.gasT);
+		this.m_activePlayer.layer = this.m_activePlayer.m_netData.m_layer;
+		this.m_renderer.setActiveLayer(this.m_activePlayer.layer);
+		this.m_audioManager.activeLayer = this.m_activePlayer.layer;
+		const underground = this.m_activePlayer.isUnderground(this.m_map);
+		this.m_renderer.setUnderground(underground);
+		this.m_audioManager.underground = underground;
+		if (msg.gasDirty) this.m_gas.setFullState(msg.gasT, msg.gasData, this.m_uiManager);
+		if (msg.gasTDirty) this.m_gas.setProgress(msg.gasT);
 		for (let i = 0; i < msg.bullets.length; i++) {
 			const b = msg.bullets[i];
-			createBullet(b, this.HLt, this.AXL, this.bZEWIr, this.qpQR);
-			if (b.shotFx) this.WRQYxH.addShot(b);
+			createBullet(b, this.m_bulletBarn, this.m_flareBarn, this.m_playerBarn, this.m_renderer);
+			if (b.shotFx) this.m_shotBarn.addShot(b);
 		}
 		for (let i = 0; i < msg.explosions.length; i++) {
 			const e = msg.explosions[i];
-			this.RTN.addExplosion(e.type, e.pos, e.layer);
+			this.m_explosionBarn.addExplosion(e.type, e.pos, e.layer);
 		}
 		for (let i = 0; i < msg.emotes.length; i++) {
 			const e = msg.emotes[i];
-			if (e.isPing) this.BjG.addPing(e, this.BSCABs.factionMode);
-			else this.BjG.addEmote(e);
+			if (e.isPing) this.m_emoteBarn.addPing(e, this.m_map.factionMode);
+			else this.m_emoteBarn.addEmote(e);
 		}
-		this.agvujx.updatePlanes(msg.planes, this.BSCABs);
-		for (let x = 0; x < msg.airstrikeZones.length; x++) this.agvujx.createAirstrikeZone(msg.airstrikeZones[x]);
-		this.tPhO.updateMapIndicators(msg.mapIndicators);
+		this.m_planeBarn.updatePlanes(msg.planes, this.m_map);
+		for (let x = 0; x < msg.airstrikeZones.length; x++) this.m_planeBarn.createAirstrikeZone(msg.airstrikeZones[x]);
+		this.m_uiManager.updateMapIndicators(msg.mapIndicators);
 		if (msg.killLeaderDirty) {
-			const leaderNameText = helpers.htmlEscape(this.bZEWIr.getPlayerName(msg.killLeaderId, this.rmgsm, true));
-			this.tPhO.updateKillLeader(msg.killLeaderId, leaderNameText, msg.killLeaderKills, this.BSCABs.getMapDef().gameMode);
+			const leaderNameText = helpers.htmlEscape(this.m_playerBarn.getPlayerName(msg.killLeaderId, this.m_activeId, true));
+			this.m_uiManager.updateKillLeader(msg.killLeaderId, leaderNameText, msg.killLeaderKills, this.m_map.getMapDef().gameMode);
 		}
 	}
-	Sqsfg(type, stream) {
+	m_onMsg(type, stream) {
 		switch (type) {
 			case MsgType.Joined: {
 				const msg = new JoinedMsg();
 				msg.deserialize(stream);
 				this.onJoin();
 				this.teamMode = msg.teamMode;
-				this.Pohs = msg.playerId;
-				this.Dwp = true;
-				this.BjG.updateEmoteWheel(msg.emotes);
-				if (!msg.started) this.tPhO.setWaitingForPlayers(true);
-				this.tPhO.removeAds();
+				this.m_localId = msg.playerId;
+				this.m_validateAlpha = true;
+				this.m_emoteBarn.updateEmoteWheel(msg.emotes);
+				if (!msg.started) this.m_uiManager.setWaitingForPlayers(true);
+				this.m_uiManager.removeAds();
 				if (this.victoryMusic) {
 					this.victoryMusic.stop();
 					this.victoryMusic = null;
 				}
-				if (!document.hasFocus()) this.jDYUC.playSound("notification_start_01", { channel: "ui" });
+				if (!document.hasFocus()) this.m_audioManager.playSound("notification_start_01", { channel: "ui" });
 				SDK.gamePlayStart();
 				break;
 			}
 			case MsgType.Map: {
 				const msg = new MapMsg();
 				msg.deserialize(stream);
-				this.BSCABs.loadMap(msg, this.WmBQFm, this.vAwEd, this.oGDwCY);
-				this.gaz.loadMapAssets(this.BSCABs.mapName);
-				this.BSCABs.renderMap(this.FpL.renderer, this.vAwEd);
-				this.qpQR.resize(this.BSCABs, this.WmBQFm);
-				this.HLt.onMapLoad(this.BSCABs);
-				this.oGDwCY.onMapLoad(this.BSCABs);
-				this.tPhO.onMapLoad(this.BSCABs, this.WmBQFm);
-				if (this.BSCABs.perkMode && this.Pohs) {
-					if (!this.ONGIE?.glWLM.mWZGg) {
-						const role = this.xsdrK.get("perkModeRole");
-						this.tPhO.setRoleMenuOptions(role, this.BSCABs.getMapDef().gameMode.perkModeRoles);
-						this.tPhO.setRoleMenuActive(true);
+				this.m_map.loadMap(msg, this.m_camera, this.m_canvasMode, this.m_particleBarn);
+				this.m_resourceManager.loadMapAssets(this.m_map.mapName);
+				this.m_map.renderMap(this.m_pixi.renderer, this.m_canvasMode);
+				this.m_renderer.resize(this.m_map, this.m_camera);
+				this.m_bulletBarn.onMapLoad(this.m_map);
+				this.m_particleBarn.onMapLoad(this.m_map);
+				this.m_uiManager.onMapLoad(this.m_map, this.m_camera);
+				if (this.m_map.perkMode && this.m_localId) {
+					if (!this.m_activePlayer?.m_netData.m_role) {
+						const role = this.m_config.get("perkModeRole");
+						this.m_uiManager.setRoleMenuOptions(role, this.m_map.getMapDef().gameMode.perkModeRoles);
+						this.m_uiManager.setRoleMenuActive(true);
 					}
-				} else this.tPhO.setRoleMenuActive(false);
+				} else this.m_uiManager.setRoleMenuActive(false);
 				break;
 			}
 			case MsgType.Update: {
 				const msg = new UpdateMsg();
-				msg.deserialize(stream, this.ZAEWB);
-				this.Wrdq = true;
-				this.GcS(msg);
+				msg.deserialize(stream, this.m_objectCreator);
+				this.m_playing = true;
+				this.m_processGameUpdate(msg);
 				break;
 			}
 			case MsgType.Kill: {
 				const msg = new KillMsg();
 				msg.deserialize(stream);
 				const sourceType = msg.itemSourceType || msg.mapSourceType;
-				const activeTeamId = this.bZEWIr.getPlayerInfo(this.rmgsm).teamId;
+				const activeTeamId = this.m_playerBarn.getPlayerInfo(this.m_activeId).teamId;
 				const useKillerInfoInFeed = msg.downed && !msg.killed || msg.damageType == GameConfig.DamageType.Gas || msg.damageType == GameConfig.DamageType.Bleeding || msg.damageType == GameConfig.DamageType.Airdrop;
-				const targetInfo = this.bZEWIr.getPlayerInfo(msg.targetId);
-				const killerInfo = this.bZEWIr.getPlayerInfo(msg.killCreditId);
-				const killfeedKillerInfo = useKillerInfoInFeed ? killerInfo : this.bZEWIr.getPlayerInfo(msg.killerId);
-				let targetName = this.bZEWIr.getPlayerName(targetInfo.playerId, this.rmgsm, true);
-				let killerName = this.bZEWIr.getPlayerName(killerInfo.playerId, this.rmgsm, true);
-				let killfeedKillerName = this.bZEWIr.getPlayerName(killfeedKillerInfo.playerId, this.rmgsm, true);
+				const targetInfo = this.m_playerBarn.getPlayerInfo(msg.targetId);
+				const killerInfo = this.m_playerBarn.getPlayerInfo(msg.killCreditId);
+				const killfeedKillerInfo = useKillerInfoInFeed ? killerInfo : this.m_playerBarn.getPlayerInfo(msg.killerId);
+				let targetName = this.m_playerBarn.getPlayerName(targetInfo.playerId, this.m_activeId, true);
+				let killerName = this.m_playerBarn.getPlayerName(killerInfo.playerId, this.m_activeId, true);
+				let killfeedKillerName = this.m_playerBarn.getPlayerName(killfeedKillerInfo.playerId, this.m_activeId, true);
 				targetName = helpers.htmlEscape(targetName);
 				killerName = helpers.htmlEscape(killerName);
 				killfeedKillerName = helpers.htmlEscape(killfeedKillerName);
-				if (msg.killCreditId == this.rmgsm) {
-					const completeKill = msg.killerId == this.rmgsm;
+				if (msg.killCreditId == this.m_activeId) {
+					const completeKill = msg.killerId == this.m_activeId;
 					const suicide = msg.killCreditId == msg.targetId;
-					const killText = this.ILu.getKillText(killerName, targetName, completeKill, msg.downed, msg.killed, suicide, sourceType, msg.damageType, this.AHday);
-					const killCountText = msg.killed && !suicide ? this.ILu.getKillCountText(msg.killerKills) : "";
-					this.ILu.displayKillMessage(killText, killCountText);
-				} else if (msg.targetId == this.rmgsm && msg.downed && !msg.killed) {
-					const downedText = this.ILu.getDownedText(killerName, targetName, sourceType, msg.damageType, this.AHday);
-					this.ILu.displayKillMessage(downedText, "");
+					const killText = this.m_ui2Manager.getKillText(killerName, targetName, completeKill, msg.downed, msg.killed, suicide, sourceType, msg.damageType, this.m_spectating);
+					const killCountText = msg.killed && !suicide ? this.m_ui2Manager.getKillCountText(msg.killerKills) : "";
+					this.m_ui2Manager.displayKillMessage(killText, killCountText);
+				} else if (msg.targetId == this.m_activeId && msg.downed && !msg.killed) {
+					const downedText = this.m_ui2Manager.getDownedText(killerName, targetName, sourceType, msg.damageType, this.m_spectating);
+					this.m_ui2Manager.displayKillMessage(downedText, "");
 				}
-				if (msg.killCreditId == this.Pohs && msg.killed) this.tPhO.setLocalKills(msg.killerKills);
-				const killText = this.ILu.getKillFeedText(targetName, killfeedKillerInfo.teamId ? killfeedKillerName : "", sourceType, msg.damageType, msg.downed && !msg.killed);
-				const killColor = this.ILu.getKillFeedColor(activeTeamId, targetInfo.teamId, killerInfo.teamId, this.BSCABs.factionMode);
-				this.ILu.addKillFeedMessage(killText, killColor);
-				if (msg.killed) this.bZEWIr.addDeathEffect(msg.targetId, msg.killerId, this.jDYUC, this.oGDwCY);
-				if (msg.damageType == GameConfig.DamageType.Player) this.HLt.createBulletHit(this.bZEWIr, msg.targetId, this.jDYUC);
+				if (msg.killCreditId == this.m_localId && msg.killed) this.m_uiManager.setLocalKills(msg.killerKills);
+				const killText = this.m_ui2Manager.getKillFeedText(targetName, killfeedKillerInfo.teamId ? killfeedKillerName : "", sourceType, msg.damageType, msg.downed && !msg.killed);
+				const killColor = this.m_ui2Manager.getKillFeedColor(activeTeamId, targetInfo.teamId, killerInfo.teamId, this.m_map.factionMode);
+				this.m_ui2Manager.addKillFeedMessage(killText, killColor);
+				if (msg.killed) this.m_playerBarn.addDeathEffect(msg.targetId, msg.killerId, this.m_audioManager, this.m_particleBarn);
+				if (msg.damageType == GameConfig.DamageType.Player) this.m_bulletBarn.createBulletHit(this.m_playerBarn, msg.targetId, this.m_audioManager);
 				break;
 			}
 			case MsgType.RoleAnnouncement: {
 				const msg = new RoleAnnouncementMsg();
 				msg.deserialize(stream);
 				const roleDef = GameObjectDefs.typeToDef(msg.role, "role");
-				const playerInfo = this.bZEWIr.getPlayerInfo(msg.playerId);
-				const nameText = helpers.htmlEscape(this.bZEWIr.getPlayerName(msg.playerId, this.rmgsm, true));
+				const playerInfo = this.m_playerBarn.getPlayerInfo(msg.playerId);
+				const nameText = helpers.htmlEscape(this.m_playerBarn.getPlayerName(msg.playerId, this.m_activeId, true));
 				if (msg.assigned) {
 					if (roleDef.sound?.assign) {
-						if (msg.role == "kill_leader" && this.BSCABs.getMapDef().gameMode.spookyKillSounds) this.jDYUC.playGroup("kill_leader_assigned", { channel: "ui" });
-						else if (msg.role == "kill_leader" || !this.BSCABs.perkMode || this.Pohs == msg.playerId) this.jDYUC.playSound(roleDef.sound.assign, { channel: "ui" });
+						if (msg.role == "kill_leader" && this.m_map.getMapDef().gameMode.spookyKillSounds) this.m_audioManager.playGroup("kill_leader_assigned", { channel: "ui" });
+						else if (msg.role == "kill_leader" || !this.m_map.perkMode || this.m_localId == msg.playerId) this.m_audioManager.playSound(roleDef.sound.assign, { channel: "ui" });
 					}
-					if (this.BSCABs.perkMode && this.Pohs == msg.playerId) this.tPhO.setRoleMenuActive(false);
+					if (this.m_map.perkMode && this.m_localId == msg.playerId) this.m_uiManager.setRoleMenuActive(false);
 					if (roleDef.killFeed?.assign) {
-						const killText = this.ILu.getRoleAssignedKillFeedText(msg.role, playerInfo.teamId, nameText);
-						const killColor = this.ILu.getRoleKillFeedColor(msg.role, playerInfo.teamId, this.bZEWIr);
-						this.ILu.addKillFeedMessage(killText, killColor);
+						const killText = this.m_ui2Manager.getRoleAssignedKillFeedText(msg.role, playerInfo.teamId, nameText);
+						const killColor = this.m_ui2Manager.getRoleKillFeedColor(msg.role, playerInfo.teamId, this.m_playerBarn);
+						this.m_ui2Manager.addKillFeedMessage(killText, killColor);
 					}
-					if (roleDef.announce && this.Pohs == msg.playerId) {
-						const assignText = this.ILu.getRoleAnnouncementText(msg.role, playerInfo.teamId);
-						this.tPhO.displayAnnouncement(assignText.toUpperCase());
+					if (roleDef.announce && this.m_localId == msg.playerId) {
+						const assignText = this.m_ui2Manager.getRoleAnnouncementText(msg.role, playerInfo.teamId);
+						this.m_uiManager.displayAnnouncement(assignText.toUpperCase());
 					}
 				} else if (msg.killed) {
 					if (roleDef.killFeed?.dead) {
-						let killerName = helpers.htmlEscape(this.bZEWIr.getPlayerName(msg.killerId, this.rmgsm, true));
+						let killerName = helpers.htmlEscape(this.m_playerBarn.getPlayerName(msg.killerId, this.m_activeId, true));
 						if (msg.playerId == msg.killerId) killerName = "";
-						const killText = this.ILu.getRoleKilledKillFeedText(msg.role, playerInfo.teamId, killerName);
-						const killColor = this.ILu.getRoleKillFeedColor(msg.role, playerInfo.teamId, this.bZEWIr);
-						this.ILu.addKillFeedMessage(killText, killColor);
+						const killText = this.m_ui2Manager.getRoleKilledKillFeedText(msg.role, playerInfo.teamId, killerName);
+						const killColor = this.m_ui2Manager.getRoleKillFeedColor(msg.role, playerInfo.teamId, this.m_playerBarn);
+						this.m_ui2Manager.addKillFeedMessage(killText, killColor);
 					}
 					if (roleDef.sound?.dead) {
-						if (this.BSCABs.getMapDef().gameMode.spookyKillSounds) this.jDYUC.playGroup("kill_leader_dead", { channel: "ui" });
-						else this.jDYUC.playSound(roleDef.sound.dead, { channel: "ui" });
+						if (this.m_map.getMapDef().gameMode.spookyKillSounds) this.m_audioManager.playGroup("kill_leader_dead", { channel: "ui" });
+						else this.m_audioManager.playSound(roleDef.sound.dead, { channel: "ui" });
 					}
 				}
 				break;
@@ -20750,8 +20757,8 @@ this.ogFijo = this._newGameControls;
 			case MsgType.PlayerStats: {
 				const msg = new PlayerStatsMsg();
 				msg.deserialize(stream);
-				this.tPhO.setLocalStats(msg.playerStats);
-				this.tPhO.showTeamAd(msg.playerStats, this.ILu);
+				this.m_uiManager.setLocalStats(msg.playerStats);
+				this.m_uiManager.showTeamAd(msg.playerStats, this.m_ui2Manager);
 				break;
 			}
 			case MsgType.Stats:
@@ -20760,63 +20767,63 @@ this.ogFijo = this._newGameControls;
 			case MsgType.GameOver: {
 				const msg = new GameOverMsg();
 				msg.deserialize(stream);
-				this.Kaj = msg.gameOver;
-				const localTeamId = this.bZEWIr.getPlayerInfo(this.Pohs).teamId;
+				this.m_gameOver = msg.gameOver;
+				const localTeamId = this.m_playerBarn.getPlayerInfo(this.m_localId).teamId;
 				for (let j = 0; j < msg.playerStats.length; j++) {
 					const stats = msg.playerStats[j];
-					if (stats.playerId == this.Pohs) {
-						this.tPhO.setLocalStats(stats);
+					if (stats.playerId == this.m_localId) {
+						this.m_uiManager.setLocalStats(stats);
 						break;
 					}
 				}
-				this.tPhO.showStats(msg.playerStats, msg.teamId, msg.teamRank, msg.winningTeamId, msg.gameOver, localTeamId, this.teamMode, this.AHday, this.bZEWIr, this.jDYUC, this.BSCABs, this.ILu);
-				if (localTeamId == msg.winningTeamId) this.victoryMusic = this.jDYUC.playSound("menu_music", {
+				this.m_uiManager.showStats(msg.playerStats, msg.teamId, msg.teamRank, msg.winningTeamId, msg.gameOver, localTeamId, this.teamMode, this.m_spectating, this.m_playerBarn, this.m_audioManager, this.m_map, this.m_ui2Manager);
+				if (localTeamId == msg.winningTeamId) this.victoryMusic = this.m_audioManager.playSound("menu_music", {
 					channel: "music",
 					delay: 1300,
 					forceStart: true
 				});
-				this.PHSUM.hideAll();
+				this.m_touch.hideAll();
 				break;
 			}
 			case MsgType.Pickup: {
 				const msg = new PickupMsg();
 				msg.deserialize(stream);
 				if (msg.type == PickupMsgType.Success && msg.item) {
-					this.ONGIE.playItemPickupSound(msg.item, this.jDYUC);
+					this.m_activePlayer.playItemPickupSound(msg.item, this.m_audioManager);
 					const itemDef = GameObjectDefs.typeToDefSafe(msg.item);
-					if (itemDef && itemDef.type == "xp") this.ILu.addRareLootMessage(msg.item, true);
-				} else this.ILu.displayPickupMessage(msg.type);
+					if (itemDef && itemDef.type == "xp") this.m_ui2Manager.addRareLootMessage(msg.item, true);
+				} else this.m_ui2Manager.displayPickupMessage(msg.type);
 				break;
 			}
 			case MsgType.UpdatePass:
 				new UpdatePassMsg().deserialize(stream);
-				this.kuFfR = true;
-				this.frAKt = 0;
+				this.m_updatePass = true;
+				this.m_updatePassDelay = 0;
 				break;
 			case MsgType.AliveCounts: {
 				const msg = new AliveCountsMsg();
 				msg.deserialize(stream);
-				if (msg.teamAliveCounts.length == 1) this.tPhO.updatePlayersAlive(msg.teamAliveCounts[0]);
+				if (msg.teamAliveCounts.length == 1) this.m_uiManager.updatePlayersAlive(msg.teamAliveCounts[0]);
 				else if (msg.teamAliveCounts.length >= 2) {
-					this.tPhO.updatePlayersAliveRed(msg.teamAliveCounts[0]);
-					this.tPhO.updatePlayersAliveBlue(msg.teamAliveCounts[1]);
+					this.m_uiManager.updatePlayersAliveRed(msg.teamAliveCounts[0]);
+					this.m_uiManager.updatePlayersAliveBlue(msg.teamAliveCounts[1]);
 				}
 				break;
 			}
 		}
 	}
-	tyWPf(type, data, maxLen) {
+	m_sendMessage(type, data, maxLen) {
 		const bufSz = maxLen || 128;
 		const msgStream = new MsgStream(new ArrayBuffer(bufSz));
 		msgStream.serializeMsg(type, data);
-		this.aLmqf(msgStream);
+		this.m_sendMessageImpl(msgStream);
 	}
-	aLmqf(msgStream) {
-		if (this.RbFu && this.RbFu.state == ConnectionState.Open) try {
-			this.RbFu.send(msgStream.getBuffer());
+	m_sendMessageImpl(msgStream) {
+		if (this.m_connection && this.m_connection.state == ConnectionState.Open) try {
+			this.m_connection.send(msgStream.getBuffer());
 		} catch (e) {
 			console.error("sendMessageException", e);
-			this.RbFu.close();
+			this.m_connection.close();
 		}
 	}
 };
@@ -21768,6 +21775,14 @@ var SiteInfo = class {
 
 //#endregion
 //#region ../node_modules/.pnpm/@taufik-nurrohman+color-picker@1.4.2/node_modules/@taufik-nurrohman/color-picker/color-picker.js
+/*!
+* ==========================================================
+*  COLOR PICKER PLUGIN 1.4.2
+* ==========================================================
+* Author: Taufik Nurrohman <https://github.com/tovic>
+* License: MIT
+* ----------------------------------------------------------
+*/
 (function(win, doc, NS) {
 	var instance = "__instance__", first = "firstChild", delay = setTimeout;
 	function is_set(x) {
@@ -23331,14 +23346,14 @@ var LoadoutDisplay = class {
 		this.smokeBarn = new SmokeBarn();
 		const TypeToPool = {
 			[ObjectType.Player]: this.playerBarn.playerPool,
-			[ObjectType.Obstacle]: this.map.FDvy,
-			[ObjectType.Building]: this.map.cMUHHl,
-			[ObjectType.Structure]: this.map.jVMWEq,
+			[ObjectType.Obstacle]: this.map.m_obstaclePool,
+			[ObjectType.Building]: this.map.m_buildingPool,
+			[ObjectType.Structure]: this.map.m_structurePool,
 			[ObjectType.Decal]: this.decalBarn.decalPool,
-			[ObjectType.Smoke]: this.smokeBarn.rTw
+			[ObjectType.Smoke]: this.smokeBarn.m_smokePool
 		};
 		this.objectCreator = new Creator();
-		for (const type in TypeToPool) if (TypeToPool.hasOwnProperty(type)) this.objectCreator.WPZ(type, TypeToPool[type]);
+		for (const type in TypeToPool) if (TypeToPool.hasOwnProperty(type)) this.objectCreator.m_registerType(type, TypeToPool[type]);
 		this.debugDisplay = new Graphics();
 		const pixiContainers = [
 			this.map.display.ground,
@@ -23377,7 +23392,7 @@ var LoadoutDisplay = class {
 			deserialize() {}
 		}, this.camera, this.canvasMode, this.particleBarn);
 		this.activePlayer = this.playerBarn.getPlayerById(this.activeId);
-		this.activePlayer.Bnz({
+		this.activePlayer.m_setLocalData({
 			boost: 100,
 			boostDirty: true,
 			actionDirty: false,
@@ -23416,7 +23431,7 @@ var LoadoutDisplay = class {
 				}
 			]
 		});
-		this.activePlayer.layer = this.activePlayer.glWLM.oVwj;
+		this.activePlayer.layer = this.activePlayer.m_netData.m_layer;
 		this.activePlayer.isLoadoutAvatar = true;
 		this.renderer.setActiveLayer(this.activePlayer.layer);
 		this.audioManager.activeLayer = this.activePlayer.layer;
@@ -23433,9 +23448,9 @@ var LoadoutDisplay = class {
 	}
 	free() {
 		if (this.initialized) {
-			this.map.MkE();
-			this.particleBarn.MkE();
-			this.renderer.MkE();
+			this.map.m_free();
+			this.particleBarn.m_free();
+			this.renderer.m_free();
 			while (this.pixi.stage.children.length > 0) {
 				const e = this.pixi.stage.children[0];
 				this.pixi.stage.removeChild(e);
@@ -23503,7 +23518,7 @@ var LoadoutDisplay = class {
 			pos: v2.create(50, 50),
 			dir: v2.create(0, -1)
 		};
-		this.objectCreator.QRV(ObjectType.Player, 98, obj, ctx);
+		this.objectCreator.m_updateObjFull(ObjectType.Player, 98, obj, ctx);
 		this.playerBarn.setPlayerInfo({
 			playerId: 98,
 			teamId: 0,
@@ -23516,24 +23531,24 @@ var LoadoutDisplay = class {
 		});
 	}
 	getCameraTargetZoom() {
-		return document.getElementById("modal-content-left").getBoundingClientRect().height / this.camera.aJoZKR * .2 * this.camera.aJoZKR * .5 / this.camera.rMBaI;
+		return document.getElementById("modal-content-left").getBoundingClientRect().height / this.camera.m_screenHeight * .2 * this.camera.m_screenHeight * .5 / this.camera.m_ppu;
 	}
 	getCameraLoadoutOffset() {
-		const zoomPrev = this.camera.pju;
+		const zoomPrev = this.camera.m_zoom;
 		const targetZoom = this.getCameraTargetZoom();
-		this.camera.pju = targetZoom;
+		this.camera.m_zoom = targetZoom;
 		const modalBound = document.getElementById("modal-content-left").getBoundingClientRect();
-		const modalAabb = collider.createAabb(this.camera.Qjir(v2.create(modalBound.left, modalBound.top + modalBound.height)), this.camera.Qjir(v2.create(modalBound.left + modalBound.width, modalBound.top)));
+		const modalAabb = collider.createAabb(this.camera.m_screenToPoint(v2.create(modalBound.left, modalBound.top + modalBound.height)), this.camera.m_screenToPoint(v2.create(modalBound.left + modalBound.width, modalBound.top)));
 		const modalExt = v2.mul(v2.sub(modalAabb.max, modalAabb.min), .5);
 		const modalPos = v2.add(modalAabb.min, modalExt);
-		const screenAabb = collider.createAabb(this.camera.Qjir(v2.create(0, this.camera.aJoZKR)), this.camera.Qjir(v2.create(this.camera.btgd, 0)));
+		const screenAabb = collider.createAabb(this.camera.m_screenToPoint(v2.create(0, this.camera.m_screenHeight)), this.camera.m_screenToPoint(v2.create(this.camera.m_screenWidth, 0)));
 		const screenExt = v2.mul(v2.sub(screenAabb.max, screenAabb.min), .5);
 		const screenPos = v2.add(screenAabb.min, screenExt);
 		const modalOffset = v2.sub(modalPos, screenPos);
 		const viewWidth = screenExt.x - modalOffset.x - modalExt.x;
 		const offsetX = math.clamp(viewWidth * .5, 2.5, 6);
 		const offset = v2.create(modalOffset.x + modalExt.x + offsetX, modalOffset.y + .33);
-		this.camera.pju = zoomPrev;
+		this.camera.m_zoom = zoomPrev;
 		return offset;
 	}
 	show() {
@@ -23545,14 +23560,14 @@ var LoadoutDisplay = class {
 	hide() {
 		if (this.active) {
 			this.active = false;
-			this.camera.pju = 2;
+			this.camera.m_zoom = 2;
 		}
 	}
 	update(dt, hasFocus) {
 		const debug = {};
-		this.camera.Obgct = v2.sub(this.activePlayer.Obgct, this.cameraOffset);
-		this.camera.pju = math.lerp(dt * 5, this.camera.pju, this.camera.SydkJ);
-		this.audioManager.cameraPos = v2.copy(this.camera.Obgct);
+		this.camera.m_pos = v2.sub(this.activePlayer.m_pos, this.cameraOffset);
+		this.camera.m_zoom = math.lerp(dt * 5, this.camera.m_zoom, this.camera.m_targetZoom);
+		this.audioManager.cameraPos = v2.copy(this.camera.m_pos);
 		if (hasFocus) {
 			if (this.view != this.viewOld && (this.view == "heal" || this.view == "boost")) this.animIdleTicker = 0;
 			this.viewOld = this.view;
@@ -23598,29 +23613,29 @@ var LoadoutDisplay = class {
 			const itemDef = GameObjectDefs.typeToDefSafe(this.loadout.outfit);
 			if (itemDef) this.audioManager.playSound(itemDef.sound.pickup, { channel: "ui" });
 		}
-		this.playerBarn.eJuNn(dt, this.activeId, this.renderer, this.particleBarn, this.camera, this.map, this.inputBinds, this.audioManager, void 0, false, false);
-		this.smokeBarn.eJuNn(dt, this.camera, this.activePlayer, this.map, this.renderer);
-		this.particleBarn.eJuNn(dt, this.camera);
-		this.decalBarn.eJuNn(dt, this.camera, this.renderer);
-		this.renderer.eJuNn(dt, this.camera, this.map, false);
+		this.playerBarn.m_update(dt, this.activeId, this.renderer, this.particleBarn, this.camera, this.map, this.inputBinds, this.audioManager, void 0, false, false);
+		this.smokeBarn.m_update(dt, this.camera, this.activePlayer, this.map, this.renderer);
+		this.particleBarn.m_update(dt, this.camera);
+		this.decalBarn.m_update(dt, this.camera, this.renderer);
+		this.renderer.m_update(dt, this.camera, this.map, false);
 		this.activePlayer.playActionStartSfx = false;
 		this.render(dt, debug);
 	}
 	render(_dt, debug) {
 		const grassColor = this.map.mapLoaded ? this.map.getMapDef().biome.colors.grass : 8433481;
 		this.pixi.renderer.background.color = grassColor;
-		this.playerBarn.aTWTA(this.camera, debug);
-		this.map.aTWTA(this.camera);
-		debugLines.aTWTA(this.camera, this.debugDisplay);
+		this.playerBarn.m_render(this.camera, debug);
+		this.map.m_render(this.camera);
+		debugLines.m_render(this.camera, this.debugDisplay);
 		debugLines.flush();
 	}
 	resize() {
 		if (this.initialized) {
-			this.camera.btgd = device.screenWidth;
-			this.camera.aJoZKR = device.screenHeight;
+			this.camera.m_screenWidth = device.screenWidth;
+			this.camera.m_screenHeight = device.screenHeight;
 			this.map.resize(this.pixi.renderer, this.canvasMode);
 			this.renderer.resize(this.map, this.camera);
-			this.camera.SydkJ = this.getCameraTargetZoom();
+			this.camera.m_targetZoom = this.getCameraTargetZoom();
 			this.cameraOffset = this.getCameraLoadoutOffset();
 		}
 	}
@@ -25052,7 +25067,7 @@ var Application = class {
 				this.ambience.onGameStart();
 			};
 			const onQuit = (errMsg) => {
-				if (this.game.kuFfR) this.pass.scheduleUpdatePass(this.game.frAKt);
+				if (this.game.m_updatePass) this.pass.scheduleUpdatePass(this.game.m_updatePassDelay);
 				this.game.free();
 				this.errorMessage = errMsg ? this.getErrorString(errMsg, "host_closed") : "";
 				this.teamMenu.onGameComplete(this.errorMessage);
@@ -25417,7 +25432,7 @@ var Application = class {
 		this.resourceManager.update(dt);
 		this.audioManager.update(dt);
 		this.ambience.update(dt, this.audioManager, !this.active);
-		if (this.game?.initialized && this.game.Wrdq) {
+		if (this.game?.initialized && this.game.m_playing) {
 			if (this.active) {
 				this.setAppActive(false);
 				this.setPlayLockout(true);
