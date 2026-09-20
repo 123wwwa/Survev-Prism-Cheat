@@ -24,25 +24,31 @@ export function combatAssist() {
     observeMotion(me);
     for (const player of game.m_playerBarn.playerPool.m_pool) if(player.active) observeMotion(player);
     const target=state.enemyAimBot;
-    if(state.isSmartSwitchEnabled && target && !state.coverTarget && (game.m_touch.shotDetected || game.m_inputBinds.isBindDown(inputCommands.Fire)) && performance.now()-lastSwitch>700){
+    if(state.isSmartSwitchEnabled && performance.now()>=(state.autoSwapUntil||0) && target && !state.coverTarget && (game.m_touch.shotDetected || game.m_inputBinds.isBindDown(inputCommands.Fire)) && performance.now()-lastSwitch>700){
         const local=me.m_localData, a=position(me.m_pos),b=position(target.m_pos);
         const slot=chooseWeapon(local.m_weapons,local.m_curWeapIdx,Math.hypot(a.x-b.x,a.y-b.y),unsafeWindow.guns,unsafeWindow.bullets,state.isUseOneGunEnabled,state.isMeleeAttackEnabled,[1,2].includes(me.m_netData.m_actionType));
         if(slot!==local.m_curWeapIdx){inputs.push(['EquipPrimary','EquipSecondary','EquipMelee'][slot]);lastSwitch=performance.now();}
     }
     drawPreview(game,me);
 }
-let canvas,ctx;
-function hidePreview(){if(canvas) canvas.style.display='none';}
+let canvas,ctx,lastPreview=-Infinity;
+function hidePreview(){if(canvas) canvas.style.display='none';lastPreview=-Infinity;}
 function drawPreview(game,me){
     const def=unsafeWindow.throwable?.[me.m_netData.m_activeWeapon];
     if(!state.isThrowPreviewEnabled || !def || me.m_localData.m_curWeapIdx!==3){hidePreview();return;}
+    const now=performance.now();
+    if(now-lastPreview<50) return; // 20 Hz overlay; physics integration remains 60 Hz.
+    lastPreview=now;
     const camera=game.m_camera, mouse=camera.m_screenToPoint(position(game.m_input.mousePos));
-    const preview=previewThrow(position(me.m_pos),mouse,def,observeMotion(me),game.m_map.m_obstaclePool.m_pool,me.layer);
+    const preview=previewThrow(position(me.m_pos),mouse,def,observeMotion(me),game.m_map.m_obstaclePool.m_pool,me.layer,def.fuseTime,unsafeWindow.objects);
     if(!preview){hidePreview();return;}
     if(!canvas){canvas=document.createElement('canvas');Object.assign(canvas.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:'900'});document.body.append(canvas);ctx=canvas.getContext('2d');}
-    canvas.style.display='block';canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+    canvas.style.display='block';
+    if(canvas.width!==window.innerWidth) canvas.width=window.innerWidth;
+    if(canvas.height!==window.innerHeight) canvas.height=window.innerHeight;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.strokeStyle=preview.blocked?'#ffbb66':'#65e7cf';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();
-    preview.points.forEach((p,i)=>{const s=camera.m_pointToScreen(p);i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);});ctx.stroke();ctx.setLineDash([]);
+    preview.points.forEach((p,i)=>{if(i%3 && i!==preview.points.length-1)return;const s=camera.m_pointToScreen(p);i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);});ctx.stroke();ctx.setLineDash([]);
     const end=camera.m_pointToScreen(preview.end), radius=unsafeWindow.explosions?.[def.explosionType]?.rad?.max;
     if(!preview.blocked && Number.isFinite(radius)){const edge=camera.m_pointToScreen({x:preview.end.x+radius,y:preview.end.y});ctx.beginPath();ctx.arc(end.x,end.y,Math.abs(edge.x-end.x),0,Math.PI*2);ctx.stroke();}
     const origin=camera.m_pointToScreen(position(me.m_pos)), rawMouse=position(game.m_input.mousePos), myTeam=getTeam(me);
