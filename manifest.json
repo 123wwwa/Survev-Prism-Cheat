@@ -2,20 +2,21 @@
   "schemaVersion": 2,
   "upstreamRepository": "https://github.com/survev/survev.git",
   "upstreamCommit": "7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223",
-  "inputHash": "ac16c5c13875b2204d9d9f0162ad8786c523280a704111cfcc7234ea616b9a24",
-  "builtAt": "2026-09-20T09:50:30.022Z",
+  "inputHash": "50eb0e1420684747134f0fbaec08bfb652ce10effde827c0e54a85d38c85cbfe",
+  "builtAt": "2026-09-20T11:55:37.364Z",
+  "license": "GPL-3.0-or-later",
   "artifacts": {
     "app": {
       "file": "app.js",
-      "bytes": 1529973,
-      "sha256": "94205af72857b6f91033206f8df3732f018c58d258e4009bad39a773c08bc31e",
+      "bytes": 1530908,
+      "sha256": "5ba98be14e6acf121c6b0e2d44934d9f7fa400d0116fcdd08381684df5404ee0",
       "originalFile": "js/DUJdak-a.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/app.js"
     },
     "shared": {
       "file": "shared.js",
-      "bytes": 2525647,
-      "sha256": "999adf8d9d70a780dbb387b4b83823466b367963e1ba4a7d98ceb78cbf70ddd1",
+      "bytes": 2526582,
+      "sha256": "c62638817e63e01221a075b0f530ff216cfcc85c6ff4054c62f507efa39d7465",
       "originalFile": "js/ocX2Ek5F.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/shared.js"
     }

@@ -1,3 +1,18 @@
+/*!
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ * Derived from survev/survev (GPL-3.0-or-later).
+ * Upstream commit: 7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223
+ * Upstream source: https://github.com/survev/survev/tree/7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223
+ * Modified by survev-cheat-injector; modified date (UTC): 2026-09-20T11:55:37.364Z
+ * Modifications: readable client build and injector hooks/global exports.
+ * Modification source: https://github.com/123wwwa/survev-cheat-injector
+ * This modified program is free software: you may redistribute it and/or
+ * modify it under the GNU General Public License, version 3 or (at your
+ * option) any later version. Distributed WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE and https://www.gnu.org/licenses/gpl-3.0.html.
+ * Bundled third-party notices are retained; see THIRD_PARTY_LICENSES.md.
+ */
 import { a as __toESM, r as __exportAll, t as __commonJSMin } from "./7_rZTKki.js";
 
 //#region \0vite/modulepreload-polyfill.js
