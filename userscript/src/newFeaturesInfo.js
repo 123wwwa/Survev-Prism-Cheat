@@ -8,8 +8,7 @@ if (!newFeaturesShown) {
     const message = `
         <strong style="font-size:20px;display:block;">surver-injector v${version}</strong><br>
         Loads patched app and shared modules from jsDelivr.<br>
-        Keeps the original server settings and sprite atlas data.<br>
-        Open the settings menu with ESC.<br>
+        Open the settings menu with TAB.<br>
     `;
 
     const overlay = document.createElement('div');
