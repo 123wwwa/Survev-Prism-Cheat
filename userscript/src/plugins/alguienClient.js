@@ -276,7 +276,7 @@ class GameMod {
         const description = document.createElement("p");
         description.className = "news-paragraph";
         description.style.fontSize = "14px";
-        description.innerHTML = `⭐ Star us on GitHub<br>📢 Join our Telegram group<br>🎮 Join our Discord server`
+        description.innerHTML = `⭐ Star us on GitHub`
         menu.append(description);
       
         const createSocialLink = (text) => {
@@ -308,7 +308,7 @@ class GameMod {
         const additionalDescription = document.createElement("p");
         additionalDescription.className = "news-paragraph";
         additionalDescription.style.fontSize = "14px";
-        additionalDescription.innerHTML = `Patched client modules with original server settings and sprite atlases.`
+        additionalDescription.innerHTML = `If you support this project star github repository.`
         menu.append(additionalDescription);
 
         const leftColumn = document.querySelector('#left-column');
@@ -342,8 +342,7 @@ class GameMod {
 
 <h3>Features:</h3>
 <ul>
-    <li><strong>[ESC]</strong> - Open Cheats Menu</li>
-    <li>By clicking the middle mouse button, you can add a player to friends. AimBot will not target them, green lines will go to them, and their name will turn green.</li>
+    <li><strong>[TAB]</strong> - Open Cheats Menu</li>
     <li>AimBot activates when you shoot.</li>
     <li><strong>AutoMelee:</strong> If the enemy is close enough (4 game coordinates), AutoMelee will automatically move towards and attack them when holding down the left mouse button. If you equip a melee weapon, AutoMelee will work at a distance of 8 game coordinates.</li>
     <li><strong>AutoSwitch:</strong> By default, quickly switch weapons to avoid cooldown after shooting.</li>
