@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789905116243
+// @version      1789906716719
 // @description  survev ESP, aimbot, spinbot and more
 // @author       fissure
 // @license      GPL3
@@ -7804,8 +7804,8 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         return { code: injectedShared.slice(0, start) + scope + injectedShared.slice(end), hosts: Object.keys(defs) };
     }
 
-    const injectedSharedUrl = 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@884017d67546f3adbd0e22e1d756cbce16e3469d/shared.js';
-    const injectedAppUrl = 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@884017d67546f3adbd0e22e1d756cbce16e3469d/app.js';
+    const injectedSharedUrl = 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@6b66110e120664eff6fa1d67e0dd5669d8ad2261/shared.js';
+    const injectedAppUrl = 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@6b66110e120664eff6fa1d67e0dd5669d8ad2261/app.js';
 
     async function requestScript(url) {
         const response = await GM.xmlHttpRequest({ method: 'GET', url, timeout: 30000 });
