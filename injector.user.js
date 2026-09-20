@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789924784381
+// @version      1789925938114
 // @description  survev ESP, aimbot, spinbot and more
 // @author       fissure
 // @license      GPL3
@@ -726,6 +726,7 @@
             }
             aimbotDot.style.left = screen.x + 'px';
             aimbotDot.style.top = screen.y + 'px';
+            aimbotDot.className = state.coverTarget ? 'aimbotDot cover' : 'aimbotDot tracking';
             aimbotDot.style.display = 'block';
         } catch (error) {
             clearAim();
@@ -8035,15 +8036,35 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
 }
 
 .aimbotDot{
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 10px;
-    height: 10px;
-    background-color: red;
+    width: 24px;
+    height: 24px;
+    box-sizing: border-box;
+    color: #bf7aff;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: linear-gradient(currentColor,currentColor) center / 2px 12px no-repeat,
+                linear-gradient(currentColor,currentColor) center / 12px 2px no-repeat;
+    box-shadow: 0 0 0 1px #111, 0 0 8px #0009;
+    pointer-events: none;
+    z-index: 901;
     transform: translateX(-50%) translateY(-50%);
     display: none;
 }
+.aimbotDot::after{
+    content: 'TRACK';
+    position: absolute;
+    top: 27px;
+    left: 50%;
+    transform: translateX(-50%);
+    font: bold 10px system-ui;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 3px #000, 0 0 3px #000;
+}
+.aimbotDot.cover { color: #ffb547; border-style: dashed; }
+.aimbotDot.cover::after { content: 'COVER'; }
 
 #news-current ul{
     margin-left: 20px;
@@ -8404,6 +8425,35 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         });
     }
 
+    let visibilityGame;
+    let visibility = new WeakMap();
+    function blockedByCover(game, me, player) {
+        if (visibilityGame !== game) { visibilityGame = game; visibility = new WeakMap(); }
+        const now = performance.now(), cached = visibility.get(player);
+        if (cached && cached.me === me && cached.layer === player.layer && now - cached.time < 100) return cached.blocked;
+        const blocked = !clearShot(position(me.m_pos), position(player.m_pos), me.layer, game.m_map.m_obstaclePool.m_pool);
+        visibility.set(player, { me, layer: player.layer, time: now, blocked });
+        return blocked;
+    }
+
+    function drawTargetLine(graphics, x, y, color, blocked, tracking) {
+        graphics.lineStyle(tracking ? 4 : 2, color, blocked ? 0.8 : 1);
+        const length = Math.hypot(x, y);
+        if (blocked && length > 0) {
+            // Bound segment count for distant/off-screen players.
+            const step = Math.max(18, length / 64);
+            for (let d = 0; d < length; d += step) {
+                const end = Math.min(d + step * 0.6, length);
+                graphics.moveTo(x * d / length, y * d / length);
+                graphics.lineTo(x * end / length, y * end / length);
+            }
+        } else {
+            graphics.moveTo(0, 0); graphics.lineTo(x, y);
+        }
+        if (tracking) graphics.drawCircle(x, y, 12);
+    }
+
+
     function esp(){
         const pixi = unsafeWindow.game.m_pixi; 
         const me = unsafeWindow.game.m_activePlayer;
@@ -8423,7 +8473,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         try{
 
         // lineDrawer
-        const lineDrawer = me.container.lineDrawer;
+        let lineDrawer = me.container.lineDrawer;
         try{lineDrawer.clear();}
         catch{if(!unsafeWindow.game?.m_connection || unsafeWindow.game?.m_activePlayer?.m_netData?.m_dead) return;}
         if (state.isLineDrawerEnabled){
@@ -8431,6 +8481,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
             if (!me.container.lineDrawer) {
                 me.container.lineDrawer = new PIXI.Graphics();
                 me.container.addChild(me.container.lineDrawer);
+                lineDrawer = me.container.lineDrawer;
             }
                 
             // For each player
@@ -8444,14 +8495,18 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
                 const playerTeam = getTeam(player);
         
                 // We calculate the color of the line (for example, red for enemies)
-                const lineColor = playerTeam === meTeam ? BLUE : state.friends.includes(player.nameText._text) ? GREEN : me.layer === player.layer && (state.isAimAtKnockedOutEnabled || !player.downed) ? RED : WHITE;
+                const ally = meTeam != null && playerTeam === meTeam;
+                const friend = state.friends.includes(player.nameText?._text);
+                const eligible = !ally && !friend && me.layer === player.layer && (state.isAimAtKnockedOutEnabled || !player.downed);
+                const tracking = eligible && state.isAimBotEnabled && !state.isMenuOpen && state.enemyAimBot === player && !!unsafeWindow.lastAimPos;
+                const blocked = eligible && (tracking ? !!state.coverTarget : blockedByCover(unsafeWindow.game, me, player));
+                const lineColor = ally ? BLUE : friend ? GREEN : !eligible ? WHITE : blocked ? 0xffb547 : tracking ? 0xbf7aff : RED;
         
                 // We draw a line from the current player to another player
-                lineDrawer.lineStyle(2, lineColor, 1);
-                lineDrawer.moveTo(0, 0); // Container Container Center
-                lineDrawer.lineTo(
+                drawTargetLine(lineDrawer,
                     (playerX - meX) * 16,
-                    (meY - playerY) * 16
+                    (meY - playerY) * 16,
+                    lineColor, blocked, tracking
                 );
             });
         }
@@ -8632,7 +8687,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
 
     const equip = ['EquipPrimary', 'EquipSecondary', 'EquipMelee'];
     // Upstream identifies shotguns by ammunition and manually cycled rifles by pullDelay.
-    const mandatorySwap = gun => !!gun && (gun.ammo === '12gauge' || gun.pullDelay > 0);
+    const mandatorySwap = (gun, type) => !!gun && (type === 'potato_cannon' || gun.ammo === '12gauge' || gun.pullDelay > 0);
     const eligible = gun => mandatorySwap(gun) || !!gun && ['single', 'burst'].includes(gun.fireMode) && gun.fireDelay >= 0.45;
 
     function createAutoSwap() {
@@ -8660,7 +8715,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
             }
             if (slot !== 0 && slot !== 1) return;
             const weapon = weapons[slot], old = previous[slot], gun = guns?.[weapon?.type];
-            if (!eligible(gun) || (state.isSmartSwitchEnabled && !mandatorySwap(gun))) return;
+            if (!eligible(gun) || (state.isSmartSwitchEnabled && !mandatorySwap(gun, weapon.type))) return;
             if (!old || old.type !== weapon.type || !(weapon.ammo < old.ammo) || inputs.some(command => command.startsWith('Equip'))) return;
             const other = 1 - slot, alternate = weapons[other];
             state.autoSwapUntil = now + 1500;
@@ -8729,8 +8784,8 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     }
 
     function initTicker(){
-        unsafeWindow.game.m_pixi._ticker.add(esp);
         unsafeWindow.game.m_pixi._ticker.add(aimBot);
+        unsafeWindow.game.m_pixi._ticker.add(esp);
         unsafeWindow.game.m_pixi._ticker.add(autoSwitch);
         unsafeWindow.game.m_pixi._ticker.add(combatAssist);
         unsafeWindow.game.m_pixi._ticker.add(obstacleOpacity);
