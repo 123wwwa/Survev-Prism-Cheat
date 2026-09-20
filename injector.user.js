@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         surver-injector
+// @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789897833914
+// @version      1789897909247
 // @description  Loads patched Survev client modules with the original server settings and sprite atlases.
 // @author       fissure
 // @license      GPL3
