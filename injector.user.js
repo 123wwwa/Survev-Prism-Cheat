@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789925938114
+// @version      1789926676571
 // @description  survev ESP, aimbot, spinbot and more
 // @author       fissure
 // @license      GPL3
@@ -385,10 +385,14 @@
     }
     function canDefend(game,state) {
         const me=game?.m_activePlayer;
+        const slot=me?.m_localData?.m_curWeapIdx;
+        // Action.Reload / ReloadAlt: defend even while Fire is held until reload ends.
+        const reloading=[1,2].includes(me?.m_netData?.m_actionType);
+        const attacking=game?.m_touch?.shotDetected || game?.m_inputBinds?.isBindDown(4);
         return !!(state.isPanDefenseEnabled && !state.isMenuOpen && game?.m_connection && me?.active &&
             !me.m_netData?.m_dead && !me.downed && me.m_netData?.m_wearingPan &&
-            me.m_localData?.m_curWeapIdx!==3 && me.currentAnim?.()!==1 &&
-            !game.m_touch?.shotDetected && !game.m_inputBinds?.isBindDown(4) &&
+            (slot===0 || slot===1) && me.m_netData?.m_activeWeapon!=='pan' && me.currentAnim?.()!==1 &&
+            (reloading || !attacking) &&
             !game.m_inputBinds?.isBindDown(31) && !game.m_inputBinds?.isBindPressed?.(31));
     }
     // Time to first intersection with the player's collision circle, in seconds.
@@ -881,7 +885,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     const combatOptions = [
         ['Weapon-aware targets', 'isWeaponAwareEnabled'],
         ['Avoid active frying pans', 'isPanAvoidanceEnabled'],
-        ['Back-pan defense · incoming shots first', 'isPanDefenseEnabled'],
+        ['Back-pan defense · idle / reloading', 'isPanDefenseEnabled'],
         ['Break weak cover first', 'isCoverBreakEnabled'],
         ['Prioritize nearby / aiming / approaching enemies', 'isThreatPriorityEnabled'],
         ['Estimated throw path & blast radius', 'isThrowPreviewEnabled'],
