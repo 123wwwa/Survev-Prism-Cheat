@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789897909247
+// @version      1789898172379
 // @description  Loads patched Survev client modules with the original server settings and sprite atlases.
 // @author       fissure
 // @license      GPL3
@@ -20,8 +20,8 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @require      https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.0.3/pixi.min.js
-// @homepageURL  https://github.com/123wwwa/survev-injector
-// @supportURL   https://github.com/123wwwa/survev-injector/issues
+// @homepageURL  https://github.com/123wwwa/survev-cheat-injector
+// @supportURL   https://github.com/123wwwa/survev-cheat-injector/issues
 // ==/UserScript==
 
 (function () {
