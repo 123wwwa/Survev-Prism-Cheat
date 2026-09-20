@@ -1,3 +1,4 @@
+import { activePanDefense } from '../src/panDefense.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
@@ -50,7 +51,7 @@ test('every direct game property used by the userscript exists in the current un
 });
 
 test('team and weapon lookups work with only current m_ player data', async () => {
-    const context = vm.createContext({ unsafeWindow: {
+    const context = vm.createContext({ activePanDefense, state: {}, unsafeWindow: {
         game: { m_playerBarn: { teamInfo: { red: { playerIds: [7] } } } },
         guns: { mp5: { bulletType: 'bullet_mp5' } }, bullets: { bullet_mp5: { speed: 85 } },
     } });
@@ -60,7 +61,7 @@ test('team and weapon lookups work with only current m_ player data', async () =
 });
 
 test('input override reads m_touch, m_inputBinds and m_localData and returns the original input message', async () => {
-    const context = vm.createContext({ unsafeWindow: {
+    const context = vm.createContext({ activePanDefense, state: {}, unsafeWindow: {
         innerWidth: 100, innerHeight: 100, lastAimPos: { clientX: 70, clientY: 60 },
         game: { m_touch: { shotDetected: true }, m_inputBinds: { isBindDown: () => false },
             m_activePlayer: { m_localData: { m_curWeapIdx: 0 } } },

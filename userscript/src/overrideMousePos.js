@@ -1,3 +1,4 @@
+import { activePanDefense } from './panDefense.js';
 import { state } from './vars';
 import { inputCommands } from './overrideInputs';
 
@@ -8,6 +9,8 @@ const spinSpeed = 37.5; // Rotation speed (increase for faster speed)
 export function overrideMousePos() {
     Object.defineProperty(unsafeWindow.game.m_input.mousePos, 'x', {
         get() {
+            const defense=activePanDefense(unsafeWindow.game,state);
+            if(defense) return defense.screen.x;
             if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
                 return unsafeWindow.lastAimPos.clientX;
             }
@@ -25,6 +28,8 @@ export function overrideMousePos() {
 
     Object.defineProperty(unsafeWindow.game.m_input.mousePos, 'y', {
         get() {
+            const defense=activePanDefense(unsafeWindow.game,state);
+            if(defense) return defense.screen.y;
             if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
                 return unsafeWindow.lastAimPos.clientY;
             }

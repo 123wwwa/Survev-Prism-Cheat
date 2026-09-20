@@ -1,3 +1,4 @@
+import { selectPanDefense } from '../panDefense.js';
 import { state } from '../vars.js';
 import { inputs, inputCommands } from '../overrideInputs.js';
 import { getTeam } from '../utils.js';
@@ -14,6 +15,9 @@ export function observeMotion(player,now=performance.now()) {
 }
 export function combatAssist() {
     const game=unsafeWindow.game, me=game?.m_activePlayer;
+    state.panDefense=null;
+    try { state.panDefense=selectPanDefense(game,state,getTeam); }
+    catch { /* A changed or incomplete game snapshot must not retain rotation. */ }
     if(game!==previousGame){samples.clear();lastSwitch=0;previousGame=game;}
     if(!me?.active || me.m_netData?.m_dead || state.isMenuOpen){hidePreview();return;}
     for(const [id,sample] of samples) if(performance.now()-sample.time>2000) samples.delete(id);

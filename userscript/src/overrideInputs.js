@@ -1,3 +1,5 @@
+import { state } from './vars.js';
+import { activePanDefense } from './panDefense.js';
 export const inputCommands = {
     Cancel: 6,
     Count: 36,
@@ -73,5 +75,11 @@ unsafeWindow.initGameControls = function(gameControls){
         gameControls.touchMoveDir.y = unsafeWindow.aimTouchMoveDir.y;
     }
 
+    const defense=activePanDefense(unsafeWindow.game,state);
+    if(defense){
+        gameControls.toMouseDir.x=defense.dir.x;
+        gameControls.toMouseDir.y=defense.dir.y;
+        gameControls.toMouseLen=10;
+    }
     return gameControls
 }

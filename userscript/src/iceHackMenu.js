@@ -41,15 +41,19 @@ for (const [label, key] of [['Zoom', 'isZoomEnabled'], ['Player tracers', 'isLin
 const combatOptions = [
     ['Weapon-aware targets', 'isWeaponAwareEnabled'],
     ['Avoid active frying pans', 'isPanAvoidanceEnabled'],
+    ['Back-pan defense · incoming shots first', 'isPanDefenseEnabled'],
     ['Break weak cover first', 'isCoverBreakEnabled'],
     ['Prioritize nearby / aiming / approaching enemies', 'isThreatPriorityEnabled'],
     ['Estimated throw path & blast radius', 'isThrowPreviewEnabled'],
     ['Smart weapon switching', 'isSmartSwitchEnabled'],
 ];
 for (const [label, key] of combatOptions) {
-    try { state[key] = localStorage.getItem('surver-injector.' + key) === 'true'; } catch {}
+    try {
+        const saved=localStorage.getItem('surver-injector.' + key);
+        if(saved!==null) state[key]=saved==='true';
+    } catch {}
     addSwitch('combat', label, key, () => {
-        state[key] = !state[key]; clearAim();
+        state[key] = !state[key]; clearAim(); state.panDefense=null;
         try { localStorage.setItem('surver-injector.' + key, String(state[key])); } catch {}
     });
 }
@@ -76,6 +80,7 @@ export function updateButtonColors() {
 let previousFocus;
 function setOpen(open) {
     state.isMenuOpen = open;
+    state.panDefense=null;
     host.style.display = open ? 'block' : 'none';
     const binds = unsafeWindow.game?.m_inputBinds;
     if (binds) binds.menuHovered = open;

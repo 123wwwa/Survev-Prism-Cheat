@@ -20,7 +20,7 @@ Published releases use commit-pinned app/shared URLs and an automatically increa
 
 ## Optional combat settings
 
-The TAB menu includes six independently saved, default-off combat options:
+The TAB menu includes independently saved combat options (throw preview and back-pan defense default to on):
 
 - Weapon-aware targets: ranks by bullet range, speed and weapon spread; this is a suitability heuristic, not a hit probability.
 - Avoid active frying pans: transforms the game's pan reflection segment by the target's current position and facing, then checks intersection with the shot. Other shield mechanics are not modeled.
@@ -30,3 +30,9 @@ The TAB menu includes six independently saved, default-off combat options:
 - Smart weapon switching: while firing at an acquired target, compares loaded weapon range/suitability and can leave a reloading weapon or choose melee at close range. A 700 ms cooldown and score margin avoid rapid oscillation. It respects one-gun mode and does not switch away from the throwable slot. It replaces legacy automatic switching while enabled.
 
 Angle/floor/friend checks still apply. Opening the menu clears aim. The new functions have automated geometry and selection tests, but live-match accuracy and behavior require browser playtesting.
+
+### Back-mounted pan facing
+
+Use **Back-pan defense · incoming shots first** in TAB → Combat options. This is independently saved and defaults to on. The closest-angle eligible enemy within the mouse cone is selected; friends, teammates, downed/dead players, other floors and blocked sightlines are excluded. The local back-pan segment midpoint is rotated toward that enemy using `enemyBearing - panMidpointBearing`; the pan itself is not separately animated. Both mouse coordinates and the outgoing look direction use the result.
+
+Firing, melee animation, throwable selection, the emote menu, death, removing the pan, and opening settings suppress the override immediately. Aiming while attacking has priority over defense; idle defense has priority over spin. Incoming client-visible bullets are ranked by predicted time to intersect the current player collision circle (up to 1.5 seconds), accounting for bullet speed and remaining range. Defense faces the selected incoming bullet position; when none threatens a hit, it faces the closest-angle eligible opponent. This is an estimate, not a guarantee of blocking. Explicit saved Off preferences are preserved.

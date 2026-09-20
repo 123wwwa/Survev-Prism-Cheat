@@ -26,6 +26,24 @@ You do not need to clone this repository or install development tools to use the
 - **Original game settings** — Transfers server lists, region settings, proxy configuration, and sprite atlases from the original client.
 - **Patch validation** — Detects missing or duplicate patch targets and stops the build or injection when checks fail.
 
+## Combat options
+
+Open **TAB → Combat options**. Each option has its own saved toggle.
+
+| Option | Behavior | Default |
+| --- | --- | --- |
+| Weapon-aware targets | Scores targets using bullet range, speed and weapon spread. | Off |
+| Avoid active frying pans | Checks the target's actual pan reflection segment against the shot path. | Off |
+| Break weak cover first | Aims at one destructible, non-explosive obstacle estimated to take at most three hits. Does not fire automatically. | Off |
+| Threat priority | Weights enemy proximity, facing and approach velocity; does not assume enemy health. | Off |
+| Estimated throw path & blast radius | Shows estimated travel, blast radius and a moving-target marker. | On |
+| Smart weapon switching | Chooses loaded weapons by range and suitability, considers reloading, and allows close-range melee. Uses a 700 ms cooldown and replaces legacy switching while enabled. | Off |
+| Back-pan defense | Rotates the character to face the back-mounted pan toward a threat while idle. Approaching shots take priority by estimated arrival time. | On |
+
+Back-pan defense considers live client-visible bullets, using position, direction, speed, player collision radius and remaining range. Shots predicted to intersect the player's current position within 1.5 seconds rank ahead of enemies without an approaching shot; earliest arrival wins. With no such shot, it falls back to mouse-angle targeting. The existing mouse cone, floor, friend/team and cover filters still apply. Attack input, melee animation, throwable selection and menus suspend defense immediately. It cannot guarantee a block: network delay, player movement and server collision timing can change the outcome.
+
+Throw previews estimate full-fuse, dry-ground motion and stop at cover. Cooking, water, perks, special throwable effects and wall bounces are not simulated. New default values apply when no preference is saved; an existing explicit Off setting remains Off.
+
 ## Development
 
 The sections below cover building, updating, and publishing the project from source.
