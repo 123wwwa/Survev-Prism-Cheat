@@ -1,6 +1,6 @@
 const equip = ['EquipPrimary', 'EquipSecondary', 'EquipMelee'];
 // Upstream identifies shotguns by ammunition and manually cycled rifles by pullDelay.
-export const mandatorySwap = gun => !!gun && (gun.ammo === '12gauge' || gun.pullDelay > 0);
+export const mandatorySwap = (gun, type) => !!gun && (type === 'potato_cannon' || gun.ammo === '12gauge' || gun.pullDelay > 0);
 const eligible = gun => mandatorySwap(gun) || !!gun && ['single', 'burst'].includes(gun.fireMode) && gun.fireDelay >= 0.45;
 
 export function createAutoSwap() {
@@ -28,7 +28,7 @@ export function createAutoSwap() {
         }
         if (slot !== 0 && slot !== 1) return;
         const weapon = weapons[slot], old = previous[slot], gun = guns?.[weapon?.type];
-        if (!eligible(gun) || (state.isSmartSwitchEnabled && !mandatorySwap(gun))) return;
+        if (!eligible(gun) || (state.isSmartSwitchEnabled && !mandatorySwap(gun, weapon.type))) return;
         if (!old || old.type !== weapon.type || !(weapon.ammo < old.ammo) || inputs.some(command => command.startsWith('Equip'))) return;
         const other = 1 - slot, alternate = weapons[other];
         state.autoSwapUntil = now + 1500;

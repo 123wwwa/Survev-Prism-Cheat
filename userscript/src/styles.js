@@ -37,15 +37,35 @@ styles.innerHTML = `
 }
 
 .aimbotDot{
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 10px;
-    height: 10px;
-    background-color: red;
+    width: 24px;
+    height: 24px;
+    box-sizing: border-box;
+    color: #bf7aff;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: linear-gradient(currentColor,currentColor) center / 2px 12px no-repeat,
+                linear-gradient(currentColor,currentColor) center / 12px 2px no-repeat;
+    box-shadow: 0 0 0 1px #111, 0 0 8px #0009;
+    pointer-events: none;
+    z-index: 901;
     transform: translateX(-50%) translateY(-50%);
     display: none;
 }
+.aimbotDot::after{
+    content: 'TRACK';
+    position: absolute;
+    top: 27px;
+    left: 50%;
+    transform: translateX(-50%);
+    font: bold 10px system-ui;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 3px #000, 0 0 3px #000;
+}
+.aimbotDot.cover { color: #ffb547; border-style: dashed; }
+.aimbotDot.cover::after { content: 'COVER'; }
 
 #news-current ul{
     margin-left: 20px;

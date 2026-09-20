@@ -85,6 +85,7 @@ export function aimBot() {
         }
         aimbotDot.style.left = screen.x + 'px';
         aimbotDot.style.top = screen.y + 'px';
+        aimbotDot.className = state.coverTarget ? 'aimbotDot cover' : 'aimbotDot tracking';
         aimbotDot.style.display = 'block';
     } catch (error) {
         clearAim();

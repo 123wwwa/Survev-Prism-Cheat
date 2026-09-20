@@ -37,12 +37,14 @@ Open **TAB → Combat options**. Each option has its own saved toggle.
 | Break weak cover first | Aims at one destructible, non-explosive obstacle estimated to take at most three hits. Does not fire automatically. | Off |
 | Threat priority | Weights enemy proximity, facing and approach velocity; does not assume enemy health. | Off |
 | Estimated throw path & blast radius | Shows estimated travel, blast radius and a moving-target marker. | On |
-| Smart weapon switching | Chooses loaded weapons by range and suitability, considers reloading, and allows close-range melee. Uses a 700 ms cooldown and yields to post-shot swaps for shotguns and manually cycled rifles. | Off |
+| Smart weapon switching | Chooses loaded weapons by range and suitability, considers reloading, and allows close-range melee. Uses a 700 ms cooldown and yields to post-shot swaps for shotguns, manually cycled rifles and the Potato Cannon. | Off |
 | Back-pan defense | Rotates the character to face the back-mounted pan toward a threat while idle. Approaching shots take priority by estimated arrival time. | On |
 
 Back-pan defense considers live client-visible bullets, using position, direction, speed, player collision radius and remaining range. Shots predicted to intersect the player's current position within 1.5 seconds rank ahead of enemies without an approaching shot; earliest arrival wins. With no such shot, it falls back to mouse-angle targeting. The existing mouse cone, floor, friend/team and cover filters still apply. Attack input, melee animation, throwable selection and menus suspend defense immediately. It cannot guarantee a block: network delay, player movement and server collision timing can change the outcome.
 
 Throw previews estimate full-fuse, dry-ground motion and stop at surviving cover. Ordinary windows break on impact and allow travel through; reinforced windows still block unless their estimated remaining health is at most one. The overlay updates at 20 Hz, reuses its canvas, and filters obstacles before physics integration. Cooking, water, perks, special throwable effects and wall bounces are not simulated. New default values apply when no preference is saved; an existing explicit Off setting remains Off.
+
+Target indicators: red solid lines mark unobstructed enemies; amber dashed lines mark enemies behind cover. The current aim target has a thicker purple line and a ring, plus a purple crosshair labeled TRACK at the predicted aim point. Cover-breaking targets use amber and a COVER crosshair. Team/friend colors are preserved. Cover visibility refreshes every 100 ms; the tracking indicator follows the current aim result.
 
 ## Development
 

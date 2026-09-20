@@ -38,6 +38,7 @@ function fixture() {
 test('focused targets obey cone, layer and cover; stale aiming clears immediately', () => {
     for (const change of [f=>f.enemy.layer=1,f=>f.enemy.m_pos={_x:0,_y:10},f=>f.game.m_map.m_obstaclePool.m_pool.push({active:true,layer:0,height:1,collider:{type:0,pos:{x:5,y:0},rad:1}})]) {
         const f=fixture(); f.run(); assert.ok(f.context.unsafeWindow.lastAimPos);
+        assert.equal(f.context.aimbotDot.className,'aimbotDot tracking');
         f.state.focusedEnemy=f.enemy; change(f); f.run();
         assert.equal(f.context.unsafeWindow.lastAimPos,null);
         assert.equal(f.context.unsafeWindow.aimTouchMoveDir,null);
@@ -61,6 +62,7 @@ test('cover breaking is opt-in, excludes explosives and honors hit budget', () =
     f.state.coverShotLimit=3;
     f.run();assert.equal(f.context.unsafeWindow.lastAimPos,null);
     f.state.isCoverBreakEnabled=true;f.run();assert.equal(f.context.unsafeWindow.lastAimPos.clientX,5);
+    assert.equal(f.context.aimbotDot.className,'aimbotDot cover');
     f.context.unsafeWindow.objects.crate.explosion='frag';f.run();assert.equal(f.context.unsafeWindow.lastAimPos,null);
     delete f.context.unsafeWindow.objects.crate.explosion;
     f.context.unsafeWindow.objects.crate.health=100;f.run();assert.equal(f.context.unsafeWindow.lastAimPos,null);

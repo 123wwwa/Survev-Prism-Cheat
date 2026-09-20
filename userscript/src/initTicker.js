@@ -7,8 +7,8 @@ import { grenadeTimer } from './plugins/grenadeTimer.js';
 
 
 export function initTicker(){
-    unsafeWindow.game.m_pixi._ticker.add(esp);
     unsafeWindow.game.m_pixi._ticker.add(aimBot);
+    unsafeWindow.game.m_pixi._ticker.add(esp);
     unsafeWindow.game.m_pixi._ticker.add(autoSwitch);
     unsafeWindow.game.m_pixi._ticker.add(combatAssist);
     unsafeWindow.game.m_pixi._ticker.add(obstacleOpacity);

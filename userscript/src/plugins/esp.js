@@ -3,6 +3,35 @@ import { state } from '../vars.js';
 import { RED, GREEN, BLUE, WHITE } from '../constants.js';
 import { findBullet, findWeap } from '../utils.js';
 import { inputCommands } from '../overrideInputs.js';
+import { position, clearShot } from '../aimGeometry.js';
+
+let visibilityGame;
+let visibility = new WeakMap();
+function blockedByCover(game, me, player) {
+    if (visibilityGame !== game) { visibilityGame = game; visibility = new WeakMap(); }
+    const now = performance.now(), cached = visibility.get(player);
+    if (cached && cached.me === me && cached.layer === player.layer && now - cached.time < 100) return cached.blocked;
+    const blocked = !clearShot(position(me.m_pos), position(player.m_pos), me.layer, game.m_map.m_obstaclePool.m_pool);
+    visibility.set(player, { me, layer: player.layer, time: now, blocked });
+    return blocked;
+}
+
+export function drawTargetLine(graphics, x, y, color, blocked, tracking) {
+    graphics.lineStyle(tracking ? 4 : 2, color, blocked ? 0.8 : 1);
+    const length = Math.hypot(x, y);
+    if (blocked && length > 0) {
+        // Bound segment count for distant/off-screen players.
+        const step = Math.max(18, length / 64);
+        for (let d = 0; d < length; d += step) {
+            const end = Math.min(d + step * 0.6, length);
+            graphics.moveTo(x * d / length, y * d / length);
+            graphics.lineTo(x * end / length, y * end / length);
+        }
+    } else {
+        graphics.moveTo(0, 0); graphics.lineTo(x, y);
+    }
+    if (tracking) graphics.drawCircle(x, y, 12);
+}
 
 
 export function esp(){
@@ -24,7 +53,7 @@ export function esp(){
     try{
 
     // lineDrawer
-    const lineDrawer = me.container.lineDrawer;
+    let lineDrawer = me.container.lineDrawer;
     try{lineDrawer.clear()}
     catch{if(!unsafeWindow.game?.m_connection || unsafeWindow.game?.m_activePlayer?.m_netData?.m_dead) return;}
     if (state.isLineDrawerEnabled){
@@ -32,6 +61,7 @@ export function esp(){
         if (!me.container.lineDrawer) {
             me.container.lineDrawer = new PIXI.Graphics();
             me.container.addChild(me.container.lineDrawer);
+            lineDrawer = me.container.lineDrawer;
         }
             
         // For each player
@@ -45,14 +75,18 @@ export function esp(){
             const playerTeam = getTeam(player);
     
             // We calculate the color of the line (for example, red for enemies)
-            const lineColor = playerTeam === meTeam ? BLUE : state.friends.includes(player.nameText._text) ? GREEN : me.layer === player.layer && (state.isAimAtKnockedOutEnabled || !player.downed) ? RED : WHITE;
+            const ally = meTeam != null && playerTeam === meTeam;
+            const friend = state.friends.includes(player.nameText?._text);
+            const eligible = !ally && !friend && me.layer === player.layer && (state.isAimAtKnockedOutEnabled || !player.downed);
+            const tracking = eligible && state.isAimBotEnabled && !state.isMenuOpen && state.enemyAimBot === player && !!unsafeWindow.lastAimPos;
+            const blocked = eligible && (tracking ? !!state.coverTarget : blockedByCover(unsafeWindow.game, me, player));
+            const lineColor = ally ? BLUE : friend ? GREEN : !eligible ? WHITE : blocked ? 0xffb547 : tracking ? 0xbf7aff : RED;
     
             // We draw a line from the current player to another player
-            lineDrawer.lineStyle(2, lineColor, 1);
-            lineDrawer.moveTo(0, 0); // Container Container Center
-            lineDrawer.lineTo(
+            drawTargetLine(lineDrawer,
                 (playerX - meX) * 16,
-                (meY - playerY) * 16
+                (meY - playerY) * 16,
+                lineColor, blocked, tracking
             );
         });
     }

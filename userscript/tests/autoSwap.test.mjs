@@ -5,13 +5,13 @@ import { createAutoSwap } from '../src/autoSwap.js';
 function fixture(type='mosin') {
     const local={m_curWeapIdx:0,m_weapons:[{type,ammo:5},{type:'rifle',ammo:20},{type:'fists'}]};
     const game={m_connection:{},m_activePlayer:{active:true,m_netData:{},m_localData:local}};
-    const guns={mosin:{pullDelay:1},m870:{ammo:'12gauge'},rifle:{fireMode:'auto'},slow:{fireMode:'single',fireDelay:1}};
+    const guns={mosin:{pullDelay:1},m870:{ammo:'12gauge'},potato_cannon:{ammo:'potato_ammo',fireMode:'single',fireDelay:1.2},rifle:{fireMode:'auto'},slow:{fireMode:'single',fireDelay:1}};
     const state={isAutoSwitchEnabled:true,isSmartSwitchEnabled:true}, inputs=[];
     const update=createAutoSwap(); let now=0;
     const tick=()=>update(game,guns,state,inputs,now+=50);
     tick(); return {local,game,guns,state,inputs,tick};
 }
-for(const type of ['mosin','m870']) test(`${type} shot overrides smart selection; return waits for observed equip`,()=>{
+for(const type of ['mosin','m870','potato_cannon']) test(`${type} shot overrides smart selection; return waits for observed equip`,()=>{
     const f=fixture(type);
     f.local.m_weapons[0].ammo--; f.tick();
     assert.deepEqual(f.inputs,['EquipSecondary']);
