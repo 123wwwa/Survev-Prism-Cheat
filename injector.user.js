@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789899002973
-// @description  Loads patched Survev client modules with the original server settings and sprite atlases.
+// @version      1789904269842
+// @description  survev ESP, aimbot, spinbot and more
 // @author       fissure
 // @license      GPL3
 // @match        http://localhost/*
@@ -63,8 +63,7 @@
         const message = `
         <strong style="font-size:20px;display:block;">surver-injector v${version$1}</strong><br>
         Loads patched app and shared modules from jsDelivr.<br>
-        Keeps the original server settings and sprite atlas data.<br>
-        Open the settings menu with ESC.<br>
+        Open the settings menu with TAB.<br>
     `;
 
         const overlay = document.createElement('div');
@@ -123,6 +122,14 @@
         isAimBotEnabled: true,
         aimConeDegrees: 60,
         isMenuOpen: false,
+        isWeaponAwareEnabled: false,
+        isPanAvoidanceEnabled: false,
+        isCoverBreakEnabled: false,
+        isThreatPriorityEnabled: false,
+        isThrowPreviewEnabled: false,
+        isSmartSwitchEnabled: false,
+        coverShotLimit: 3,
+        coverTarget: null,
         isAimAtKnockedOutEnabled: true,
         get aimAtKnockedOutStatus() {
             return this.isAimBotEnabled && this.isAimAtKnockedOutEnabled;
@@ -197,6 +204,155 @@
             o.height >= 0.25 && intersectsSegment(a, b, o.collider));
     }
 
+    function segmentCross(a,b,c,d) {
+        const rx=b.x-a.x, ry=b.y-a.y, sx=d.x-c.x, sy=d.y-c.y;
+        const cross=rx*sy-ry*sx;
+        if (Math.abs(cross)<1e-8) return false;
+        const t=((c.x-a.x)*sy-(c.y-a.y)*sx)/cross;
+        const u=((c.x-a.x)*ry-(c.y-a.y)*rx)/cross;
+        return t>=0 && t<=1 && u>=0 && u<=1;
+    }
+    function panBlocks(start, end, player) {
+        if (!player.m_hasActivePan?.()) return false;
+        const seg=player.m_getPanSegment?.(), p=position(player.m_pos), dir=player.m_dir;
+        if (!seg || !dir) return false;
+        const angle=Math.atan2(dir.y,dir.x), c=Math.cos(angle), s=Math.sin(angle);
+        const transform=q=>({x:p.x+q.x*c-q.y*s,y:p.y+q.x*s+q.y*c});
+        return segmentCross(start,end,transform(seg.p0),transform(seg.p1));
+    }
+    function blockingCover(start,end,layer,obstacles) {
+        if (!Array.isArray(obstacles)) return null;
+        return obstacles.filter(o=>o.active && !o.dead &&
+            ((o.layer&1)===(layer&1) || (o.layer&2 && layer&2)) && o.height>=0.25 && intersectsSegment(start,end,o.collider));
+    }
+    function weaponScore(gun, bullet, range) {
+        if (!gun || !bullet || !Number.isFinite(bullet.distance) || range>bullet.distance) return Infinity;
+        const spread=Math.max(0,gun.shotSpread||0)*Math.PI/180;
+        const pelletCount=gun.bulletCount || 1;
+        // Heuristic, not a probability: penalize broad spread and slow travel.
+        return range/Math.max(1,bullet.distance) + spread*range/(pelletCount>1 ? 2 : 5) + range/Math.max(1,bullet.speed||1);
+    }
+    function targetScore({angle,range,gun,bullet,threat,weaponAware,me,enemy,velocity}) {
+        let score=angle;
+        if (weaponAware) { const suitability=weaponScore(gun,bullet,range); if (!Number.isFinite(suitability)) return Infinity; score+=suitability*12; }
+        if (threat) {
+            const a=position(me.m_pos), b=position(enemy.m_pos), len=Math.max(0.001,range);
+            const toward={x:(a.x-b.x)/len,y:(a.y-b.y)/len};
+            const dir=enemy.m_dir, dlen=dir?Math.hypot(dir.x,dir.y):0;
+            const facing=dlen?Math.max(0,(dir.x*toward.x+dir.y*toward.y)/dlen):0;
+            const approach=velocity?Math.max(0,velocity.x*toward.x+velocity.y*toward.y):0;
+            score-=facing*8 + Math.max(0,1-range/40)*8 + Math.min(6,approach)*1.5;
+        }
+        return score;
+    }
+    function chooseWeapon(weapons,current,range,guns,bullets,useOneGun,melee,reloading=false) {
+        if (useOneGun || current===3) return current;
+        if (melee && range<=4 && weapons[2]?.type) return 2;
+        const candidates=[0,1].map(slot=>({slot,score:weapons[slot]?.ammo>0 && !(reloading && slot===current) ? weaponScore(guns[weapons[slot].type],bullets[guns[weapons[slot].type]?.bulletType],range) : Infinity}));
+        candidates.sort((a,b)=>a.score-b.score);
+        const best=candidates[0], own=candidates.find(c=>c.slot===current);
+        return Number.isFinite(best.score) && (!Number.isFinite(own?.score) || best.score+0.3<own.score) ? best.slot : current;
+    }
+    function previewThrow(start, target, def, velocity={x:0,y:0}, obstacles=[], layer=0, remaining=def.fuseTime) {
+        const physics=def.throwPhysics;
+        if (!physics || !Number.isFinite(remaining) || remaining<=0) return null;
+        const dx=target.x-start.x,dy=target.y-start.y,len=Math.hypot(dx,dy);
+        if (!len) return null;
+        const dir={x:dx/len,y:dy/len}, strength=def.forceMaxThrowDistance?1:Math.min(1,len/18);
+        let p={x:start.x+dir.x*0.5+dir.y,y:start.y+dir.y*0.5-dir.x};
+        let vx=dir.x*physics.speed*strength+velocity.x*physics.playerVelMult;
+        let vy=dir.y*physics.speed*strength+velocity.y*physics.playerVelMult;
+        let z=0.5,vz=physics.velZ;
+        const points=[{...start},p]; let blocked=false;
+        const dt=1/60;
+        for(let t=0;t<Math.min(remaining,10);t+=dt) {
+            if(z<=0){vx/=1+dt*2.3;vy/=1+dt*2.3;}
+            const next={x:p.x+vx*dt,y:p.y+vy*dt};
+            vz-=10.5*dt; z=Math.max(0,Math.min(5,z+vz*dt));
+            if(obstacles.some(o=>o.active&&!o.dead&&o.collidable&&o.layer===layer&&o.height>=(physics.fixedCollisionHeight||z)&&intersectsSegment(p,next,o.collider))){blocked=true;break;}
+            p=next; points.push(p);
+        }
+        return {points,end:p,blocked};
+    }
+
+    const inputCommands = {
+        Cancel: 6,
+        Count: 36,
+        CycleUIMode: 30,
+        EmoteMenu: 31,
+        EquipFragGrenade: 15,
+        EquipLastWeap: 19,
+        EquipMelee: 13,
+        EquipNextScope: 22,
+        EquipNextWeap: 17,
+        EquipOtherGun: 20,
+        EquipPrevScope: 21,
+        EquipPrevWeap: 18,
+        EquipPrimary: 11,
+        EquipSecondary: 12,
+        EquipSmokeGrenade: 16,
+        EquipThrowable: 14,
+        Fire: 4,
+        Fullscreen: 33,
+        HideUI: 34,
+        Interact: 7,
+        Loot: 10,
+        MoveDown: 3,
+        MoveLeft: 0,
+        MoveRight: 1,
+        MoveUp: 2,
+        Reload: 5,
+        Revive: 8,
+        StowWeapons: 27,
+        SwapWeapSlots: 28,
+        TeamPingMenu: 32,
+        TeamPingSingle: 35,
+        ToggleMap: 29,
+        Use: 9,
+        UseBandage: 23,
+        UseHealthKit: 24,
+        UsePainkiller: 26,
+        UseSoda: 25,
+    };
+
+    let inputs = [];
+    unsafeWindow.initGameControls = function(gameControls){
+        for (const command of inputs){
+            gameControls.addInput(inputCommands[command]);
+        }
+        inputs = [];
+
+        // mobile aimbot
+        if (gameControls.touchMoveActive && unsafeWindow.lastAimPos){
+            // gameControls.toMouseDir
+            gameControls.toMouseLen = 18;
+
+            const atan = Math.atan2(
+                unsafeWindow.lastAimPos.clientX - unsafeWindow.innerWidth / 2,
+                unsafeWindow.lastAimPos.clientY - unsafeWindow.innerHeight / 2,
+            ) - Math.PI / 2;
+
+            if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
+                gameControls.toMouseDir.x = Math.cos(atan);
+
+            }
+            if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
+                gameControls.toMouseDir.y = Math.sin(atan);
+            }
+        }
+
+        // autoMelee
+        if ((  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.aimTouchMoveDir) {
+            if (unsafeWindow.aimTouchDistanceToEnemy < 4) gameControls.addInput(inputCommands['EquipMelee']);
+            gameControls.touchMoveActive = true;
+            gameControls.touchMoveLen = 255;
+            gameControls.touchMoveDir.x = unsafeWindow.aimTouchMoveDir.x;
+            gameControls.touchMoveDir.y = unsafeWindow.aimTouchMoveDir.y;
+        }
+
+        return gameControls
+    };
+
     function getTeam(player) {
         return Object.keys(unsafeWindow.game.m_playerBarn.teamInfo).find(team => unsafeWindow.game.m_playerBarn.teamInfo[team].playerIds.includes(player.__id));
     }
@@ -208,6 +364,63 @@
 
     function findBullet(weapon) {
         return weapon ? unsafeWindow.bullets[weapon.bulletType] : null;
+    }
+
+    const samples=new Map();
+    let lastSwitch=0, previousGame;
+    function observeMotion(player,now=performance.now()) {
+        const p=position(player.m_pos), old=samples.get(player.__id);
+        if(old && now-old.time<30) return old.velocity;
+        const dt=old?(now-old.time)/1000:0;
+        const velocity=dt>0 && dt<0.5 ? {x:(p.x-old.p.x)/dt,y:(p.y-old.p.y)/dt}:{x:0,y:0};
+        samples.set(player.__id,{p,time:now,velocity}); return velocity;
+    }
+    function combatAssist() {
+        const game=unsafeWindow.game, me=game?.m_activePlayer;
+        if(game!==previousGame){samples.clear();lastSwitch=0;previousGame=game;}
+        if(!me?.active || me.m_netData?.m_dead || state.isMenuOpen){hidePreview();return;}
+        for(const [id,sample] of samples) if(performance.now()-sample.time>2000) samples.delete(id);
+        observeMotion(me);
+        for (const player of game.m_playerBarn.playerPool.m_pool) if(player.active) observeMotion(player);
+        const target=state.enemyAimBot;
+        if(state.isSmartSwitchEnabled && target && !state.coverTarget && (game.m_touch.shotDetected || game.m_inputBinds.isBindDown(inputCommands.Fire)) && performance.now()-lastSwitch>700){
+            const local=me.m_localData, a=position(me.m_pos),b=position(target.m_pos);
+            const slot=chooseWeapon(local.m_weapons,local.m_curWeapIdx,Math.hypot(a.x-b.x,a.y-b.y),unsafeWindow.guns,unsafeWindow.bullets,state.isUseOneGunEnabled,state.isMeleeAttackEnabled,[1,2].includes(me.m_netData.m_actionType));
+            if(slot!==local.m_curWeapIdx){inputs.push(['EquipPrimary','EquipSecondary','EquipMelee'][slot]);lastSwitch=performance.now();}
+        }
+        drawPreview(game,me);
+    }
+    let canvas,ctx;
+    function hidePreview(){if(canvas) canvas.style.display='none';}
+    function drawPreview(game,me){
+        const def=unsafeWindow.throwable?.[me.m_netData.m_activeWeapon];
+        if(!state.isThrowPreviewEnabled || !def || me.m_localData.m_curWeapIdx!==3){hidePreview();return;}
+        const camera=game.m_camera, mouse=camera.m_screenToPoint(position(game.m_input.mousePos));
+        const preview=previewThrow(position(me.m_pos),mouse,def,observeMotion(me),game.m_map.m_obstaclePool.m_pool,me.layer);
+        if(!preview){hidePreview();return;}
+        if(!canvas){canvas=document.createElement('canvas');Object.assign(canvas.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:'900'});document.body.append(canvas);ctx=canvas.getContext('2d');}
+        canvas.style.display='block';canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+        ctx.strokeStyle=preview.blocked?'#ffbb66':'#65e7cf';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();
+        preview.points.forEach((p,i)=>{const s=camera.m_pointToScreen(p);i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);});ctx.stroke();ctx.setLineDash([]);
+        const end=camera.m_pointToScreen(preview.end), radius=unsafeWindow.explosions?.[def.explosionType]?.rad?.max;
+        if(!preview.blocked && Number.isFinite(radius)){const edge=camera.m_pointToScreen({x:preview.end.x+radius,y:preview.end.y});ctx.beginPath();ctx.arc(end.x,end.y,Math.abs(edge.x-end.x),0,Math.PI*2);ctx.stroke();}
+        const origin=camera.m_pointToScreen(position(me.m_pos)), rawMouse=position(game.m_input.mousePos), myTeam=getTeam(me);
+        let candidate=null, best=Infinity;
+        for(const p of game.m_playerBarn.playerPool.m_pool){
+            if(!p.active || p.__id===me.__id || p.m_netData.m_dead || p.layer!==me.layer ||
+               (!state.isAimAtKnockedOutEnabled && p.downed) || state.friends.includes(p.nameText?._text) || (myTeam!=null && getTeam(p)===myTeam)) continue;
+            const a=angleFromMouse(origin,rawMouse,camera.m_pointToScreen(position(p.m_pos)));
+            if(a<=state.aimConeDegrees/2 && a<best){candidate=p;best=a;}
+        }
+        if(candidate){
+            const p=position(candidate.m_pos), v=observeMotion(candidate);
+            const future=camera.m_pointToScreen({x:p.x+v.x*def.fuseTime,y:p.y+v.y*def.fuseTime});
+            if(Number.isFinite(future.x)&&Number.isFinite(future.y)){
+                ctx.strokeStyle='#f7c977';ctx.beginPath();ctx.moveTo(future.x-7,future.y);ctx.lineTo(future.x+7,future.y);ctx.moveTo(future.x,future.y-7);ctx.lineTo(future.x,future.y+7);ctx.stroke();
+                ctx.fillStyle='#f7c977';ctx.font='12px system-ui';ctx.fillText('Target at full fuse (estimate)',future.x+10,future.y+12);
+            }
+        }
+        ctx.fillStyle='#e8edf5';ctx.font='12px system-ui';ctx.fillText(preview.blocked?'Collision: bounce path unknown':'Estimated throw · full fuse · dry ground',end.x+10,end.y-10);
     }
 
     const overlay = document.createElement('div');
@@ -260,13 +473,14 @@
         unsafeWindow.aimTouchMoveDir = null;
         unsafeWindow.aimTouchDistanceToEnemy = null;
         state.enemyAimBot = null;
+        state.coverTarget = null;
         aimbotDot.style.display = 'none';
     }
 
     function aimBot() {
         const game = unsafeWindow.game;
         const me = game?.m_activePlayer;
-        if (!state.isAimBotEnabled || state.isMenuOpen || !me?.active || me.m_netData?.m_dead) { clearAim(); return; }
+        if (!state.isAimBotEnabled || state.isMenuOpen || me?.m_localData?.m_curWeapIdx === 3 || !me?.active || me.m_netData?.m_dead) { clearAim(); return; }
         try {
             const players = game.m_playerBarn.playerPool.m_pool;
             const obstacles = game.m_map.m_obstaclePool.m_pool;
@@ -274,6 +488,8 @@
             const origin = game.m_camera.m_pointToScreen(position(me.m_pos));
             const mouse = position(game.m_input.mousePos);
             const halfAngle = state.aimConeDegrees / 2;
+            const gun=findWeap(me), bullet=findBullet(gun);
+            const covers=new Map();
             const eligible = player => {
                 if (!player?.active || player.m_netData.m_dead ||
                     (!state.isAimAtKnockedOutEnabled && player.downed) ||
@@ -281,7 +497,23 @@
                     (meTeam != null && getTeam(player) === meTeam) ||
                     state.friends.includes(player.nameText?._text)) return Infinity;
                 const angle = angleFromMouse(origin, mouse, game.m_camera.m_pointToScreen(position(player.m_pos)));
-                return angle <= halfAngle && clearShot(position(me.m_pos), position(player.m_pos), me.layer, obstacles) ? angle : Infinity;
+                if(angle>halfAngle) return Infinity;
+                const start=position(me.m_pos), end=position(player.m_pos);
+                if(state.isPanAvoidanceEnabled && panBlocks(start,end,player)) return Infinity;
+                const blockers=blockingCover(start,end,me.layer,obstacles);
+                if(!blockers) return Infinity;
+                if(blockers.length){
+                    if(!state.isCoverBreakEnabled || !gun || !bullet || blockers.length!==1) return Infinity;
+                    const cover=blockers[0], def=unsafeWindow.objects?.[cover.type];
+                    // Do not aim at explosive, indestructible or unknown-health cover.
+                    const damage=bullet.damage*(bullet.obstacleDamage||1);
+                    const hp=def?.health*cover.healthT;
+                    if(!cover.destructible || def?.explosion || !Number.isFinite(hp) || hp<=0 || damage<=0 || Math.ceil(hp/damage)>state.coverShotLimit) return Infinity;
+                    covers.set(player,cover);
+                }
+                return targetScore({angle,range:Math.hypot(end.x-start.x,end.y-start.y),gun,bullet,
+                    threat:state.isThreatPriorityEnabled,weaponAware:state.isWeaponAwareEnabled,me,enemy:player,
+                    velocity:state.isThreatPriorityEnabled?observeMotion(player):null}) + (blockers.length?20:0);
             };
             let enemy = null;
             let best = Infinity;
@@ -295,14 +527,16 @@
             }
             if (!enemy) { clearAim(); return; }
             if (enemy !== state.enemyAimBot) { state.enemyAimBot = enemy; state.lastFrames[enemy.__id] = []; }
-            const predicted = calculatePredictedPosForShoot(enemy, me);
+            state.coverTarget=covers.get(enemy)||null;
+            const predicted = state.coverTarget ? position(state.coverTarget.pos) : calculatePredictedPosForShoot(enemy, me);
             // Check the predicted shot as well: leading a moving player can cross cover.
             const screen = predicted && game.m_camera.m_pointToScreen(predicted);
             if (!screen || angleFromMouse(origin, mouse, screen) > halfAngle ||
-                !clearShot(position(me.m_pos), predicted, me.layer, obstacles)) { clearAim(); return; }
+                !clearShot(position(me.m_pos), predicted, me.layer, obstacles.filter(o=>o!==state.coverTarget)) ||
+                (!state.coverTarget && state.isPanAvoidanceEnabled && panBlocks(position(me.m_pos),predicted,enemy))) { clearAim(); return; }
             unsafeWindow.lastAimPos = { clientX: screen.x, clientY: screen.y };
             const distance = Math.hypot(me.m_pos._x - enemy.m_pos._x, me.m_pos._y - enemy.m_pos._y);
-            if (state.isMeleeAttackEnabled && distance <= 8) {
+            if (state.isMeleeAttackEnabled && !state.coverTarget && distance <= 8) {
                 const angle = calcAngle(enemy.m_pos, me.m_pos) + Math.PI;
                 unsafeWindow.aimTouchMoveDir = { x: Math.cos(angle), y: Math.sin(angle) };
                 unsafeWindow.aimTouchDistanceToEnemy = distance;
@@ -447,7 +681,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
 <label class="row" for="angle">Aim cone <output id="angle-value"></output></label>
 <input id="angle" type="range" min="5" max="180" step="5" aria-describedby="angle-help">
 <p class="hint" id="angle-help">Total angle around the mouse direction. Targets must be on the same floor with a clear shot.</p>
-<h2>Display & controls</h2><div id="features"></div><footer>TAB to toggle · ESC to close</footer>
+<h2>Combat options</h2><div id="combat"></div><p class="hint">Throw preview estimates dry-ground, full-fuse motion; stops at cover. Cover breaking excludes explosives and allows at most 3 estimated hits.</p><h2>Display & controls</h2><div id="features"></div><footer>TAB to toggle · ESC to close</footer>
 </section></div>`;
     document.body.append(host);
     const switches = [];
@@ -463,6 +697,21 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     addSwitch('aiming', 'Include downed players', 'isAimAtKnockedOutEnabled');
     addSwitch('aiming', 'Automatic melee', 'isMeleeAttackEnabled', meleeAttackToggle);
     for (const [label, key] of [['Zoom', 'isZoomEnabled'], ['Player tracers', 'isLineDrawerEnabled'], ['Grenade tracers', 'isNadeDrawerEnabled'], ['Flashlight', 'isLaserDrawerEnabled'], ['Spin', 'isSpinBotEnabled'], ['Use one gun', 'isUseOneGunEnabled']]) addSwitch('features', label, key);
+    const combatOptions = [
+        ['Weapon-aware targets', 'isWeaponAwareEnabled'],
+        ['Avoid active frying pans', 'isPanAvoidanceEnabled'],
+        ['Break weak cover first', 'isCoverBreakEnabled'],
+        ['Prioritize nearby / aiming / approaching enemies', 'isThreatPriorityEnabled'],
+        ['Estimated throw path & blast radius', 'isThrowPreviewEnabled'],
+        ['Smart weapon switching', 'isSmartSwitchEnabled'],
+    ];
+    for (const [label, key] of combatOptions) {
+        try { state[key] = localStorage.getItem('surver-injector.' + key) === 'true'; } catch {}
+        addSwitch('combat', label, key, () => {
+            state[key] = !state[key]; clearAim();
+            try { localStorage.setItem('surver-injector.' + key, String(state[key])); } catch {}
+        });
+    }
     addSwitch('features', 'Status overlay', 'isOverlayEnabled', overlayToggle);
     const angle = root.getElementById('angle');
     try {
@@ -7804,84 +8053,6 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
 
     autoLoot();
 
-    const inputCommands = {
-        Cancel: 6,
-        Count: 36,
-        CycleUIMode: 30,
-        EmoteMenu: 31,
-        EquipFragGrenade: 15,
-        EquipLastWeap: 19,
-        EquipMelee: 13,
-        EquipNextScope: 22,
-        EquipNextWeap: 17,
-        EquipOtherGun: 20,
-        EquipPrevScope: 21,
-        EquipPrevWeap: 18,
-        EquipPrimary: 11,
-        EquipSecondary: 12,
-        EquipSmokeGrenade: 16,
-        EquipThrowable: 14,
-        Fire: 4,
-        Fullscreen: 33,
-        HideUI: 34,
-        Interact: 7,
-        Loot: 10,
-        MoveDown: 3,
-        MoveLeft: 0,
-        MoveRight: 1,
-        MoveUp: 2,
-        Reload: 5,
-        Revive: 8,
-        StowWeapons: 27,
-        SwapWeapSlots: 28,
-        TeamPingMenu: 32,
-        TeamPingSingle: 35,
-        ToggleMap: 29,
-        Use: 9,
-        UseBandage: 23,
-        UseHealthKit: 24,
-        UsePainkiller: 26,
-        UseSoda: 25,
-    };
-
-    let inputs = [];
-    unsafeWindow.initGameControls = function(gameControls){
-        for (const command of inputs){
-            gameControls.addInput(inputCommands[command]);
-        }
-        inputs = [];
-
-        // mobile aimbot
-        if (gameControls.touchMoveActive && unsafeWindow.lastAimPos){
-            // gameControls.toMouseDir
-            gameControls.toMouseLen = 18;
-
-            const atan = Math.atan2(
-                unsafeWindow.lastAimPos.clientX - unsafeWindow.innerWidth / 2,
-                unsafeWindow.lastAimPos.clientY - unsafeWindow.innerHeight / 2,
-            ) - Math.PI / 2;
-
-            if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
-                gameControls.toMouseDir.x = Math.cos(atan);
-
-            }
-            if ( (  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.lastAimPos && unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx != 3) {
-                gameControls.toMouseDir.y = Math.sin(atan);
-            }
-        }
-
-        // autoMelee
-        if ((  unsafeWindow.game.m_touch.shotDetected || unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ) && unsafeWindow.aimTouchMoveDir) {
-            if (unsafeWindow.aimTouchDistanceToEnemy < 4) gameControls.addInput(inputCommands['EquipMelee']);
-            gameControls.touchMoveActive = true;
-            gameControls.touchMoveLen = 255;
-            gameControls.touchMoveDir.x = unsafeWindow.aimTouchMoveDir.x;
-            gameControls.touchMoveDir.y = unsafeWindow.aimTouchMoveDir.y;
-        }
-
-        return gameControls
-    };
-
     function bumpFire(){
         unsafeWindow.game.m_inputBinds.isBindPressed = new Proxy( unsafeWindow.game.m_inputBinds.isBindPressed, {
             apply( target, thisArgs, args ) {
@@ -8293,7 +8464,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     function autoSwitch(){
         if (!(unsafeWindow.game?.m_connection && unsafeWindow.game?.m_activePlayer?.m_localData?.m_curWeapIdx != null)) return; 
 
-        if (!state.isAutoSwitchEnabled) return;
+        if (!state.isAutoSwitchEnabled || state.isSmartSwitchEnabled || state.isMenuOpen) return;
 
         try {
         const curWeapIdx = unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx;
@@ -8382,6 +8553,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     function initTicker(){
         unsafeWindow.game.m_pixi._ticker.add(esp);
         unsafeWindow.game.m_pixi._ticker.add(aimBot);
+        unsafeWindow.game.m_pixi._ticker.add(combatAssist);
         unsafeWindow.game.m_pixi._ticker.add(autoSwitch);
         unsafeWindow.game.m_pixi._ticker.add(obstacleOpacity);
         unsafeWindow.game.m_pixi._ticker.add(grenadeTimer);
