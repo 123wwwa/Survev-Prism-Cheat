@@ -1,5 +1,5 @@
 import { state } from '../vars.js';
-import { aimBotToggle, meleeAttackToggle } from './aimBot.js';
+import { aimBotToggle, meleeAttackToggle } from './aimbot.js';
 import { updateOverlay } from '../overlay.js';
 import { getTeam } from '../utils.js';
 import { updateButtonColors } from '../iceHackMenu.js'; // Импортируйте функцию обновления цветов кнопок

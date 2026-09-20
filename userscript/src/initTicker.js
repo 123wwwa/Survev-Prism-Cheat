@@ -1,5 +1,5 @@
 import { esp } from './plugins/esp.js';
-import { aimBot } from './plugins/aimBot.js';
+import { aimBot } from './plugins/aimbot.js';
 import { autoSwitch } from './plugins/autoSwitch.js';
 import { obstacleOpacity } from './plugins/obstacleOpacity.js';
 import { grenadeTimer } from './plugins/grenadeTimer.js';

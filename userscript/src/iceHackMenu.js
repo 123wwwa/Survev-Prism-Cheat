@@ -1,5 +1,5 @@
 import { state } from './vars.js';
-import { aimBotToggle, meleeAttackToggle } from './plugins/aimBot.js';
+import { aimBotToggle, meleeAttackToggle } from './plugins/aimbot.js';
 import { updateOverlay, overlayToggle } from './overlay.js';
 import { version } from './constants.js';
 
