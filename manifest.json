@@ -2,8 +2,8 @@
   "schemaVersion": 2,
   "upstreamRepository": "https://github.com/survev/survev.git",
   "upstreamCommit": "7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223",
-  "inputHash": "74f4a1f5983b5bb9ba2338affc7781f23949188e0377d6d1c32e7cd9e6f160b6",
-  "builtAt": "2026-09-19T10:15:54.853Z",
+  "inputHash": "ac16c5c13875b2204d9d9f0162ad8786c523280a704111cfcc7234ea616b9a24",
+  "builtAt": "2026-09-20T09:50:30.022Z",
   "artifacts": {
     "app": {
       "file": "app.js",
@@ -20,6 +20,99 @@
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/shared.js"
     }
   },
+  "patchValidation": [
+    {
+      "name": "App patch Map colorizing",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/([$A-Z_a-z][$\\w]*)\\.sort\\(\\(([$A-Z_a-z][$\\w]*),\\s*([$A-Z_a-z][$\\w]*)\\)\\s*=>\\s*\\{\\s*return\\s+\\2\\.zIdx\\s*-\\s*\\3\\.zIdx;\\s*\\}\\);/g"
+    },
+    {
+      "name": "App patch Position without interpolation",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/this\\.([$A-Z_a-z][$\\w]*)\\s*=\\s*([$A-Z_a-z][$\\w]*)\\.copy\\(this\\.([$A-Z_a-z][$\\w]*)\\.\\1\\);(?=\\s*this\\.([$A-Z_a-z][$\\w]*)\\s*=\\s*\\2\\.copy\\(this\\.\\3\\.\\4\\);\\s*this\\.layer\\s*=)/g"
+    },
+    {
+      "name": "App patch game input property",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/new Touch\\(this\\.([$A-Z_a-z][$\\w]*),\\s*this\\.[$A-Z_a-z][$\\w]*\\)/g"
+    },
+    {
+      "name": "App patch Mouse position without server delay",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/this\\.bodyContainer\\.rotation\\s*=\\s*Math\\.atan2\\(\\s*mouseY\\s*-\\s*window\\.innerHeight\\s*\\/\\s*2\\s*,\\s*mouseX\\s*-\\s*window\\.innerWidth\\s*\\/\\s*2\\s*\\)/g"
+    },
+    {
+      "name": "App patch Class definition with methods",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/var\\s+[$A-Z_a-z][$\\w]*\\s*=\\s*24;\\s*var\\s+([$A-Z_a-z][$\\w]*)\\s*=\\s*class\\s*\\{/g"
+    },
+    {
+      "name": "App patch isMobile (basicDataInfo)",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/([$A-Z_a-z][$\\w]*)\\.isMobile\\s*=\\s*[$A-Z_a-z][$\\w]*\\.mobile\\s*\\|\\|\\s*window\\.mobile;/g"
+    },
+    {
+      "name": "App patch GameInitInjection",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/this\\.[$A-Z_a-z][$\\w]*\\s*=\\s*this\\.[$A-Z_a-z][$\\w]*\\.renderer\\.type\\s*==\\s*[$A-Z_a-z][$\\w]*\\.CANVAS;/g"
+    },
+    {
+      "name": "App patch Override gameControls",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/this\\.([$A-Z_a-z][$\\w]*)\\(([$A-Z_a-z][$\\w]*)\\.Input,\\s*([$A-Z_a-z][$\\w]*),\\s*128\\);\\s*this\\.([$A-Z_a-z][$\\w]*)\\s*=\\s*1;\\s*this\\.([$A-Z_a-z][$\\w]*)\\s*=\\s*\\3;/g"
+    },
+    {
+      "name": "Shared patch bullets",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/^(?:var|let|const)\\s+[$A-Z_a-z][$\\w]*\\s*=\\s*(?=\\{\\s*[$\\w]+\\s*:\\s*\\{\\s*type\\s*:\\s*\"bullet\"\\s*,\\s*damage\\s*:)/gm"
+    },
+    {
+      "name": "Shared patch explosions",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/^(?:var|let|const)\\s+[$A-Z_a-z][$\\w]*\\s*=\\s*(?=\\{\\s*explosion_frag\\s*:\\s*\\{\\s*type\\s*:\\s*\"explosion\"\\s*,\\s*damage\\s*:)/gm"
+    },
+    {
+      "name": "Shared patch guns",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/^(?:var|let|const)\\s+[$A-Z_a-z][$\\w]*\\s*=\\s*(?=\\{\\s*[$\\w]+\\s*:\\s*\\{\\s*name\\s*:\\s*\"[^\"]+\"\\s*,\\s*type\\s*:\\s*\"gun\"\\s*,\\s*quality\\s*:)/gm"
+    },
+    {
+      "name": "Shared patch throwable",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/^(?:var|let|const)\\s+[$A-Z_a-z][$\\w]*\\s*=\\s*(?=\\{\\s*[$\\w]+\\s*:\\s*\\{\\s*name\\s*:\\s*\"[^\"]+\"\\s*,\\s*type\\s*:\\s*\"throwable\"\\s*,\\s*quality\\s*:)/gm"
+    },
+    {
+      "name": "Shared patch objects",
+      "expectedMatches": 1,
+      "actualMatches": 1,
+      "status": "OK",
+      "pattern": "/^(?:var|let|const)\\s+[$A-Z_a-z][$\\w]*\\s*=\\s*(?=\\{\\s*barrel_01\\s*:\\s*[$\\w]+\\(\\s*\\{\\s*\\}\\s*\\)\\s*,\\s*barrel_01b\\s*:\\s*[$\\w]+\\()/gm"
+    }
+  ],
   "sharedPatches": [
     "bullets",
     "explosions",
