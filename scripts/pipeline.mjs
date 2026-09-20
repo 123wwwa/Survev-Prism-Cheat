@@ -1,3 +1,4 @@
+import { addLicenseNotice } from './license-notice.mjs';
 import { prepareUserscriptRelease } from './userscript-release.mjs';
 import { patchValidationReport, resetPatchValidationReport } from './patch-validation.mjs';
 import { spawn } from 'node:child_process';
@@ -103,7 +104,7 @@ async function syncSource() {
 
 async function inputHash() {
   const files = ['pipeline.config.json', 'client-config.hjson', 'scripts/build-client.mjs', 'scripts/canvas-paths.cjs',
-    'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/shared-patches.mjs', 'scripts/patch-validation.mjs', 'scripts/app-patches.mjs', 'scripts/invoke-pnpm.ps1'];
+    'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/license-notice.mjs', 'LICENSE', 'scripts/shared-patches.mjs', 'scripts/patch-validation.mjs', 'scripts/app-patches.mjs', 'scripts/invoke-pnpm.ps1'];
   const normalized = async path => Buffer.from((await readFile(path, 'utf8')).replaceAll('\r\n', '\n'));
   const contents = await Promise.all(files.map(file => normalized(resolve(root, file))));
   // Also observe locally supplied client build configuration without publishing it.
@@ -153,6 +154,7 @@ async function preparePublish() {
 
 async function build(revision) {
   resetPatchValidationReport();
+  const modifiedAt = new Date().toISOString();
   log(`Installing client/shared dependencies for ${revision.slice(0, 12)}`);
   await pnpm(['install', '--frozen-lockfile', '--filter', '@survev/client...', '--filter', '@survev/shared...', '--filter', 'survev']);
   await run(process.execPath, [resolve(root, 'scripts/build-client.mjs'), source, buildDir]);
@@ -176,7 +178,7 @@ async function build(revision) {
         console.error('[ERROR] aborting build/publication');
         throw error;
       }
-      data = Buffer.from(patched.code);
+      data = Buffer.from(addLicenseNotice(patched.code, { upstreamCommit: revision, modifiedAt }));
       if (name === 'shared') sharedPatches = patched.applied;
       else appPatches = patched.applied;
       validationPath = resolve(buildDir, `patched-${name}.mjs`);
@@ -195,7 +197,8 @@ async function build(revision) {
     upstreamRepository: config.upstreamRepository,
     upstreamCommit: revision,
     inputHash: await inputHash(),
-    builtAt: new Date().toISOString(),
+    builtAt: modifiedAt,
+    license: 'GPL-3.0-or-later',
     artifacts,
     patchValidation: [...patchValidationReport],
     sharedPatches,
@@ -206,7 +209,7 @@ async function build(revision) {
   };
   // Validate both outputs before replacing either publication artifact.
   for (const name of ['app', 'shared']) await atomicWrite(resolve(dist, config.fileNames[name]), buffers[name]);
-  await copyFile(resolve(source, 'LICENSE'), resolve(dist, 'LICENSE'));
+  await copyFile(resolve(root, 'LICENSE'), resolve(dist, 'LICENSE'));
   await copyFile(resolve(buildDir, 'THIRD_PARTY_LICENSES.md'), resolve(dist, 'THIRD_PARTY_LICENSES.md'));
   await writeJson(resolve(dist, 'manifest.json'), manifest);
   if (existsSync(resolve(dist, 'survev-readable.js'))) await unlink(resolve(dist, 'survev-readable.js'));

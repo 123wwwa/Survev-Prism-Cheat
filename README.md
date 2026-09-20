@@ -158,3 +158,11 @@ One-time account setup:
 4. Run a manual sync once and verify that Greasy Fork displays the published version. Subsequent changed releases are synchronized through the webhook. Automatic periodic synchronization is an alternative if immediate updates are unnecessary.
 
 A successful Git push does not prove Greasy Fork accepted an update. Check GitHub webhook delivery results and Greasy Fork sync status separately. No Greasy Fork password or session cookie is stored by this pipeline. See the [official integration documentation](https://greasyfork.org/en/help/api).
+
+## License
+
+This project's code and modifications are licensed under the GNU General Public License, version 3 or (at your option) any later version (**GPL-3.0-or-later**). See [LICENSE](LICENSE).
+
+Derived from [survev/survev](https://github.com/survev/survev) (GPL-3.0-or-later). Existing upstream and third-party notices are retained. Bundled dependencies retain their applicable licenses; client publications include `THIRD_PARTY_LICENSES.md`.
+
+Each published `app.js` and `shared.js` begins with an automatically generated notice containing the upstream commit, upstream source link, modification date in UTC, a description of modifications, and the GPL notice. The modification date records when this pipeline creates the modified artifacts, not the upstream commit date. Both files use the same timestamp, also recorded as `builtAt` in the manifest. Reusing an unchanged artifact preserves its original notice and date.
