@@ -31,6 +31,27 @@ test('selection excludes friends, other floors, cone and cover',()=>{
  }
 });
 
+test('reload allows defense with fire held, but firing resumes priority immediately afterward',()=>{
+ for(const action of [1,2]){
+  const f=fixture();f.me.m_netData.m_actionType=action;
+  f.game.m_inputBinds.isBindDown=key=>key===4;
+  f.game.m_touch.shotDetected=true;
+  f.state.panDefense=selectPanDefense(f.game,f.state,p=>p.__id);
+  assert.ok(activePanDefense(f.game,f.state));
+  f.me.m_netData.m_actionType=0;
+  assert.equal(activePanDefense(f.game,f.state),null);
+  f.game.m_inputBinds.isBindDown=()=>false;f.game.m_touch.shotDetected=false;
+  assert.equal(canDefend(f.game,f.state),true);
+ }
+});
+
+test('held pan, melee and throwable slots never use back-pan defense even during reload',()=>{
+ for(const mutate of [f=>f.me.m_netData.m_activeWeapon='pan',f=>f.me.m_localData.m_curWeapIdx=2,f=>f.me.m_localData.m_curWeapIdx=3,f=>f.me.m_localData.m_curWeapIdx=undefined]){
+  const f=fixture();f.me.m_netData.m_actionType=1;mutate(f);
+  assert.equal(canDefend(f.game,f.state),false);
+ }
+});
+
 test('shot priority uses approach, speed, remaining range and time to collision',()=>{
  const b={alive:true,pos:{x:10,y:0},dir:{x:-1,y:0},speed:10};
  assert.equal(incomingShotTime(b,{x:0,y:0},1),0.9);

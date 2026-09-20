@@ -41,7 +41,7 @@ for (const [label, key] of [['Zoom', 'isZoomEnabled'], ['Player tracers', 'isLin
 const combatOptions = [
     ['Weapon-aware targets', 'isWeaponAwareEnabled'],
     ['Avoid active frying pans', 'isPanAvoidanceEnabled'],
-    ['Back-pan defense · incoming shots first', 'isPanDefenseEnabled'],
+    ['Back-pan defense · idle / reloading', 'isPanDefenseEnabled'],
     ['Break weak cover first', 'isCoverBreakEnabled'],
     ['Prioritize nearby / aiming / approaching enemies', 'isThreatPriorityEnabled'],
     ['Estimated throw path & blast radius', 'isThrowPreviewEnabled'],
