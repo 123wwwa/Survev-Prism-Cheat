@@ -1,5 +1,7 @@
 let state = {
     isAimBotEnabled: true,
+    aimConeDegrees: 60,
+    isMenuOpen: false,
     isAimAtKnockedOutEnabled: true,
     get aimAtKnockedOutStatus() {
         return this.isAimBotEnabled && this.isAimAtKnockedOutEnabled;
@@ -23,7 +25,7 @@ let state = {
     isLaserDrawerEnabled: true,
     isLineDrawerEnabled: true,
     isNadeDrawerEnabled: true,
-    isOverlayEnabled: true,
+    isOverlayEnabled: false,
 };
 
 export { state };

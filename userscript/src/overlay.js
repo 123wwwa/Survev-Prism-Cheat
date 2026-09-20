@@ -41,5 +41,7 @@ export function overlayToggle(){
 }
 
 document.querySelector('#ui-game').append(overlay);
-document.querySelector('#ui-top-left').insertBefore(injectorTitle, document.querySelector('#ui-top-left').firstChild);
+// Branding is shown in the TAB settings panel.
 document.querySelector('#ui-game').append(aimbotDot);
+
+overlay.style.display = state.isOverlayEnabled ? 'block' : 'none';
