@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789918662834
+// @version      1789924784381
 // @description  survev ESP, aimbot, spinbot and more
 // @author       fissure
 // @license      GPL3
@@ -339,7 +339,7 @@
         const best=candidates[0], own=candidates.find(c=>c.slot===current);
         return Number.isFinite(best.score) && (!Number.isFinite(own?.score) || best.score+0.3<own.score) ? best.slot : current;
     }
-    function previewThrow(start, target, def, velocity={x:0,y:0}, obstacles=[], layer=0, remaining=def.fuseTime) {
+    function previewThrow(start, target, def, velocity={x:0,y:0}, obstacles=[], layer=0, remaining=def.fuseTime, obstacleDefs={}) {
         const physics=def.throwPhysics;
         if (!physics || !Number.isFinite(remaining) || remaining<=0) return null;
         const dx=target.x-start.x,dy=target.y-start.y,len=Math.hypot(dx,dy);
@@ -349,13 +349,26 @@
         let vx=dir.x*physics.speed*strength+velocity.x*physics.playerVelMult;
         let vy=dir.y*physics.speed*strength+velocity.y*physics.playerVelMult;
         let z=0.5,vz=physics.velZ;
+        // Before the first bounce, drag only slows travel along this ray. Cull once.
+        const horizon=(Math.ceil(Math.min(remaining,10)*60)+1)/60;
+        const limit={x:p.x+vx*horizon,y:p.y+vy*horizon};
+        const candidates=obstacles.filter(o=>o.active && !o.dead && o.collidable &&
+            ((o.layer&1)===(layer&1) || (o.layer&2 && layer&2)) && intersectsSegment(p,limit,o.collider));
+        const broken=new Set();
         const points=[{...start},p]; let blocked=false;
         const dt=1/60;
         for(let t=0;t<Math.min(remaining,10);t+=dt) {
             if(z<=0){vx/=1+dt*2.3;vy/=1+dt*2.3;}
             const next={x:p.x+vx*dt,y:p.y+vy*dt};
             vz-=10.5*dt; z=Math.max(0,Math.min(5,z+vz*dt));
-            if(obstacles.some(o=>o.active&&!o.dead&&o.collidable&&o.layer===layer&&o.height>=(physics.fixedCollisionHeight||z)&&intersectsSegment(p,next,o.collider))){blocked=true;break;}
+            if(candidates.some(o=>{
+                if(broken.has(o) || !(o.height>(physics.fixedCollisionHeight||z)) || !intersectsSegment(p,next,o.collider)) return false;
+                const data=obstacleDefs?.[o.type];
+                // One impact damage breaks ordinary windows; reinforced windows still block.
+                const health=data?.health*o.healthT;
+                if(o.isWindow && o.destructible && Number.isFinite(health) && health<=1){broken.add(o);return false;}
+                return true;
+            })){blocked=true;break;}
             p=next; points.push(p);
         }
         return {points,end:p,blocked};
@@ -544,25 +557,31 @@
         observeMotion(me);
         for (const player of game.m_playerBarn.playerPool.m_pool) if(player.active) observeMotion(player);
         const target=state.enemyAimBot;
-        if(state.isSmartSwitchEnabled && target && !state.coverTarget && (game.m_touch.shotDetected || game.m_inputBinds.isBindDown(inputCommands.Fire)) && performance.now()-lastSwitch>700){
+        if(state.isSmartSwitchEnabled && performance.now()>=(state.autoSwapUntil||0) && target && !state.coverTarget && (game.m_touch.shotDetected || game.m_inputBinds.isBindDown(inputCommands.Fire)) && performance.now()-lastSwitch>700){
             const local=me.m_localData, a=position(me.m_pos),b=position(target.m_pos);
             const slot=chooseWeapon(local.m_weapons,local.m_curWeapIdx,Math.hypot(a.x-b.x,a.y-b.y),unsafeWindow.guns,unsafeWindow.bullets,state.isUseOneGunEnabled,state.isMeleeAttackEnabled,[1,2].includes(me.m_netData.m_actionType));
             if(slot!==local.m_curWeapIdx){inputs.push(['EquipPrimary','EquipSecondary','EquipMelee'][slot]);lastSwitch=performance.now();}
         }
         drawPreview(game,me);
     }
-    let canvas,ctx;
-    function hidePreview(){if(canvas) canvas.style.display='none';}
+    let canvas,ctx,lastPreview=-Infinity;
+    function hidePreview(){if(canvas) canvas.style.display='none';lastPreview=-Infinity;}
     function drawPreview(game,me){
         const def=unsafeWindow.throwable?.[me.m_netData.m_activeWeapon];
         if(!state.isThrowPreviewEnabled || !def || me.m_localData.m_curWeapIdx!==3){hidePreview();return;}
+        const now=performance.now();
+        if(now-lastPreview<50) return; // 20 Hz overlay; physics integration remains 60 Hz.
+        lastPreview=now;
         const camera=game.m_camera, mouse=camera.m_screenToPoint(position(game.m_input.mousePos));
-        const preview=previewThrow(position(me.m_pos),mouse,def,observeMotion(me),game.m_map.m_obstaclePool.m_pool,me.layer);
+        const preview=previewThrow(position(me.m_pos),mouse,def,observeMotion(me),game.m_map.m_obstaclePool.m_pool,me.layer,def.fuseTime,unsafeWindow.objects);
         if(!preview){hidePreview();return;}
         if(!canvas){canvas=document.createElement('canvas');Object.assign(canvas.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:'900'});document.body.append(canvas);ctx=canvas.getContext('2d');}
-        canvas.style.display='block';canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+        canvas.style.display='block';
+        if(canvas.width!==window.innerWidth) canvas.width=window.innerWidth;
+        if(canvas.height!==window.innerHeight) canvas.height=window.innerHeight;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.strokeStyle=preview.blocked?'#ffbb66':'#65e7cf';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();
-        preview.points.forEach((p,i)=>{const s=camera.m_pointToScreen(p);i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);});ctx.stroke();ctx.setLineDash([]);
+        preview.points.forEach((p,i)=>{if(i%3 && i!==preview.points.length-1)return;const s=camera.m_pointToScreen(p);i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);});ctx.stroke();ctx.setLineDash([]);
         const end=camera.m_pointToScreen(preview.end), radius=unsafeWindow.explosions?.[def.explosionType]?.rad?.max;
         if(!preview.blocked && Number.isFinite(radius)){const edge=camera.m_pointToScreen({x:preview.end.x+radius,y:preview.end.y});ctx.beginPath();ctx.arc(end.x,end.y,Math.abs(edge.x-end.x),0,Math.PI*2);ctx.stroke();}
         const origin=camera.m_pointToScreen(position(me.m_pos)), rawMouse=position(game.m_input.mousePos), myTeam=getTeam(me);
@@ -8611,64 +8630,53 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         }
     }
 
-    const ammo = [
-        {
-            name: "",
-            ammo: null,
-            lastShotDate: Date.now()
-        },
-        {
-            name: "",
-            ammo: null,
-            lastShotDate: Date.now()
-        },
-        {
-            name: "",
-            ammo: null,
-        },
-        {
-            name: "",
-            ammo: null,
-        },
-    ];
-    function autoSwitch(){
-        if (!(unsafeWindow.game?.m_connection && unsafeWindow.game?.m_activePlayer?.m_localData?.m_curWeapIdx != null)) return; 
+    const equip = ['EquipPrimary', 'EquipSecondary', 'EquipMelee'];
+    // Upstream identifies shotguns by ammunition and manually cycled rifles by pullDelay.
+    const mandatorySwap = gun => !!gun && (gun.ammo === '12gauge' || gun.pullDelay > 0);
+    const eligible = gun => mandatorySwap(gun) || !!gun && ['single', 'burst'].includes(gun.fireMode) && gun.fireDelay >= 0.45;
 
-        if (!state.isAutoSwitchEnabled || state.isSmartSwitchEnabled || state.isMenuOpen) return;
-
-        try {
-        const curWeapIdx = unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx;
-        const weaps = unsafeWindow.game.m_activePlayer.m_localData.m_weapons;
-        const curWeap = weaps[curWeapIdx];
-        const shouldSwitch = gun => {
-            let s = false;
-            try {
-                s =
-                    (unsafeWindow.guns[gun].fireMode === "single"
-                    || unsafeWindow.guns[gun].fireMode === "burst") 
-                    && unsafeWindow.guns[gun].fireDelay >= 0.45;
+    function createAutoSwap() {
+        let owner, previousGame, snapshot = [], pending;
+        return (game, guns, state, inputs, now) => {
+            const me = game?.m_activePlayer, local = me?.m_localData;
+            if (game !== previousGame || me !== owner) {
+                owner = me; previousGame = game; snapshot = []; pending = null; state.autoSwapUntil = 0;
             }
-            catch (e) {
+            const weapons = local?.m_weapons || [], slot = local?.m_curWeapIdx;
+            const previous = snapshot;
+            snapshot = weapons.map(w => ({ type: w.type, ammo: w.ammo }));
+            if (!game?.m_connection || !me?.active || me.m_netData?.m_dead || !state.isAutoSwitchEnabled || state.isMenuOpen) {
+                pending = null; state.autoSwapUntil = 0; return;
             }
-            return s;
+            if (pending) {
+                if (now > pending.deadline || weapons[pending.from]?.type !== pending.type || ![pending.from, pending.to].includes(slot)) {
+                    pending = null; return;
+                }
+                // Wait for the observed equip before returning; never send both in one input message.
+                if (slot === pending.to && inputs.length === 0) {
+                    inputs.push(equip[pending.from]); pending = null; state.autoSwapUntil = now + 700;
+                }
+                return;
+            }
+            if (slot !== 0 && slot !== 1) return;
+            const weapon = weapons[slot], old = previous[slot], gun = guns?.[weapon?.type];
+            if (!eligible(gun) || (state.isSmartSwitchEnabled && !mandatorySwap(gun))) return;
+            if (!old || old.type !== weapon.type || !(weapon.ammo < old.ammo) || inputs.some(command => command.startsWith('Equip'))) return;
+            const other = 1 - slot, alternate = weapons[other];
+            state.autoSwapUntil = now + 1500;
+            if (!state.isUseOneGunEnabled && alternate?.ammo > 0 && eligible(guns?.[alternate.type])) {
+                inputs.push(equip[other]);
+            } else {
+                const to = alternate?.type ? other : 2;
+                inputs.push(equip[to]);
+                pending = { from: slot, to, type: weapon.type, deadline: now + 1500 };
+            }
         };
-        const weapsEquip = ['EquipPrimary', 'EquipSecondary'];
-        if(curWeap.ammo !== ammo[curWeapIdx].ammo) {
-            const otherWeapIdx = (curWeapIdx == 0) ? 1 : 0;
-            const otherWeap = weaps[otherWeapIdx];
-            if ((curWeap.ammo < ammo[curWeapIdx].ammo || (ammo[curWeapIdx].ammo === 0 && curWeap.ammo > ammo[curWeapIdx].ammo && (  unsafeWindow.game.m_touch.shotDetected ||  unsafeWindow.game.m_inputBinds.isBindDown(inputCommands.Fire) ))) && shouldSwitch(curWeap.type) && curWeap.type == ammo[curWeapIdx].type) {
-                ammo[curWeapIdx].lastShotDate = Date.now();
-                console.log("Switching weapon due to ammo change");
-                if ( shouldSwitch(otherWeap.type) && otherWeap.ammo && !state.isUseOneGunEnabled) { inputs.push(weapsEquip[otherWeapIdx]); } // && ammo[curWeapIdx].ammo !== 0
-                else if ( otherWeap.type !== "" ) { inputs.push(weapsEquip[otherWeapIdx]); inputs.push(weapsEquip[curWeapIdx]); }
-                else { inputs.push('EquipMelee'); inputs.push(weapsEquip[curWeapIdx]); }
-            }
-            ammo[curWeapIdx].ammo = curWeap.ammo;
-            ammo[curWeapIdx].type = curWeap.type;
-        }
-        }catch(err){
-            console.error('autoswitch', err);
-        }
+    }
+
+    const update = createAutoSwap();
+    function autoSwitch() {
+        update(unsafeWindow.game, unsafeWindow.guns, state, inputs, performance.now());
     }
 
     function obstacleOpacity(){
@@ -8723,8 +8731,8 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     function initTicker(){
         unsafeWindow.game.m_pixi._ticker.add(esp);
         unsafeWindow.game.m_pixi._ticker.add(aimBot);
-        unsafeWindow.game.m_pixi._ticker.add(combatAssist);
         unsafeWindow.game.m_pixi._ticker.add(autoSwitch);
+        unsafeWindow.game.m_pixi._ticker.add(combatAssist);
         unsafeWindow.game.m_pixi._ticker.add(obstacleOpacity);
         unsafeWindow.game.m_pixi._ticker.add(grenadeTimer);
         unsafeWindow.game.m_pixi._ticker.add(unsafeWindow.GameMod.startUpdateLoop.bind(unsafeWindow.GameMod));
