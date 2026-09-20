@@ -1,8 +1,37 @@
-# survev-injector
+# survev-cheat-injector
+
+A Survev userscript with configurable aim assist, visual options, and a TAB settings menu.
+
+## Download and install
+
+**Requires a Manifest V2 (MV2) extension environment. Firefox is recommended.**
+
+1. Download and install [Firefox](https://www.mozilla.org/en-US/firefox/new/).
+2. Open Firefox and install [Tampermonkey for Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/).
+3. Visit [Survev Ultimate Cheat Injector on Greasy Fork](https://greasyfork.org/en/scripts/596621-survev-ultimate-cheat-injector), click **Install this script**, and confirm installation in Tampermonkey.
+4. Open or reload [Survev](https://survev.io/). Make sure the script is enabled in Tampermonkey.
+5. Press **TAB** to open or close the settings menu. Press **ESC** to close it.
+
+You do not need to clone this repository or install development tools to use the published userscript. Disable older copies of the injector to avoid running multiple versions together.
+
+## Features
+
+- **Configurable aim assist** — Adjust the total aiming cone from 5° to 180°. The default is 60° (30° on each side of the mouse direction), and your angle setting is saved locally.
+- **Target checks** — Targets must be on the same floor and have a clear shot. Focused targets follow the same restrictions.
+- **Movement prediction** — Predicts target movement and checks the predicted aim point against the cone and obstacles.
+- **Automatic melee** — Supports close-range targeting and movement.
+- **Visual controls** — Zoom, player tracers, grenade tracers, flashlight, and an optional status overlay.
+- **TAB settings menu** — Toggle features and adjust aiming settings from one panel. Aim assist pauses while the menu is open.
+- **Original game settings** — Transfers server lists, region settings, proxy configuration, and sprite atlases from the original client.
+- **Patch validation** — Detects missing or duplicate patch targets and stops the build or injection when checks fail.
+
+## Development
+
+The sections below cover building, updating, and publishing the project from source.
 
 Builds the upstream `survev/survev` project in production mode, extracts **the game entry and its shared chunk before identifier minification** as `app.js` and `shared.js`, and publishes both to this repository's `cdn` branch. jsDelivr serves the public GitHub files directly; no separate CDN upload or API key is required.
 
-## Manual commands
+### Manual commands
 
 Run these commands in PowerShell from the project directory.
 
@@ -23,13 +52,13 @@ Run these commands in PowerShell from the project directory.
 
 Requires Node.js 22.18+ (24 recommended), pnpm, and Git. If Node or pnpm is missing from PATH, `run.ps1` looks for the current user's bundled Codex runtime. Install the tools separately on machines without that runtime. Local pushes use your existing Git authentication, such as Git Credential Manager. Authentication failures return an error instead of waiting indefinitely for a prompt.
 
-## Scheduled updates
+### Scheduled updates
 
 The `Update client CDN` GitHub Actions workflow checks upstream **daily at 09:17 Asia/Seoul (00:17 UTC)**. GitHub may delay scheduled runs. To trigger it manually, use **Actions → Update client CDN → Run workflow**. The default branch is `main`.
 
 The workflow uses `ubuntu-24.04`, Node.js 24, and action versions that run on Node.js 24. Its temporary GitHub token is used for Git publication and is not passed to upstream build processes or package installation scripts. Updates run on the daily schedule or by manual dispatch, not on every code push.
 
-## Preserving the upstream build and imports
+### Preserving the upstream build and imports
 
 The upstream checkout stays unchanged. The wrapper explicitly sets `build.minify: false` and removes `codefend-plugin`, which otherwise replaces `m_` properties with random names independently of minification. Both app and shared retain source properties such as `m_input`, `m_camera`, and `m_netData`. Production entry points, chunk splitting, CSS/image processing, and the hashed filename format are retained; actual hashes and chunk contents can differ from a normal upstream build.
 
@@ -43,7 +72,7 @@ var AliveCountsMsg = class { /* ... */ };
 
 Filenames from an existing website, such as `Cbg9k6wS.js`, are not hardcoded. Turning off minification and property obfuscation changes build contents and therefore hashes. The extracted files use dependency filenames from their own build. The userscript maps those imports to the injected shared module and the host's runtime helper.
 
-## Files and CDN access
+### Files and CDN access
 
 `scripts/app-patches.mjs` applies seven app patches before publication: a map-coloring hook after minimap sorting, raw network coordinates as `_x`/`_y` on the existing player position, mouse rotation from the game's input handler, `window.pieTimerClass`, `window.basicDataInfo`, `window.game`, and an input-message override. The `servers` patch is intentionally excluded: this configuration currently emits an empty ping-test list, not the requested server declaration.
 
@@ -76,7 +105,7 @@ https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/shared.js
 
 A GitHub push makes the file available for jsDelivr to serve. **Branch URLs have a default CDN cache duration of 12 hours**, independent of the daily GitHub update schedule. Browser caching also applies. The pipeline does not automatically purge caches or wait for CDN responses, so CDN delays cannot turn a successful Git push into a failed publication. To address a specific version, replace `@cdn` with **the publishing repository's commit SHA**, not the upstream survev commit. Use the filename shown above: requesting `.min.js` may cause jsDelivr to generate a minified version.
 
-## Troubleshooting and recovery
+### Troubleshooting and recovery
 
 - `Cannot prompt because user interactivity has been disabled` or `could not read Username` means Git has no usable publishing credential. Run `.\run.cmd login`, open the displayed GitHub device URL, enter the displayed code, and authorize Git Credential Manager. Keep the terminal open until it reports success, then rerun `.\run.cmd update`. Signing in to the GitHub website or GitHub Desktop alone does not necessarily authenticate command-line Git. Do not paste tokens into this repository or chat. GitHub Actions uses its own temporary token and does not need this local login.
 - `Public GitHub repository lookup returned HTTP 404` means the repository URL is incorrect or the repository is not publicly accessible. This was the confirmed publication blocker, separate from Node.js or Ubuntu deprecation warnings. jsDelivr cannot read private repositories. Set the repository to **Public** under **GitHub Settings → General → Change visibility**, or configure another public repository in `pipeline.config.json`, then rerun `update`.
@@ -88,7 +117,7 @@ A GitHub push makes the file available for jsDelivr to serve. **Branch URLs have
 
 References: [jsDelivr caching policy](https://github.com/jsdelivr/jsdelivr#caching), [upstream project](https://github.com/survev/survev).
 
-## Patch validation
+### Patch validation
 
 Build patches declare expected match counts. Logs show `[OK]` or `[FAIL]`, the patch name and actual count. Missing or duplicate matches abort the build before publication artifacts are replaced. Patch validation results are written to `.pipeline/build/patch-report.json`; successful results are also included in `dist/manifest.json` under `patchValidation`.
 
