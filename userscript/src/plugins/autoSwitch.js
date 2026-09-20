@@ -25,7 +25,7 @@ const ammo = [
 export function autoSwitch(){
     if (!(unsafeWindow.game?.m_connection && unsafeWindow.game?.m_activePlayer?.m_localData?.m_curWeapIdx != null)) return; 
 
-    if (!state.isAutoSwitchEnabled) return;
+    if (!state.isAutoSwitchEnabled || state.isSmartSwitchEnabled || state.isMenuOpen) return;
 
     try {
     const curWeapIdx = unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx;

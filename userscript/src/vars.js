@@ -2,6 +2,14 @@ let state = {
     isAimBotEnabled: true,
     aimConeDegrees: 60,
     isMenuOpen: false,
+    isWeaponAwareEnabled: false,
+    isPanAvoidanceEnabled: false,
+    isCoverBreakEnabled: false,
+    isThreatPriorityEnabled: false,
+    isThrowPreviewEnabled: false,
+    isSmartSwitchEnabled: false,
+    coverShotLimit: 3,
+    coverTarget: null,
     isAimAtKnockedOutEnabled: true,
     get aimAtKnockedOutStatus() {
         return this.isAimBotEnabled && this.isAimAtKnockedOutEnabled;

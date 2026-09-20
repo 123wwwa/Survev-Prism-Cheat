@@ -22,7 +22,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
 <label class="row" for="angle">Aim cone <output id="angle-value"></output></label>
 <input id="angle" type="range" min="5" max="180" step="5" aria-describedby="angle-help">
 <p class="hint" id="angle-help">Total angle around the mouse direction. Targets must be on the same floor with a clear shot.</p>
-<h2>Display & controls</h2><div id="features"></div><footer>TAB to toggle · ESC to close</footer>
+<h2>Combat options</h2><div id="combat"></div><p class="hint">Throw preview estimates dry-ground, full-fuse motion; stops at cover. Cover breaking excludes explosives and allows at most 3 estimated hits.</p><h2>Display & controls</h2><div id="features"></div><footer>TAB to toggle · ESC to close</footer>
 </section></div>`;
 document.body.append(host);
 const switches = [];
@@ -38,6 +38,21 @@ addSwitch('aiming', 'Aim assist', 'isAimBotEnabled', aimBotToggle);
 addSwitch('aiming', 'Include downed players', 'isAimAtKnockedOutEnabled');
 addSwitch('aiming', 'Automatic melee', 'isMeleeAttackEnabled', meleeAttackToggle);
 for (const [label, key] of [['Zoom', 'isZoomEnabled'], ['Player tracers', 'isLineDrawerEnabled'], ['Grenade tracers', 'isNadeDrawerEnabled'], ['Flashlight', 'isLaserDrawerEnabled'], ['Spin', 'isSpinBotEnabled'], ['Use one gun', 'isUseOneGunEnabled']]) addSwitch('features', label, key);
+const combatOptions = [
+    ['Weapon-aware targets', 'isWeaponAwareEnabled'],
+    ['Avoid active frying pans', 'isPanAvoidanceEnabled'],
+    ['Break weak cover first', 'isCoverBreakEnabled'],
+    ['Prioritize nearby / aiming / approaching enemies', 'isThreatPriorityEnabled'],
+    ['Estimated throw path & blast radius', 'isThrowPreviewEnabled'],
+    ['Smart weapon switching', 'isSmartSwitchEnabled'],
+];
+for (const [label, key] of combatOptions) {
+    try { state[key] = localStorage.getItem('surver-injector.' + key) === 'true'; } catch {}
+    addSwitch('combat', label, key, () => {
+        state[key] = !state[key]; clearAim();
+        try { localStorage.setItem('surver-injector.' + key, String(state[key])); } catch {}
+    });
+}
 addSwitch('features', 'Status overlay', 'isOverlayEnabled', overlayToggle);
 const angle = root.getElementById('angle');
 try {

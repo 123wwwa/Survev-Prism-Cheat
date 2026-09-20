@@ -1,3 +1,5 @@
+import { panBlocks, blockingCover, targetScore } from '../combatLogic.js';
+import { observeMotion } from './combatAssist.js';
 import { position, angleFromMouse, clearShot } from '../aimGeometry.js';
 import { state } from '../vars.js';
 import { getTeam } from '../utils.js';
@@ -10,13 +12,14 @@ export function clearAim() {
     unsafeWindow.aimTouchMoveDir = null;
     unsafeWindow.aimTouchDistanceToEnemy = null;
     state.enemyAimBot = null;
+    state.coverTarget = null;
     aimbotDot.style.display = 'none';
 }
 
 export function aimBot() {
     const game = unsafeWindow.game;
     const me = game?.m_activePlayer;
-    if (!state.isAimBotEnabled || state.isMenuOpen || !me?.active || me.m_netData?.m_dead) { clearAim(); return; }
+    if (!state.isAimBotEnabled || state.isMenuOpen || me?.m_localData?.m_curWeapIdx === 3 || !me?.active || me.m_netData?.m_dead) { clearAim(); return; }
     try {
         const players = game.m_playerBarn.playerPool.m_pool;
         const obstacles = game.m_map.m_obstaclePool.m_pool;
@@ -24,6 +27,8 @@ export function aimBot() {
         const origin = game.m_camera.m_pointToScreen(position(me.m_pos));
         const mouse = position(game.m_input.mousePos);
         const halfAngle = state.aimConeDegrees / 2;
+        const gun=findWeap(me), bullet=findBullet(gun);
+        const covers=new Map();
         const eligible = player => {
             if (!player?.active || player.m_netData.m_dead ||
                 (!state.isAimAtKnockedOutEnabled && player.downed) ||
@@ -31,7 +36,23 @@ export function aimBot() {
                 (meTeam != null && getTeam(player) === meTeam) ||
                 state.friends.includes(player.nameText?._text)) return Infinity;
             const angle = angleFromMouse(origin, mouse, game.m_camera.m_pointToScreen(position(player.m_pos)));
-            return angle <= halfAngle && clearShot(position(me.m_pos), position(player.m_pos), me.layer, obstacles) ? angle : Infinity;
+            if(angle>halfAngle) return Infinity;
+            const start=position(me.m_pos), end=position(player.m_pos);
+            if(state.isPanAvoidanceEnabled && panBlocks(start,end,player)) return Infinity;
+            const blockers=blockingCover(start,end,me.layer,obstacles);
+            if(!blockers) return Infinity;
+            if(blockers.length){
+                if(!state.isCoverBreakEnabled || !gun || !bullet || blockers.length!==1) return Infinity;
+                const cover=blockers[0], def=unsafeWindow.objects?.[cover.type];
+                // Do not aim at explosive, indestructible or unknown-health cover.
+                const damage=bullet.damage*(bullet.obstacleDamage||1);
+                const hp=def?.health*cover.healthT;
+                if(!cover.destructible || def?.explosion || !Number.isFinite(hp) || hp<=0 || damage<=0 || Math.ceil(hp/damage)>state.coverShotLimit) return Infinity;
+                covers.set(player,cover);
+            }
+            return targetScore({angle,range:Math.hypot(end.x-start.x,end.y-start.y),gun,bullet,
+                threat:state.isThreatPriorityEnabled,weaponAware:state.isWeaponAwareEnabled,me,enemy:player,
+                velocity:state.isThreatPriorityEnabled?observeMotion(player):null}) + (blockers.length?20:0);
         };
         let enemy = null;
         let best = Infinity;
@@ -45,14 +66,16 @@ export function aimBot() {
         }
         if (!enemy) { clearAim(); return; }
         if (enemy !== state.enemyAimBot) { state.enemyAimBot = enemy; state.lastFrames[enemy.__id] = []; }
-        const predicted = calculatePredictedPosForShoot(enemy, me);
+        state.coverTarget=covers.get(enemy)||null;
+        const predicted = state.coverTarget ? position(state.coverTarget.pos) : calculatePredictedPosForShoot(enemy, me);
         // Check the predicted shot as well: leading a moving player can cross cover.
         const screen = predicted && game.m_camera.m_pointToScreen(predicted);
         if (!screen || angleFromMouse(origin, mouse, screen) > halfAngle ||
-            !clearShot(position(me.m_pos), predicted, me.layer, obstacles)) { clearAim(); return; }
+            !clearShot(position(me.m_pos), predicted, me.layer, obstacles.filter(o=>o!==state.coverTarget)) ||
+            (!state.coverTarget && state.isPanAvoidanceEnabled && panBlocks(position(me.m_pos),predicted,enemy))) { clearAim(); return; }
         unsafeWindow.lastAimPos = { clientX: screen.x, clientY: screen.y };
         const distance = Math.hypot(me.m_pos._x - enemy.m_pos._x, me.m_pos._y - enemy.m_pos._y);
-        if (state.isMeleeAttackEnabled && distance <= 8) {
+        if (state.isMeleeAttackEnabled && !state.coverTarget && distance <= 8) {
             const angle = calcAngle(enemy.m_pos, me.m_pos) + Math.PI;
             unsafeWindow.aimTouchMoveDir = { x: Math.cos(angle), y: Math.sin(angle) };
             unsafeWindow.aimTouchDistanceToEnemy = distance;

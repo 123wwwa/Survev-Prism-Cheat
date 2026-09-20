@@ -1,3 +1,4 @@
+import { panBlocks, blockingCover, targetScore } from '../src/combatLogic.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -30,7 +31,7 @@ function fixture() {
     const enemy={__id:2,active:true,layer:0,m_netData:{m_dead:false},m_pos:{_x:10,_y:0},nameText:{_text:'enemy'}};
     const state={isAimBotEnabled:true,aimConeDegrees:60,isAimAtKnockedOutEnabled:true,friends:[],lastFrames:{}};
     const game={m_activePlayer:me,m_playerBarn:{playerPool:{m_pool:[me,enemy]}},m_map:{m_obstaclePool:{m_pool:[]}},m_camera:{m_pointToScreen:p=>p},m_input:{mousePos:{_x:100,_y:0}}};
-    const context=vm.createContext({state,unsafeWindow:{game},aimbotDot:{style:{}},position,angleFromMouse,clearShot,getTeam:p=>p.__id,updateOverlay(){},findWeap(){},findBullet(){},performance:{now:()=>100},console:{log(){},error(e){throw e;}}});
+    const context=vm.createContext({state,unsafeWindow:{game},aimbotDot:{style:{}},position,angleFromMouse,clearShot,panBlocks,blockingCover,targetScore,getTeam:p=>p.__id,updateOverlay(){},findWeap(){},findBullet(){},performance:{now:()=>100},console:{log(){},error(e){throw e;}}});
     vm.runInContext(code,context);
     return {context,state,game,enemy,run:()=>vm.runInContext('aimBot()',context)};
 }
@@ -49,4 +50,18 @@ test('opening menu or disabling aim clears aim state', () => {
         assert.equal(f.context.unsafeWindow.lastAimPos,null);
         assert.equal(f.context.aimbotDot.style.display,'none');
     }
+});
+
+test('cover breaking is opt-in, excludes explosives and honors hit budget', () => {
+    const f=fixture();
+    const cover={active:true,dead:false,layer:0,height:1,type:'crate',pos:{x:5,y:0},healthT:1,destructible:true,collider:{type:0,pos:{x:5,y:0},rad:1}};
+    f.game.m_map.m_obstaclePool.m_pool=[cover];
+    f.context.unsafeWindow.objects={crate:{health:20}};
+    f.context.findWeap=()=>({});f.context.findBullet=()=>({damage:10,obstacleDamage:1});
+    f.state.coverShotLimit=3;
+    f.run();assert.equal(f.context.unsafeWindow.lastAimPos,null);
+    f.state.isCoverBreakEnabled=true;f.run();assert.equal(f.context.unsafeWindow.lastAimPos.clientX,5);
+    f.context.unsafeWindow.objects.crate.explosion='frag';f.run();assert.equal(f.context.unsafeWindow.lastAimPos,null);
+    delete f.context.unsafeWindow.objects.crate.explosion;
+    f.context.unsafeWindow.objects.crate.health=100;f.run();assert.equal(f.context.unsafeWindow.lastAimPos,null);
 });

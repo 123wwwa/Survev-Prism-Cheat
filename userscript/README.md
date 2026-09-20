@@ -17,3 +17,16 @@ The injector runs at `document-end` and cannot undo a module that already ran. G
 Userscript request metadata follows the [Tampermonkey API documentation](https://www.tampermonkey.net/documentation.php#GM_xmlhttpRequest): `GM.xmlHttpRequest` is granted, with connections to the current host and `cdn.jsdelivr.net` allowed.
 
 Published releases use commit-pinned app/shared URLs and an automatically increasing version. The parent update command publishes them to the `userscript` branch for Greasy Fork synchronization; see the root README for one-time webhook setup. Local-only builds retain development URLs.
+
+## Optional combat settings
+
+The TAB menu includes six independently saved, default-off combat options:
+
+- Weapon-aware targets: ranks by bullet range, speed and weapon spread; this is a suitability heuristic, not a hit probability.
+- Avoid active frying pans: transforms the game's pan reflection segment by the target's current position and facing, then checks intersection with the shot. Other shield mechanics are not modeled.
+- Break weak cover first: aims at one destructible, non-explosive obstacle when known definition health and replicated health fraction suggest at most three bullet hits. Actual damage can differ due to modifiers. It does not fire automatically.
+- Threat priority: prefers closer enemies, enemies facing the player, and approaching enemies; it does not invent enemy health data.
+- Throw preview: draws an estimated ground-plane path, full-fuse blast radius and moving-target marker. Uses throw strength, gravity, inherited player movement and dry-ground drag. Stops at the first predicted cover collision. Cooking, water, perks, bounce trajectories and special throwable behavior are not simulated; use it as an estimate. It does not automatically throw.
+- Smart weapon switching: while firing at an acquired target, compares loaded weapon range/suitability and can leave a reloading weapon or choose melee at close range. A 700 ms cooldown and score margin avoid rapid oscillation. It respects one-gun mode and does not switch away from the throwable slot. It replaces legacy automatic switching while enabled.
+
+Angle/floor/friend checks still apply. Opening the menu clears aim. The new functions have automated geometry and selection tests, but live-match accuracy and behavior require browser playtesting.
