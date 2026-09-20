@@ -46,7 +46,7 @@ Run these commands in PowerShell from the project directory.
 
 `deploy` is an alias for `update`. If Node is on your PATH, you can also use `node scripts/pipeline.mjs check` or `node scripts/pipeline.mjs update`. The optional `watch` command repeats the update once a day while the process is running, but the daily GitHub Actions workflow is sufficient on its own. No background watcher starts automatically.
 
-`build`, `update`, `deploy`, and each `watch` cycle always build `userscript/dist/injector.user.js` first, including local userscript changes. Dependencies are installed from `userscript/pnpm-lock.yaml` with lifecycle scripts disabled. A userscript build failure stops the command before CDN publication. An unchanged upstream commit skips only the app/shared build and push; the userscript still rebuilds. Install the resulting `.user.js` file in your browser to apply changes. The userscript is a local output and is not added to the CDN branch. `check` remains read-only.
+`build`, `update`, `deploy`, and each `watch` cycle always build `userscript/dist/injector.user.js` first, including local userscript changes. Dependencies are installed from `userscript/pnpm-lock.yaml` with lifecycle scripts disabled. A userscript build failure stops the command before CDN publication. An unchanged upstream commit skips only the app/shared build and push; the userscript still rebuilds. Install the resulting `.user.js` file in your browser to apply changes. For update/deploy/watch, the final userscript pins both module URLs to the published CDN commit and is published separately to the `userscript` branch. Local build/userscript commands do not publish and retain the development branch URLs. `check` remains read-only.
 
 `run.cmd` calls `powershell -NoProfile -ExecutionPolicy Bypass -File run.ps1`. The execution policy override applies only to that process and does not change your user or system policy. Use `.\run.cmd` if PowerShell blocks `.\run.ps1`. Enforced organizational Group Policy takes precedence.
 
@@ -124,3 +124,18 @@ Build patches declare expected match counts. Logs show `[OK]` or `[FAIL]`, the p
 Before loading injected modules, the userscript checks server, region, proxy, atlas and import transfers. It parses downloaded modules to verify required global assignments and hook calls, ignoring comments and string literals. A mismatch prints `[ERROR] aborting injection` and prevents the injected module from being appended. Inspect `window.__surverInjectorPatchReport` in the browser console for recorded counts. Structural validation does not guarantee runtime game behavior.
 
 Run `.\run.cmd build` after changes and reinstall `userscript/dist/injector.user.js`. Use `.\run.cmd update` to also publish rebuilt client modules.
+
+### Greasy Fork automatic synchronization
+
+`update`, `deploy`, and scheduled runs now publish `injector.user.js` to the dedicated `userscript` branch after publishing or verifying app/shared. Both module URLs are pinned to the same full CDN commit SHA, avoiding stale branch caches. The userscript is built first as a preflight; its URLs and version header are finalized after the client commit is known and syntax is checked again before publishing.
+
+The numeric `@version` increases only when the final script content changes, including a new client commit or discovered blocking rules. Unchanged releases retain their version and do not push. `.pipeline/userscript-published.json` records the release, and `release.json` on the publication branch records its checksum. Publication is fast-forward only. If userscript publication fails after client publication, rerun `update`; the client commit can be reused.
+
+One-time account setup:
+
+1. Sign in to Greasy Fork as the owner of [script 596621](https://greasyfork.org/en/scripts/596621-survev-ultimate-cheat-injector) and open its synchronization settings.
+2. Set the source URL to `https://raw.githubusercontent.com/123wwwa/survev-injector/userscript/injector.user.js`. Use this raw GitHub URL, not a jsDelivr branch URL.
+3. Open [Greasy Fork webhook instructions](https://greasyfork.org/en/users/webhook-info). In the GitHub repository's **Settings → Webhooks**, configure a webhook using the URL and any secret/options shown there, with push events enabled. Keep secrets out of source control.
+4. Run a manual sync once and verify that Greasy Fork displays the published version. Subsequent changed releases are synchronized through the webhook. Automatic periodic synchronization is an alternative if immediate updates are unnecessary.
+
+A successful Git push does not prove Greasy Fork accepted an update. Check GitHub webhook delivery results and Greasy Fork sync status separately. No Greasy Fork password or session cookie is stored by this pipeline. See the [official integration documentation](https://greasyfork.org/en/help/api).

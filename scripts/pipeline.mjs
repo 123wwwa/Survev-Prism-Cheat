@@ -1,3 +1,4 @@
+import { prepareUserscriptRelease } from './userscript-release.mjs';
 import { patchValidationReport, resetPatchValidationReport } from './patch-validation.mjs';
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -14,6 +15,7 @@ const config = validateConfig(JSON.parse(await readFile(resolve(root, 'pipeline.
 const source = resolve(root, 'vendor/survev');
 const stateDir = resolve(root, '.pipeline');
 const publishDir = resolve(stateDir, 'publish');
+const userscriptPublishDir = resolve(stateDir, 'userscript-publish');
 const buildDir = resolve(stateDir, 'build');
 const dist = resolve(root, 'dist');
 const gitExe = process.env.GIT_BIN || (process.platform === 'win32' && existsSync('C:/Program Files/Git/cmd/git.exe')
@@ -45,7 +47,7 @@ function run(executable, args, cwd = root, capture = false) {
 async function git(args, cwd = root, capture = true) {
   // actions/checkout stores its scoped credential in the root checkout. Our
   // separate publication checkout needs that same header, without persisting it.
-  if (cwd === publishDir && process.env.GITHUB_ACTIONS === 'true') {
+  if ([publishDir, userscriptPublishDir].includes(cwd) && process.env.GITHUB_ACTIONS === 'true') {
     const key = 'http.https://github.com/.extraheader';
     const header = process.env.GH_TOKEN ? `AUTHORIZATION: basic ${Buffer.from(`x-access-token:${process.env.GH_TOKEN}`).toString('base64')}`
       : await run(gitExe, ['config', '--get', key], root, true).catch(() => '');
@@ -235,6 +237,46 @@ async function publish(manifest, remote) {
   return git(['rev-parse', 'HEAD'], publishDir);
 }
 
+async function publishUserscript(clientCommit) {
+  const dir = userscriptPublishDir;
+  const branch = 'userscript';
+  if (!existsSync(resolve(dir, '.git/config'))) {
+    await mkdir(dir, { recursive: true });
+    await git(['init', '--initial-branch', branch], dir);
+    await git(['remote', 'add', 'origin', config.publishRepository], dir);
+  }
+  if (await git(['remote', 'get-url', 'origin'], dir) !== config.publishRepository) throw new Error('Unexpected userscript publication origin.');
+  if (await git(['status', '--porcelain'], dir)) throw new Error('Userscript publication checkout has unfinished changes: .pipeline/userscript-publish');
+  let previous = null;
+  const remote = await git(['ls-remote', '--heads', 'origin', `refs/heads/${branch}`], dir);
+  if (remote) {
+    await git(['fetch', 'origin', `${branch}:refs/remotes/origin/${branch}`], dir);
+    const sha = await git(['rev-parse', `origin/${branch}`], dir);
+    previous = JSON.parse(await git(['show', `${sha}:release.json`], dir));
+    if (previous.kind !== 'survev-userscript-release') throw new Error('Refusing to overwrite an unmanaged userscript branch.');
+    await git(['checkout', '--detach', sha], dir);
+    const publishedCode = await readFile(resolve(dir, 'injector.user.js'));
+    if (sha256(publishedCode) !== previous.sha256) throw new Error('Published userscript checksum mismatch.');
+  }
+  const output = resolve(root, 'userscript/dist/injector.user.js');
+  const release = prepareUserscriptRelease(await readFile(output, 'utf8'), config, clientCommit, previous);
+  await atomicWrite(output, release.code);
+  await run(process.execPath, ['--check', output], root, true);
+  if (!release.unchanged) {
+    await writeFile(resolve(dir, 'injector.user.js'), release.code);
+    await writeJson(resolve(dir, 'release.json'), release.manifest);
+    await git(['add', '--', 'injector.user.js', 'release.json'], dir);
+    await git(['-c', 'user.name=survev-injector', '-c', 'user.email=survev-injector@users.noreply.github.com',
+      'commit', '-m', `Release userscript ${release.manifest.version}`], dir);
+    await git(['push', 'origin', `HEAD:refs/heads/${branch}`], dir);
+  }
+  const url = `https://raw.githubusercontent.com/${githubSlug(config.publishRepository)}/${branch}/injector.user.js`;
+  await writeJson(resolve(stateDir, 'userscript-published.json'), { ...release.manifest, syncUrl: url });
+  log(`Userscript ${release.unchanged ? 'unchanged' : 'published'}: ${release.manifest.version}`);
+  log(`Greasy Fork sync source: ${url}`);
+  log('Greasy Fork requires one-time sync/webhook setup; this push alone does not confirm Greasy Fork synchronization.');
+}
+
 async function recordPublication(revision) {
   const urls = Object.fromEntries(Object.entries(config.fileNames).map(([name, file]) => [name, {
     immutableUrl: cdnUrl(config, revision, file), latestUrl: cdnUrl(config, config.publishBranch, file),
@@ -278,6 +320,7 @@ async function cycle() {
   if (remote && matchesBuild(remote.manifest, revision, hash)) {
     log(`CDN unchanged: ${revision.slice(0, 12)}. No app/shared build or push needed; userscript was rebuilt.`);
     await recordPublication(remote.sha);
+    await publishUserscript(remote.sha);
     return;
   }
   let manifest = await readJson(resolve(dist, 'manifest.json'));
@@ -294,6 +337,7 @@ async function cycle() {
   if (mode !== 'build') {
     const sha = await publish(manifest, remote);
     await recordPublication(sha);
+    await publishUserscript(sha);
   }
 }
 

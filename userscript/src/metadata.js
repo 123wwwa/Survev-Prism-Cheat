@@ -1,5 +1,5 @@
 export const metadata = `// ==UserScript==
-// @name         surver-injector
+// @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
 // @version      0.1
 // @description  Loads patched Survev client modules with the original server settings and sprite atlases.

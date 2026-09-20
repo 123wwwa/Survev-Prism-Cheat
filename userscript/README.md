@@ -15,3 +15,5 @@ The current import layout must contain exactly two app dependencies (runtime fir
 The injector runs at `document-end` and cannot undo a module that already ran. Generated `@webRequest` rules target the survev.io filenames discovered at build time and require extension support. A localhost build with different filenames needs its own original-module blocking. Live browser blocking is not verified by the discovery/build tests.
 
 Userscript request metadata follows the [Tampermonkey API documentation](https://www.tampermonkey.net/documentation.php#GM_xmlhttpRequest): `GM.xmlHttpRequest` is granted, with connections to the current host and `cdn.jsdelivr.net` allowed.
+
+Published releases use commit-pinned app/shared URLs and an automatically increasing version. The parent update command publishes them to the `userscript` branch for Greasy Fork synchronization; see the root README for one-time webhook setup. Local-only builds retain development URLs.
