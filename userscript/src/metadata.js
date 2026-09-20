@@ -19,7 +19,7 @@ export const metadata = `// ==UserScript==
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @require      https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.0.3/pixi.min.js
-// @homepageURL  https://github.com/123wwwa/survev-injector
-// @supportURL   https://github.com/123wwwa/survev-injector/issues
+// @homepageURL  https://github.com/123wwwa/survev-cheat-injector
+// @supportURL   https://github.com/123wwwa/survev-cheat-injector/issues
 // ==/UserScript==
 `;
