@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789926676571
+// @version      1789950139827
 // @description  survev ESP, aimbot, spinbot and more
 // @author       fissure
 // @license      GPL3
@@ -290,6 +290,92 @@
             o.height >= 0.25 && intersectsSegment(a, b, o.collider));
     }
 
+    // Swept circle against world-space circle/AABB obstacles. AABB corners are conservative.
+    function sweep(a,b,c,r=0) {
+        const dx=b.x-a.x,dy=b.y-a.y;
+        if(c?.type===0){
+            const x=a.x-c.pos.x,y=a.y-c.pos.y,rad=c.rad+r,A=dx*dx+dy*dy;
+            const C=x*x+y*y-rad*rad, B=x*dx+y*dy;
+            let t;
+            if(C<=0)t=0;
+            else {const D=B*B-A*C;if(!A||D<0)return null;t=(-B-Math.sqrt(D))/A;}
+            if(t<0||t>1)return null;
+            const px=a.x+dx*t,py=a.y+dy*t,len=Math.hypot(px-c.pos.x,py-c.pos.y)||1;
+            return {t,point:{x:px,y:py},normal:{x:(px-c.pos.x)/len,y:(py-c.pos.y)/len}};
+        }
+        if(c?.type===1){
+            let lo=0,hi=1,normal=null;
+            for(const axis of ['x','y']){
+                const delta=b[axis]-a[axis],min=c.min[axis]-r,max=c.max[axis]+r;
+                if(Math.abs(delta)<1e-9){if(a[axis]<min||a[axis]>max)return null;continue;}
+                const t1=(min-a[axis])/delta,t2=(max-a[axis])/delta,near=Math.min(t1,t2);
+                if(near>=lo){lo=near;normal=axis==='x'?{x:-Math.sign(delta),y:0}:{x:0,y:-Math.sign(delta)};}
+                hi=Math.min(hi,Math.max(t1,t2));if(lo>hi)return null;
+            }
+            if(!normal){ // Already overlapping: use the nearest face.
+                const faces=[{d:Math.abs(a.x-c.min.x+r),x:-1,y:0},{d:Math.abs(c.max.x+r-a.x),x:1,y:0},{d:Math.abs(a.y-c.min.y+r),x:0,y:-1},{d:Math.abs(c.max.y+r-a.y),x:0,y:1}];
+                faces.sort((a,b)=>a.d-b.d);normal=faces[0];
+            }
+            return {t:lo,point:{x:a.x+dx*lo,y:a.y+dy*lo},normal};
+        }
+        return null;
+    }
+
+    function simulateThrow(initial,def,obstacles=[],layer=0,remaining=def.fuseTime,defs={}) {
+        if(!def.throwPhysics||!Number.isFinite(remaining)||remaining<0)return null;
+        let p={...initial.pos},v={...initial.velocity},z=initial.z??0.5,vz=initial.vz??def.throwPhysics.velZ;
+        if(![p.x,p.y,v.x,v.y,z,vz].every(Number.isFinite))return null;
+        const duration=Math.min(remaining,10),r=(def.rad||0)/4;
+        const reach=Math.hypot(v.x,v.y)*(duration+1/60)+r+1;
+        const candidates=obstacles.filter(o=>{
+            if(!o.active||o.dead||!o.collidable||!((o.layer&1)===(layer&1)||(o.layer&2&&layer&2)))return false;
+            const c=o.collider;
+            if(c?.type===0)return Math.hypot(c.pos.x-p.x,c.pos.y-p.y)<=reach+c.rad;
+            if(c?.type===1)return c.max.x>=p.x-reach&&c.min.x<=p.x+reach&&c.max.y>=p.y-reach&&c.min.y<=p.y+reach;
+            return false;
+        }).map(o=>({o,c:o.collider}));
+        const points=[{...p}],collisions=[],broken=new Set();
+        let landing=z<=0?{...p}:null,elapsed=0,floor=0,impact=false;
+        for(let tick=0;tick<Math.ceil(duration*60);tick++){
+            const dt=Math.min(1/60,duration-elapsed);if(dt<=0)break;
+            if(z<=floor){v.x/=1+dt*2.3;v.y/=1+dt*2.3;}
+            vz-=10.5*dt;z=Math.max(floor,Math.min(5,z+vz*dt));
+            const height=def.throwPhysics.fixedCollisionHeight||z;
+            let left=dt,nextFloor=0;
+            for(let contact=0;contact<4&&left>1e-6;contact++){
+                const next={x:p.x+v.x*left,y:p.y+v.y*left};let hit=null;
+                for(const item of candidates){
+                    const {o,c}=item;if(broken.has(o))continue;
+                    const h=sweep(p,next,c,r);if(!h)continue;
+                    if(o.height<=height){if(sweep(next,next,c,r))nextFloor=Math.max(nextFloor,o.height);continue;}
+                    const hp=defs?.[o.type]?.health*o.healthT;
+                    if(o.isWindow&&o.destructible&&Number.isFinite(hp)&&hp<=1){broken.add(o);continue;}
+                    if(v.x*h.normal.x+v.y*h.normal.y>=0)continue;
+                    if(!hit||h.t<hit.t)hit=h;
+                }
+                if(!hit){p=next;break;}
+                p={x:hit.point.x+hit.normal.x*0.1,y:hit.point.y+hit.normal.y*0.1};
+                collisions.push({...p});points.push({...p});
+                if(def.explodeOnImpact){impact=true;break;}
+                const speed=Math.hypot(v.x,v.y),dot=(v.x*hit.normal.x+v.y*hit.normal.y)/(speed||1);
+                const scale=Math.max(1+dot,0.15),projection=v.x*hit.normal.x+v.y*hit.normal.y;
+                v={x:(v.x-2*projection*hit.normal.x)*scale,y:(v.y-2*projection*hit.normal.y)*scale};
+                left*=1-hit.t;
+            }
+            floor=nextFloor;elapsed+=dt;points.push({...p});
+            if(z<=floor){if(!landing)landing={...p};if(def.explodeOnImpact)impact=true;}
+            if(impact)break;
+        }
+        return {points,end:p,landing,collisions,blocked:false,time:elapsed,impact};
+    }
+
+    function previewThrow(start,target,def,velocity={x:0,y:0},obstacles=[],layer=0,remaining=def.fuseTime,defs={}) {
+        const physics=def.throwPhysics,dx=target.x-start.x,dy=target.y-start.y,len=Math.hypot(dx,dy);
+        if(!physics||!len)return null;
+        const dir={x:dx/len,y:dy/len},strength=def.forceMaxThrowDistance?1:Math.min(1,len/18);
+        return simulateThrow({pos:{x:start.x+dir.x*0.5+dir.y,y:start.y+dir.y*0.5-dir.x},velocity:{x:dir.x*physics.speed*strength+velocity.x*physics.playerVelMult,y:dir.y*physics.speed*strength+velocity.y*physics.playerVelMult}},def,obstacles,layer,remaining,defs);
+    }
+
     function segmentCross(a,b,c,d) {
         const rx=b.x-a.x, ry=b.y-a.y, sx=d.x-c.x, sy=d.y-c.y;
         const cross=rx*sy-ry*sx;
@@ -338,40 +424,6 @@
         candidates.sort((a,b)=>a.score-b.score);
         const best=candidates[0], own=candidates.find(c=>c.slot===current);
         return Number.isFinite(best.score) && (!Number.isFinite(own?.score) || best.score+0.3<own.score) ? best.slot : current;
-    }
-    function previewThrow(start, target, def, velocity={x:0,y:0}, obstacles=[], layer=0, remaining=def.fuseTime, obstacleDefs={}) {
-        const physics=def.throwPhysics;
-        if (!physics || !Number.isFinite(remaining) || remaining<=0) return null;
-        const dx=target.x-start.x,dy=target.y-start.y,len=Math.hypot(dx,dy);
-        if (!len) return null;
-        const dir={x:dx/len,y:dy/len}, strength=def.forceMaxThrowDistance?1:Math.min(1,len/18);
-        let p={x:start.x+dir.x*0.5+dir.y,y:start.y+dir.y*0.5-dir.x};
-        let vx=dir.x*physics.speed*strength+velocity.x*physics.playerVelMult;
-        let vy=dir.y*physics.speed*strength+velocity.y*physics.playerVelMult;
-        let z=0.5,vz=physics.velZ;
-        // Before the first bounce, drag only slows travel along this ray. Cull once.
-        const horizon=(Math.ceil(Math.min(remaining,10)*60)+1)/60;
-        const limit={x:p.x+vx*horizon,y:p.y+vy*horizon};
-        const candidates=obstacles.filter(o=>o.active && !o.dead && o.collidable &&
-            ((o.layer&1)===(layer&1) || (o.layer&2 && layer&2)) && intersectsSegment(p,limit,o.collider));
-        const broken=new Set();
-        const points=[{...start},p]; let blocked=false;
-        const dt=1/60;
-        for(let t=0;t<Math.min(remaining,10);t+=dt) {
-            if(z<=0){vx/=1+dt*2.3;vy/=1+dt*2.3;}
-            const next={x:p.x+vx*dt,y:p.y+vy*dt};
-            vz-=10.5*dt; z=Math.max(0,Math.min(5,z+vz*dt));
-            if(candidates.some(o=>{
-                if(broken.has(o) || !(o.height>(physics.fixedCollisionHeight||z)) || !intersectsSegment(p,next,o.collider)) return false;
-                const data=obstacleDefs?.[o.type];
-                // One impact damage breaks ordinary windows; reinforced windows still block.
-                const health=data?.health*o.healthT;
-                if(o.isWindow && o.destructible && Number.isFinite(health) && health<=1){broken.add(o);return false;}
-                return true;
-            })){blocked=true;break;}
-            p=next; points.push(p);
-        }
-        return {points,end:p,blocked};
     }
 
     function panFacingDirection(segment, me, enemy) {
@@ -541,6 +593,40 @@
         return weapon ? unsafeWindow.bullets[weapon.bulletType] : null;
     }
 
+    function createCookTimer(){
+        let player,type,started,seq;
+        return (me,def,now)=>{
+            const cooking=me?.active&&!me.m_netData?.m_dead&&me.m_localData?.m_curWeapIdx===3&&me.throwableState==='cook'&&def?.cookable;
+            if(!cooking){player=null;return {cooking:false,remaining:def?.fuseTime};}
+            if(player!==me||type!==me.m_netData.m_activeWeapon||seq!==me.m_netData.m_animSeq){player=me;type=me.m_netData.m_activeWeapon;seq=me.m_netData.m_animSeq;started=now;}
+            return {cooking:true,remaining:Math.max(0,def.fuseTime-(now-started)/1000)};
+        };
+    }
+    const cookTimer=createCookTimer();
+
+    // Fuse time and thrower ID are not replicated. Never present first-seen time as exact fuse age.
+    function createProjectileTracker(){
+        const records=new Map();let previousGame;
+        return (game,defs,now)=>{
+            if(game!==previousGame){records.clear();previousGame=game;}
+            const seen=new Set(),result=[];
+            for(const p of game?.m_projectileBarn?.projectilePool?.m_pool||[]){
+                const def=defs?.[p.type];if(!p.active||!def||!Number.isFinite(def.fuseTime))continue;
+                seen.add(p);let old=records.get(p);
+                if(!old||old.id!==p.__id||old.type!==p.type){old={id:p.__id,type:p.type,first:now,time:now,pos:{...p.pos},z:p.posZ,velocity:null};records.set(p,old);}
+                const dt=(now-old.time)/1000;
+                if(dt>=0.05){
+                    old.velocity=dt<=0.5?{x:(p.pos.x-old.pos.x)/dt,y:(p.pos.y-old.pos.y)/dt}:null;
+                    old.vz=dt<=0.5?(p.posZ-old.z)/dt:0;
+                    old.pos={...p.pos};old.z=p.posZ;old.time=now;
+                }
+                result.push({projectile:p,def,remaining:Math.max(0,def.fuseTime+(def.fuseVariance||0)-(now-old.first)/1000),velocity:old.velocity,vz:old.vz});
+            }
+            for(const p of records.keys())if(!seen.has(p))records.delete(p);
+            return result;
+        };
+    }
+
     const samples=new Map();
     let lastSwitch=0, previousGame;
     function observeMotion(player,now=performance.now()) {
@@ -568,26 +654,30 @@
         }
         drawPreview(game,me);
     }
-    let canvas,ctx,lastPreview=-Infinity;
-    function hidePreview(){if(canvas) canvas.style.display='none';lastPreview=-Infinity;}
+    let canvas$1,ctx$1,lastPreview=-Infinity;
+    function hidePreview(){if(canvas$1) canvas$1.style.display='none';lastPreview=-Infinity;}
     function drawPreview(game,me){
         const def=unsafeWindow.throwable?.[me.m_netData.m_activeWeapon];
         if(!state.isThrowPreviewEnabled || !def || me.m_localData.m_curWeapIdx!==3){hidePreview();return;}
         const now=performance.now();
+        const fuse=cookTimer(me,def,now);
         if(now-lastPreview<50) return; // 20 Hz overlay; physics integration remains 60 Hz.
         lastPreview=now;
         const camera=game.m_camera, mouse=camera.m_screenToPoint(position(game.m_input.mousePos));
-        const preview=previewThrow(position(me.m_pos),mouse,def,observeMotion(me),game.m_map.m_obstaclePool.m_pool,me.layer,def.fuseTime,unsafeWindow.objects);
+        const preview=previewThrow(position(me.m_pos),mouse,def,observeMotion(me),game.m_map.m_obstaclePool.m_pool,me.layer,fuse.remaining,unsafeWindow.objects);
         if(!preview){hidePreview();return;}
-        if(!canvas){canvas=document.createElement('canvas');Object.assign(canvas.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:'900'});document.body.append(canvas);ctx=canvas.getContext('2d');}
-        canvas.style.display='block';
-        if(canvas.width!==window.innerWidth) canvas.width=window.innerWidth;
-        if(canvas.height!==window.innerHeight) canvas.height=window.innerHeight;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.strokeStyle=preview.blocked?'#ffbb66':'#65e7cf';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();
-        preview.points.forEach((p,i)=>{if(i%3 && i!==preview.points.length-1)return;const s=camera.m_pointToScreen(p);i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);});ctx.stroke();ctx.setLineDash([]);
+        if(!canvas$1){canvas$1=document.createElement('canvas');Object.assign(canvas$1.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:'900'});document.body.append(canvas$1);ctx$1=canvas$1.getContext('2d');}
+        canvas$1.style.display='block';
+        if(canvas$1.width!==window.innerWidth) canvas$1.width=window.innerWidth;
+        if(canvas$1.height!==window.innerHeight) canvas$1.height=window.innerHeight;
+        ctx$1.clearRect(0,0,canvas$1.width,canvas$1.height);
+        ctx$1.strokeStyle=preview.blocked?'#ffbb66':'#65e7cf';ctx$1.lineWidth=2;ctx$1.setLineDash([6,4]);ctx$1.beginPath();
+        preview.points.forEach((p,i)=>{if(i%3 && i!==preview.points.length-1)return;const s=camera.m_pointToScreen(p);i?ctx$1.lineTo(s.x,s.y):ctx$1.moveTo(s.x,s.y);});ctx$1.stroke();ctx$1.setLineDash([]);
         const end=camera.m_pointToScreen(preview.end), radius=unsafeWindow.explosions?.[def.explosionType]?.rad?.max;
-        if(!preview.blocked && Number.isFinite(radius)){const edge=camera.m_pointToScreen({x:preview.end.x+radius,y:preview.end.y});ctx.beginPath();ctx.arc(end.x,end.y,Math.abs(edge.x-end.x),0,Math.PI*2);ctx.stroke();}
+        for(const point of preview.collisions||[]){const s=camera.m_pointToScreen(point);ctx$1.beginPath();ctx$1.arc(s.x,s.y,4,0,Math.PI*2);ctx$1.stroke();}
+        if(preview.landing){const s=camera.m_pointToScreen(preview.landing);ctx$1.strokeRect(s.x-4,s.y-4,8,8);}
+        ctx$1.beginPath();ctx$1.arc(end.x,end.y,6,0,Math.PI*2);ctx$1.stroke();
+        if(!preview.blocked && Number.isFinite(radius)){const edge=camera.m_pointToScreen({x:preview.end.x+radius,y:preview.end.y});ctx$1.beginPath();ctx$1.arc(end.x,end.y,Math.abs(edge.x-end.x),0,Math.PI*2);ctx$1.stroke();}
         const origin=camera.m_pointToScreen(position(me.m_pos)), rawMouse=position(game.m_input.mousePos), myTeam=getTeam(me);
         let candidate=null, best=Infinity;
         for(const p of game.m_playerBarn.playerPool.m_pool){
@@ -598,13 +688,13 @@
         }
         if(candidate){
             const p=position(candidate.m_pos), v=observeMotion(candidate);
-            const future=camera.m_pointToScreen({x:p.x+v.x*def.fuseTime,y:p.y+v.y*def.fuseTime});
+            const future=camera.m_pointToScreen({x:p.x+v.x*preview.time,y:p.y+v.y*preview.time});
             if(Number.isFinite(future.x)&&Number.isFinite(future.y)){
-                ctx.strokeStyle='#f7c977';ctx.beginPath();ctx.moveTo(future.x-7,future.y);ctx.lineTo(future.x+7,future.y);ctx.moveTo(future.x,future.y-7);ctx.lineTo(future.x,future.y+7);ctx.stroke();
-                ctx.fillStyle='#f7c977';ctx.font='12px system-ui';ctx.fillText('Target at full fuse (estimate)',future.x+10,future.y+12);
+                ctx$1.strokeStyle='#f7c977';ctx$1.beginPath();ctx$1.moveTo(future.x-7,future.y);ctx$1.lineTo(future.x+7,future.y);ctx$1.moveTo(future.x,future.y-7);ctx$1.lineTo(future.x,future.y+7);ctx$1.stroke();
+                ctx$1.fillStyle='#f7c977';ctx$1.font='12px system-ui';ctx$1.fillText('Target at detonation (estimate)',future.x+10,future.y+12);
             }
         }
-        ctx.fillStyle='#e8edf5';ctx.font='12px system-ui';ctx.fillText(preview.blocked?'Collision: bounce path unknown':'Estimated throw · full fuse · dry ground',end.x+10,end.y-10);
+        ctx$1.fillStyle='#e8edf5';ctx$1.font='12px system-ui';ctx$1.fillText(`~${preview.time.toFixed(1)}s · ${preview.collisions.length} bounces · dry ground`,end.x+10,end.y-10);
     }
 
     const overlay = document.createElement('div');
@@ -8711,9 +8801,15 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
                 if (now > pending.deadline || weapons[pending.from]?.type !== pending.type || ![pending.from, pending.to].includes(slot)) {
                     pending = null; return;
                 }
-                // Wait for the observed equip before returning; never send both in one input message.
+                // Recheck the destination after equip: the initial ammo snapshot can be stale.
                 if (slot === pending.to && inputs.length === 0) {
-                    inputs.push(equip[pending.from]); pending = null; state.autoSwapUntil = now + 700;
+                    const destination = weapons[slot];
+                    const reloading = [1, 2].includes(me.m_netData?.m_actionType) &&
+                        me.m_netData.m_actionItem === destination?.type;
+                    if (pending.returnAlways || !(destination?.ammo > 0) || reloading) {
+                        inputs.push(equip[pending.from]);
+                    }
+                    pending = null; state.autoSwapUntil = now + 700;
                 }
                 return;
             }
@@ -8723,13 +8819,10 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
             if (!old || old.type !== weapon.type || !(weapon.ammo < old.ammo) || inputs.some(command => command.startsWith('Equip'))) return;
             const other = 1 - slot, alternate = weapons[other];
             state.autoSwapUntil = now + 1500;
-            if (!state.isUseOneGunEnabled && alternate?.ammo > 0 && eligible(guns?.[alternate.type])) {
-                inputs.push(equip[other]);
-            } else {
-                const to = alternate?.type ? other : 2;
-                inputs.push(equip[to]);
-                pending = { from: slot, to, type: weapon.type, deadline: now + 1500 };
-            }
+            const to = alternate?.type ? other : 2;
+            const returnAlways = state.isUseOneGunEnabled || !(alternate?.ammo > 0) || !eligible(guns?.[alternate?.type]);
+            inputs.push(equip[to]);
+            pending = { from: slot, to, type: weapon.type, returnAlways, deadline: now + 1500 };
         };
     }
 
@@ -8745,46 +8838,55 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         });
     }
 
-    let lastTime = Date.now();
-    let showing = false;
-    let timer = null;
+    const track=createProjectileTracker();
+    let canvas,ctx,lastDraw=-Infinity;
+    let cacheGame,predictions=new WeakMap();
     function grenadeTimer(){
-        if (!(unsafeWindow.game?.m_connection && unsafeWindow.game?.m_activePlayer?.m_localData?.m_curWeapIdx != null && unsafeWindow.game?.m_activePlayer?.m_netData?.m_activeWeapon != null)) return; 
-
-        try{
-        let elapsed = (Date.now() - lastTime) / 1000;
-        const player = unsafeWindow.game.m_activePlayer;
-        const activeItem = player.m_netData.m_activeWeapon;
-
-        if (3 !== unsafeWindow.game.m_activePlayer.m_localData.m_curWeapIdx 
-            || player.throwableState !== "cook"
-            || (!activeItem.includes('frag') && !activeItem.includes('mirv') && !activeItem.includes('martyr_nade'))
-        )
-            return (
-                (showing = false),
-                timer && timer.destroy(),
-                (timer = false)
-            );
-        const time = 4;
-
-        if(elapsed > time) {
-            showing = false;
+        const game=unsafeWindow.game,me=game?.m_activePlayer,defs=unsafeWindow.throwable;
+        const now=performance.now(),cook=cookTimer(me,defs?.[me?.m_netData?.m_activeWeapon],now);
+        if(cacheGame!==game){cacheGame=game;predictions=new WeakMap();}
+        // Observe lifecycle even while hidden so an already visible projectile never gets a fresh fuse.
+        const projectiles=track(game,defs,now);
+        if(!game?.m_connection||!me?.active||me.m_netData?.m_dead||state.isMenuOpen||!state.isThrowPreviewEnabled){
+            if(canvas)canvas.style.display='none';lastDraw=-Infinity;return;
         }
-        if(!showing) {
-            if(timer) {
-                timer.destroy();
+        if(now-lastDraw<100)return;
+        lastDraw=now;
+        if(!canvas){canvas=document.createElement('canvas');Object.assign(canvas.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:'899'});document.body.append(canvas);ctx=canvas.getContext('2d');}
+        canvas.style.display='block';
+        if(canvas.width!==window.innerWidth)canvas.width=window.innerWidth;
+        if(canvas.height!==window.innerHeight)canvas.height=window.innerHeight;
+        ctx.clearRect(0,0,canvas.width,canvas.height);ctx.font='bold 12px system-ui';ctx.lineWidth=1.5;
+        const camera=game.m_camera;
+        function label(pos,text,color){const s=camera.m_pointToScreen(pos);ctx.fillStyle=color;ctx.strokeStyle='#111';ctx.lineWidth=3;ctx.strokeText(text,s.x+10,s.y-14);ctx.fillText(text,s.x+10,s.y-14);ctx.lineWidth=1.5;}
+        if(cook.cooking)label(position(me.m_pos),`FUSE ~${cook.remaining.toFixed(1)}s`,cook.remaining<1?'#ff6677':'#65e7cf');
+        // Bound rendering/physics work in MIRV-heavy scenes; closest visible threats first.
+        const origin=position(me.m_pos);
+        projectiles.filter(x=>x.projectile.layer===me.layer).sort((a,b)=>Math.hypot(a.projectile.pos.x-origin.x,a.projectile.pos.y-origin.y)-Math.hypot(b.projectile.pos.x-origin.x,b.projectile.pos.y-origin.y)).slice(0,12).forEach(item=>{
+            const {projectile:p,def,remaining,velocity,vz}=item;
+            const s=camera.m_pointToScreen(p.pos);
+            if(s.x<-100||s.y<-100||s.x>canvas.width+100||s.y>canvas.height+100)return;
+            const color=remaining<1?'#ff6677':'#ffcc77';
+            label(p.pos,def.explodeOnImpact?'IMPACT':remaining>0?`FUSE ≤${remaining.toFixed(1)}s`:'FUSE ?',color);
+            if(!velocity||remaining<=0||remaining>10)return;
+            let cached=predictions.get(p);
+            if(!cached||cached.id!==p.__id||cached.type!==p.type||now-cached.time>=200){
+                cached={id:p.__id,type:p.type,time:now,path:simulateThrow({pos:p.pos,velocity,z:p.posZ,vz},def,game.m_map.m_obstaclePool.m_pool,p.layer,remaining,unsafeWindow.objects)};
+                predictions.set(p,cached);
             }
-            timer = new unsafeWindow.pieTimerClass();
-            unsafeWindow.game.m_pixi.stage.addChild(timer.container);
-            timer.start("Grenade", 0, time);
-            showing = true;
-            lastTime = Date.now();
-            return;
-        }
-        timer.update(elapsed - timer.elapsed, unsafeWindow.game.m_camera);
-        }catch(err){
-            console.error('grenadeTimer', err);
-        }
+            const path=cached.path;
+            if(!path)return;
+            ctx.strokeStyle=color;ctx.setLineDash([3,6]);ctx.beginPath();
+            path.points.forEach((point,i)=>{if(i%4&&i!==path.points.length-1)return;const q=camera.m_pointToScreen(point);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});ctx.stroke();ctx.setLineDash([]);
+            const end=camera.m_pointToScreen(path.end);ctx.beginPath();ctx.arc(end.x,end.y,5,0,Math.PI*2);ctx.stroke();
+            const radius=unsafeWindow.explosions?.[def.explosionType]?.rad?.max;
+            if(Number.isFinite(radius)){
+                const edge=camera.m_pointToScreen({x:path.end.x+radius,y:path.end.y});
+                ctx.setLineDash([3,6]);ctx.beginPath();ctx.arc(end.x,end.y,Math.abs(edge.x-end.x),0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+            }
+            // For foreign grenades the endpoint is a scenario at maximum fuse, not an exact detonation point.
+            label(path.end,def.explodeOnImpact?'Impact estimate':'Max-fuse endpoint',color);
+        });
     }
 
     function initTicker(){
