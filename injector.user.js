@@ -1,11 +1,9 @@
 // ==UserScript==
-// @name         survev-ultimate-cheat-injector
-// @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789951859590
-// @updateURL    https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.meta.js
-// @downloadURL  https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.user.js
-// @description  survev ESP, aimbot, spinbot and more
-// @author       fissure
+// @name    Survev Prism Cheat
+// @namespace    https://github.com/123wwwa/Survev-Prism-Cheat
+// @version      1789990080115
+// @description  Survev Prism Cheat: configurable aim assist, ESP, combat tools and a TAB settings menu.
+// @author    fissure
 // @license      GPL3
 // @match        http://localhost/*
 // @match        https://localhost/*
@@ -22,15 +20,17 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @require      https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.0.3/pixi.min.js
-// @homepageURL  https://github.com/123wwwa/survev-cheat-injector
-// @supportURL   https://github.com/123wwwa/survev-cheat-injector/issues
+// @homepageURL    https://github.com/123wwwa/Survev-Prism-Cheat
+// @supportURL    https://github.com/123wwwa/Survev-Prism-Cheat/issues
+// @updateURL    https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.user.js
 // ==/UserScript==
 
 (function () {
     'use strict';
 
     function alertMsgAndcleanPage() {
-        const notSupportedHtml = `
+      const notSupportedHtml = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -93,10 +93,10 @@
 
                 <li>
                     Visit
-                    <a href="https://greasyfork.org/en/scripts/596621-survev-ultimate-cheat-injector"
+                    <a href="${"https://greasyfork.org/scripts/596621"}"
                        target="_blank"
                        rel="noopener noreferrer">
-                        Survev Ultimate Cheat Injector on Greasy Fork
+                        Project installation page
                     </a>,
                     click <strong>Install this script</strong>,
                     and confirm installation in Tampermonkey.
@@ -105,32 +105,22 @@
         </body>
         </html>
     `;
-
-        const alertMessage =
-            'This userscript requires a Manifest V2 (MV2) extension environment. ' +
-            'Firefox is recommended. See the installation instructions on the page.';
-
-        unsafeWindow.stop();
-
-        document.open();
-        document.write(notSupportedHtml);
-        document.close();
-
-        alert(alertMessage);
+      const alertMessage = "This userscript requires a Manifest V2 (MV2) extension environment. Firefox is recommended. See the installation instructions on the page.";
+      unsafeWindow.stop();
+      document.open();
+      document.write(notSupportedHtml);
+      document.close();
+      alert(alertMessage);
     }
-
-    if (typeof GM_info !== 'undefined' && GM_info.scriptHandler === 'Tampermonkey') {
-        if (
-            GM_info.version <= '5.1.1' ||
-            GM_info.userAgentData?.brands?.[0]?.brand === 'Firefox'
-        ) {
-            console.log('The script is launched at Tampermonkey Legacy');
-        } else {
-            alertMsgAndcleanPage();
-        }
-    } else {
-        console.log('The script is not launched at Tampermonkey');
+    if (typeof GM_info !== "undefined" && GM_info.scriptHandler === "Tampermonkey") {
+      if (GM_info.version <= "5.1.1" || GM_info.userAgentData?.brands?.[0]?.brand === "Firefox") {
+        console.log("The script is launched at Tampermonkey Legacy");
+      } else {
         alertMsgAndcleanPage();
+      }
+    } else {
+      console.log("The script is not launched at Tampermonkey");
+      alertMsgAndcleanPage();
     }
 
     // colors
@@ -147,7 +137,7 @@
 
     if (!newFeaturesShown) {
         const message = `
-        <strong style="font-size:20px;display:block;">surver-injector v${version$1}</strong><br>
+        <strong style="font-size:20px;display:block;">Survev Prism Cheat v${version$1}</strong><br>
         Loads patched app and shared modules from jsDelivr.<br>
         Open the settings menu with TAB.<br>
     `;
@@ -704,7 +694,7 @@
 
     const injectorTitle = document.createElement('h3');
     injectorTitle.className = 'surver-injector-title';
-    injectorTitle.innerText = `surver-injector ${version$1}`;
+    injectorTitle.innerText = `Survev Prism Cheat ${version$1}`;
 
     const aimbotDot = document.createElement('div');
     aimbotDot.className = 'aimbotDot';
@@ -953,7 +943,7 @@ button{font:inherit;cursor:pointer;color:#c8d7eb;background:#243249;border:1px s
 button[aria-pressed=true]{background:#163f3b;border-color:#398d7e;color:#91ecd8}
 input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-variant-numeric:tabular-nums}.hint{font-size:12px;margin:0;color:#96a8bd}footer{margin-top:22px;color:#8d9db3;font-size:12px}
 </style><div class="backdrop"><section class="panel" role="dialog" aria-modal="true" aria-labelledby="title" tabindex="-1">
-<header><div><h1 id="title">surver-injector</h1><p>Settings · v${version$1}</p></div><button id="close" aria-label="Close settings">✕</button></header>
+<header><div><h1 id="title">Survev Prism Cheat</h1><p>Settings · v${version$1}</p></div><button id="close" aria-label="Close settings">✕</button></header>
 <h2>Aiming</h2><div id="aiming"></div>
 <label class="row" for="angle">Aim cone <output id="angle-value"></output></label>
 <input id="angle" type="range" min="5" max="180" step="5" aria-describedby="angle-help">
@@ -1042,332 +1032,352 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     updateButtonColors();
 
     class GameMod {
-        constructor() {
-            this.lastFrameTime = performance.now();
-            this.frameCount = 0;
-            this.fps = 0;
-            this.kills = 0;
-            this.setAnimationFrameCallback();
-
-            if (unsafeWindow.location.hostname !== 'resurviv.biz' && unsafeWindow.location.hostname !== 'zurviv.io' && unsafeWindow.location.hostname !== 'eu-comp.net'){
-                // cause they have fps counter, etc...
-                this.initCounter("fpsCounter");
-                this.initCounter("pingCounter");
-                this.initCounter("killsCounter");
-            }
-
-            this.initMenu(); // left menu in lobby page
-            this.initRules(); // right menu in lobby page
-
-            this.setupWeaponBorderHandler();
+      constructor() {
+        this.lastFrameTime = performance.now();
+        this.frameCount = 0;
+        this.fps = 0;
+        this.kills = 0;
+        this.setAnimationFrameCallback();
+        if (unsafeWindow.location.hostname !== "resurviv.biz" && unsafeWindow.location.hostname !== "zurviv.io" && unsafeWindow.location.hostname !== "eu-comp.net") {
+          this.initCounter("fpsCounter");
+          this.initCounter("pingCounter");
+          this.initCounter("killsCounter");
         }
-
-        initCounter(id) {
-            this[id] = document.createElement("div");
-            this[id].id = id;
-            Object.assign(this[id].style, {
-                color: "white",
-                backgroundColor: "rgba(0, 0, 0, 0.2)",
-                padding: "5px 10px",
-                marginTop: "10px",
-                borderRadius: "5px",
-                fontFamily: "Arial, sans-serif",
-                fontSize: "14px",
-                zIndex: "10000",
-                pointerEvents: "none",
-            });
-
-            const uiTopLeft = document.getElementById("ui-top-left");
-            // const uiTeam = document.getElementById("ui-team");
-            if (uiTopLeft) {
-                // if (uiTeam) {
-                // uiTopLeft.insertBefore(this[id], uiTeam);
-                // uiTeam.style.marginTop = '20px';
-                // } else {
-                uiTopLeft.appendChild(this[id]);
-                // }
-            }
+        this.initMenu();
+        this.initRules();
+        this.setupWeaponBorderHandler();
+      }
+      initCounter(id) {
+        this[id] = document.createElement("div");
+        this[id].id = id;
+        Object.assign(this[id].style, {
+          color: "white",
+          backgroundColor: "rgba(0, 0, 0, 0.2)",
+          padding: "5px 10px",
+          marginTop: "10px",
+          borderRadius: "5px",
+          fontFamily: "Arial, sans-serif",
+          fontSize: "14px",
+          zIndex: "10000",
+          pointerEvents: "none"
+        });
+        const uiTopLeft = document.getElementById("ui-top-left");
+        if (uiTopLeft) {
+          uiTopLeft.appendChild(this[id]);
         }
-        
-        setAnimationFrameCallback() {
-            this.animationFrameCallback = (callback) => setTimeout(callback, 1);
+      }
+      setAnimationFrameCallback() {
+        this.animationFrameCallback = (callback) => setTimeout(callback, 1);
+      }
+      getKills() {
+        const killElement = document.querySelector(
+          ".ui-player-kills.js-ui-player-kills"
+        );
+        if (killElement) {
+          const kills = parseInt(killElement.textContent, 10);
+          return isNaN(kills) ? 0 : kills;
         }
-
-        getKills() {
-          const killElement = document.querySelector(
-            ".ui-player-kills.js-ui-player-kills",
+        return 0;
+      }
+      startPingTest() {
+        const currentUrl = unsafeWindow.location.href;
+        const isSpecialUrl = /\/#\w+/.test(currentUrl);
+        const teamSelectElement = document.getElementById("team-server-select");
+        const mainSelectElement = document.getElementById("server-select-main");
+        const region = isSpecialUrl && teamSelectElement ? teamSelectElement.value : mainSelectElement ? mainSelectElement.value : null;
+        if (region && region !== this.currentServer) {
+          this.currentServer = region;
+          this.resetPing();
+          let servers = unsafeWindow.servers;
+          if (!servers) return;
+          const selectedServer = servers.find(
+            (server) => region.toUpperCase() === server.region.toUpperCase()
           );
-          if (killElement) {
-            const kills = parseInt(killElement.textContent, 10);
-            return isNaN(kills) ? 0 : kills;
-          }
-          return 0;
-        }
-
-        startPingTest() {
-          const currentUrl = unsafeWindow.location.href;
-          const isSpecialUrl = /\/#\w+/.test(currentUrl);
-
-          const teamSelectElement = document.getElementById("team-server-select");
-          const mainSelectElement = document.getElementById("server-select-main");
-
-          const region =
-            isSpecialUrl && teamSelectElement
-              ? teamSelectElement.value
-              : mainSelectElement
-                ? mainSelectElement.value
-                : null;
-
-          if (region && region !== this.currentServer) {
-            this.currentServer = region;
+          if (selectedServer) {
+            this.pingTest = new PingTest(selectedServer);
+            this.pingTest.startPingTest();
+          } else {
             this.resetPing();
-
-            let servers = unsafeWindow.servers;
-
-            if (!servers) return;
-
-            const selectedServer = servers.find(
-              (server) => region.toUpperCase() === server.region.toUpperCase(),
-            );
-
-            if (selectedServer) {
-              this.pingTest = new PingTest(selectedServer);
-              this.pingTest.startPingTest();
-            } else {
-              this.resetPing();
+          }
+        }
+      }
+      resetPing() {
+        if (this.pingTest && this.pingTest.test.ws) {
+          this.pingTest.test.ws.close();
+          this.pingTest.test.ws = null;
+        }
+        this.pingTest = null;
+      }
+      updateHealthBars() {
+        const healthBars = document.querySelectorAll("#ui-health-container");
+        healthBars.forEach((container) => {
+          const bar = container.querySelector("#ui-health-actual");
+          if (bar) {
+            const width = Math.round(parseFloat(bar.style.width));
+            let percentageText = container.querySelector(".health-text");
+            if (!percentageText) {
+              percentageText = document.createElement("span");
+              percentageText.classList.add("health-text");
+              Object.assign(percentageText.style, {
+                width: "100%",
+                textAlign: "center",
+                marginTop: "5px",
+                color: "#333",
+                fontSize: "20px",
+                fontWeight: "bold",
+                position: "absolute",
+                zIndex: "10"
+              });
+              container.appendChild(percentageText);
             }
+            percentageText.textContent = `${width}%`;
           }
-        }
-
-        resetPing() {
-          if (this.pingTest && this.pingTest.test.ws) {
-            this.pingTest.test.ws.close();
-            this.pingTest.test.ws = null;
-          }
-          this.pingTest = null;
-        }
-
-        updateHealthBars() {
-          const healthBars = document.querySelectorAll("#ui-health-container");
-          healthBars.forEach((container) => {
-            const bar = container.querySelector("#ui-health-actual");
-            if (bar) {
-              const width = Math.round(parseFloat(bar.style.width));
-              let percentageText = container.querySelector(".health-text");
-
-              if (!percentageText) {
-                percentageText = document.createElement("span");
-                percentageText.classList.add("health-text");
-                Object.assign(percentageText.style, {
-                  width: "100%",
-                  textAlign: "center",
-                  marginTop: "5px",
-                  color: "#333",
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  position: "absolute",
-                  zIndex: "10",
-                });
-                container.appendChild(percentageText);
-              }
-
-              percentageText.textContent = `${width}%`;
+        });
+      }
+      updateBoostBars() {
+        const boostCounter = document.querySelector("#ui-boost-counter");
+        if (boostCounter) {
+          const boostBars = boostCounter.querySelectorAll(
+            ".ui-boost-base .ui-bar-inner"
+          );
+          let totalBoost = 0;
+          const weights = [25, 25, 40, 10];
+          boostBars.forEach((bar, index) => {
+            const width = parseFloat(bar.style.width);
+            if (!isNaN(width)) {
+              totalBoost += width * (weights[index] / 100);
             }
           });
-        }
-
-        updateBoostBars() {
-          const boostCounter = document.querySelector("#ui-boost-counter");
-          if (boostCounter) {
-            const boostBars = boostCounter.querySelectorAll(
-              ".ui-boost-base .ui-bar-inner",
-            );
-
-            let totalBoost = 0;
-            const weights = [25, 25, 40, 10];
-
-            boostBars.forEach((bar, index) => {
-              const width = parseFloat(bar.style.width);
-              if (!isNaN(width)) {
-                totalBoost += width * (weights[index] / 100);
-              }
-            });
-
-            const averageBoost = Math.round(totalBoost);
-            let boostDisplay = boostCounter.querySelector(".boost-display");
-
-            if (!boostDisplay) {
-              boostDisplay = document.createElement("div");
-              boostDisplay.classList.add("boost-display");
-              Object.assign(boostDisplay.style, {
-                position: "absolute",
-                bottom: "75px",
-                right: "335px",
-                color: "#FF901A",
-                backgroundColor: "rgba(0, 0, 0, 0.4)",
-                padding: "5px 10px",
-                borderRadius: "5px",
-                fontFamily: "Arial, sans-serif",
-                fontSize: "14px",
-                zIndex: "10",
-                textAlign: "center",
-              });
-
-              boostCounter.appendChild(boostDisplay);
-            }
-
-            boostDisplay.textContent = `AD: ${averageBoost}%`;
-          }
-        }
-
-        setupWeaponBorderHandler() {
-            const weaponContainers = Array.from(
-              document.getElementsByClassName("ui-weapon-switch"),
-            );
-            weaponContainers.forEach((container) => {
-              if (container.id === "ui-weapon-id-4") {
-                container.style.border = "3px solid #2f4032";
-              } else {
-                container.style.border = "3px solid #FFFFFF";
-              }
-            });
-      
-            const weaponNames = Array.from(
-              document.getElementsByClassName("ui-weapon-name"),
-            );
-            weaponNames.forEach((weaponNameElement) => {
-              const weaponContainer = weaponNameElement.closest(".ui-weapon-switch");
-              const observer = new MutationObserver(() => {
-                const weaponName = weaponNameElement.textContent.trim();
-                let border = "#FFFFFF";
-      
-                switch (weaponName.toUpperCase()) { 
-                  //yellow
-                  case "CZ-3A1": case "G18C": case "M9": case "M93R": case "MAC-10": case "MP5": case "P30L": case "DUAL P30L": case "UMP9": case "VECTOR": case "VSS": case "FLAMETHROWER": border = "#FFAE00"; break;
-                  //blue 
-                  case "AK-47": case "OT-38": case "OTS-38": case "M39 EMR": case "DP-28": case "MOSIN-NAGANT": case "SCAR-H": case "SV-98": case "M1 GARAND": case "PKP PECHENEG": case "AN-94": case "BAR M1918": case "BLR 81": case "SVD-63": case "M134": case "GROZA": case "GROZA-S": border = "#007FFF"; break;
-                  //green
-                  case "FAMAS": case "M416": case "M249": case "QBB-97": case "MK 12 SPR": case "M4A1-S": case "SCOUT ELITE": case "L86A2": border = "#0f690d"; break;
-                  //red 
-                  case "M870": case "MP220": case "SAIGA-12": case "SPAS-12": case "USAS-12": case "SUPER 90": case "LASR GUN": case "M1100": border = "#FF0000"; break;
-                  //purple
-                  case "MODEL 94": case "PEACEMAKER": case "VECTOR (.45 ACP)": case "M1911": case "M1A1": border = "#800080"; break;
-                  //black
-                  case "DEAGLE 50": case "RAINBOW BLASTER": border = "#000000"; break;
-                  //olive
-                  case "AWM-S": case "MK 20 SSR": border = "#808000"; break; 
-                  //brown
-                  case "POTATO CANNON": case "SPUD GUN": border = "#A52A2A"; break;
-                  //other Guns
-                  case "FLARE GUN": border = "#FF4500"; break; case "M79": border = "#008080"; break; case "HEART CANNON": border = "#FFC0CB"; break; 
-                  default: border = "#FFFFFF"; break; }
-      
-                if (weaponContainer.id !== "ui-weapon-id-4") {
-                  weaponContainer.style.border = `3px solid ${border}`;
-                }
-              });
-      
-              observer.observe(weaponNameElement, {
-                childList: true,
-                characterData: true,
-                subtree: true,
-              });
-            });
-          }
-
-        //menu
-        initMenu() {
-            const middleRow = document.querySelector("#start-row-top");
-            Object.assign(middleRow.style, {
-                display: "flex",
-                flexDirection: "row",
-            });
-
-
-            const menu = document.createElement("div");
-            menu.id = "surver-injector";
-            Object.assign(menu.style, {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              padding: "15px",
-              borderRadius: "10px",
-              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+          const averageBoost = Math.round(totalBoost);
+          let boostDisplay = boostCounter.querySelector(".boost-display");
+          if (!boostDisplay) {
+            boostDisplay = document.createElement("div");
+            boostDisplay.classList.add("boost-display");
+            Object.assign(boostDisplay.style, {
+              position: "absolute",
+              bottom: "75px",
+              right: "335px",
+              color: "#FF901A",
+              backgroundColor: "rgba(0, 0, 0, 0.4)",
+              padding: "5px 10px",
+              borderRadius: "5px",
               fontFamily: "Arial, sans-serif",
-              fontSize: "18px",
-              color: "#fff",
-              maxWidth: "300px",
-              height: "100%",
-            //   maxHeight: "320px",
-              overflowY: "auto",
-            //   marginTop: "20px",
-              marginRight: "30px",
-              boxSizing: "border-box",
+              fontSize: "14px",
+              zIndex: "10",
+              textAlign: "center"
             });
-
-          
-            const title = document.createElement("h2");
-            title.textContent = "Social networks";
-            title.className = 'news-header';
-            Object.assign(title.style, {
-              margin: "0 0 10px",
-              fontSize: "20px",
-            });
-            menu.append(title);
-
-            const description = document.createElement("p");
-            description.className = "news-paragraph";
-            description.style.fontSize = "14px";
-            description.innerHTML = `⭐ Star us on GitHub`;
-            menu.append(description);
-          
-            const createSocialLink = (text) => {
-              const a = document.createElement("a");
-              a.textContent = `${text}`;
-              a.target = "_blank";
-              Object.assign(a.style, {
-                display: "block",
-                border: "none",
-                color: "#fff",
-                padding: "10px",
-                borderRadius: "5px",
-                marginBottom: "10px",
-                fontSize: "15px",
-                lineHeight: "14px",
-                cursor: "pointer",
-                textAlign: "center",
-                textDecoration: "none",
-              });
-              return a;
-            };
-          
-            const githubLink = createSocialLink("");
-            githubLink.style.backgroundColor = "#0c1117";
-            githubLink.href = "https://github.com/123wwwa/survev-injector";
-            githubLink.innerHTML = `<i class="fa-brands fa-github"></i> surver-injector`;
-            menu.append(githubLink);
-            
-            const additionalDescription = document.createElement("p");
-            additionalDescription.className = "news-paragraph";
-            additionalDescription.style.fontSize = "14px";
-            additionalDescription.innerHTML = `If you support this project star github repository.`;
-            menu.append(additionalDescription);
-
-            const leftColumn = document.querySelector('#left-column');
-            leftColumn.innerHTML = ``;
-            leftColumn.style.marginTop = "10px";
-            leftColumn.style.marginBottom = "27px";
-            leftColumn.append(menu);
-          
-            this.menu = menu;
+            boostCounter.appendChild(boostDisplay);
+          }
+          boostDisplay.textContent = `AD: ${averageBoost}%`;
         }
-
-        initRules() {
-            const newsBlock = document.querySelector("#news-block");
-            newsBlock.innerHTML = `
-<h3 class="news-header">surver-injector v${version$1}</h3>
+      }
+      setupWeaponBorderHandler() {
+        const weaponContainers = Array.from(
+          document.getElementsByClassName("ui-weapon-switch")
+        );
+        weaponContainers.forEach((container) => {
+          if (container.id === "ui-weapon-id-4") {
+            container.style.border = "3px solid #2f4032";
+          } else {
+            container.style.border = "3px solid #FFFFFF";
+          }
+        });
+        const weaponNames = Array.from(
+          document.getElementsByClassName("ui-weapon-name")
+        );
+        weaponNames.forEach((weaponNameElement) => {
+          const weaponContainer = weaponNameElement.closest(".ui-weapon-switch");
+          const observer = new MutationObserver(() => {
+            const weaponName = weaponNameElement.textContent.trim();
+            let border = "#FFFFFF";
+            switch (weaponName.toUpperCase()) {
+              //yellow
+              case "CZ-3A1":
+              case "G18C":
+              case "M9":
+              case "M93R":
+              case "MAC-10":
+              case "MP5":
+              case "P30L":
+              case "DUAL P30L":
+              case "UMP9":
+              case "VECTOR":
+              case "VSS":
+              case "FLAMETHROWER":
+                border = "#FFAE00";
+                break;
+              //blue 
+              case "AK-47":
+              case "OT-38":
+              case "OTS-38":
+              case "M39 EMR":
+              case "DP-28":
+              case "MOSIN-NAGANT":
+              case "SCAR-H":
+              case "SV-98":
+              case "M1 GARAND":
+              case "PKP PECHENEG":
+              case "AN-94":
+              case "BAR M1918":
+              case "BLR 81":
+              case "SVD-63":
+              case "M134":
+              case "GROZA":
+              case "GROZA-S":
+                border = "#007FFF";
+                break;
+              //green
+              case "FAMAS":
+              case "M416":
+              case "M249":
+              case "QBB-97":
+              case "MK 12 SPR":
+              case "M4A1-S":
+              case "SCOUT ELITE":
+              case "L86A2":
+                border = "#0f690d";
+                break;
+              //red 
+              case "M870":
+              case "MP220":
+              case "SAIGA-12":
+              case "SPAS-12":
+              case "USAS-12":
+              case "SUPER 90":
+              case "LASR GUN":
+              case "M1100":
+                border = "#FF0000";
+                break;
+              //purple
+              case "MODEL 94":
+              case "PEACEMAKER":
+              case "VECTOR (.45 ACP)":
+              case "M1911":
+              case "M1A1":
+                border = "#800080";
+                break;
+              //black
+              case "DEAGLE 50":
+              case "RAINBOW BLASTER":
+                border = "#000000";
+                break;
+              //olive
+              case "AWM-S":
+              case "MK 20 SSR":
+                border = "#808000";
+                break;
+              //brown
+              case "POTATO CANNON":
+              case "SPUD GUN":
+                border = "#A52A2A";
+                break;
+              //other Guns
+              case "FLARE GUN":
+                border = "#FF4500";
+                break;
+              case "M79":
+                border = "#008080";
+                break;
+              case "HEART CANNON":
+                border = "#FFC0CB";
+                break;
+              default:
+                border = "#FFFFFF";
+                break;
+            }
+            if (weaponContainer.id !== "ui-weapon-id-4") {
+              weaponContainer.style.border = `3px solid ${border}`;
+            }
+          });
+          observer.observe(weaponNameElement, {
+            childList: true,
+            characterData: true,
+            subtree: true
+          });
+        });
+      }
+      //menu
+      initMenu() {
+        const middleRow = document.querySelector("#start-row-top");
+        Object.assign(middleRow.style, {
+          display: "flex",
+          flexDirection: "row"
+        });
+        const menu = document.createElement("div");
+        menu.id = "surver-injector";
+        Object.assign(menu.style, {
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          padding: "15px",
+          borderRadius: "10px",
+          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+          fontFamily: "Arial, sans-serif",
+          fontSize: "18px",
+          color: "#fff",
+          maxWidth: "300px",
+          height: "100%",
+          //   maxHeight: "320px",
+          overflowY: "auto",
+          //   marginTop: "20px",
+          marginRight: "30px",
+          boxSizing: "border-box"
+        });
+        const title = document.createElement("h2");
+        title.textContent = "Social networks";
+        title.className = "news-header";
+        Object.assign(title.style, {
+          margin: "0 0 10px",
+          fontSize: "20px"
+        });
+        menu.append(title);
+        const description = document.createElement("p");
+        description.className = "news-paragraph";
+        description.style.fontSize = "14px";
+        description.innerHTML = `⭐ Star us on GitHub`;
+        menu.append(description);
+        const createSocialLink = (text) => {
+          const a = document.createElement("a");
+          a.textContent = `${text}`;
+          a.target = "_blank";
+          Object.assign(a.style, {
+            display: "block",
+            border: "none",
+            color: "#fff",
+            padding: "10px",
+            borderRadius: "5px",
+            marginBottom: "10px",
+            fontSize: "15px",
+            lineHeight: "14px",
+            cursor: "pointer",
+            textAlign: "center",
+            textDecoration: "none"
+          });
+          return a;
+        };
+        const githubLink = createSocialLink("");
+        githubLink.style.backgroundColor = "#0c1117";
+        githubLink.href = "https://github.com/123wwwa/Survev-Prism-Cheat";
+        githubLink.innerHTML = `<i class="fa-brands fa-github"></i> Survev Prism Cheat`;
+        menu.append(githubLink);
+        const additionalDescription = document.createElement("p");
+        additionalDescription.className = "news-paragraph";
+        additionalDescription.style.fontSize = "14px";
+        additionalDescription.innerHTML = `If you support this project star github repository.`;
+        menu.append(additionalDescription);
+        const leftColumn = document.querySelector("#left-column");
+        leftColumn.innerHTML = ``;
+        leftColumn.style.marginTop = "10px";
+        leftColumn.style.marginBottom = "27px";
+        leftColumn.append(menu);
+        this.menu = menu;
+      }
+      initRules() {
+        const newsBlock = document.querySelector("#news-block");
+        newsBlock.innerHTML = `
+<h3 class="news-header">Survev Prism Cheat v${version$1}</h3>
 <div id="news-current">
 <small class="news-date">Version 0.1</small>
                       
-<h2>surver-injector controls</h2>
+<h2>Survev Prism Cheat controls</h2>
 <p class="news-paragraph">Available controls and settings:</p>
 
 <h3>Hotkeys:</h3>
@@ -1398,110 +1408,89 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     <li>The map is color-coded: white circle - Mosin, gold container - SV98, etc.</li>
 </ul>
 
-<p class="news-paragraph">Project details and updates: <a href="https://github.com/123wwwa/survev-injector">surver-injector on GitHub</a>.</p></div>`;
-        
-        
-        }
-
-        startUpdateLoop() {
-          const now = performance.now();
-          const delta = now - this.lastFrameTime;
-
-          this.frameCount++;
-
-          if (delta >= 1000) {
-            this.fps = Math.round((this.frameCount * 1000) / delta);
-            this.frameCount = 0;
-            this.lastFrameTime = now;
-
-            this.kills = this.getKills();
-
-            if (this.fpsCounter) {
-              this.fpsCounter.textContent = `FPS: ${this.fps}`;
-            }
-
-            if (this.killsCounter) {
-              this.killsCounter.textContent = `Kills: ${this.kills}`;
-            }
-
-            if (this.pingCounter && this.pingTest) {
-              const result = this.pingTest.getPingResult();
-              this.pingCounter.textContent = `PING: ${result.ping} ms`;
-            }
-          }
-
-          this.startPingTest();
-          this.updateBoostBars();
-          this.updateHealthBars();
-        }
-        
+<p class="news-paragraph">Project details and updates: <a href="${"https://github.com/123wwwa/Survev-Prism-Cheat"}">Project on GitHub</a>.</p></div>`;
       }
-
-    class PingTest {
-        constructor(selectedServer) {
-          this.ptcDataBuf = new ArrayBuffer(1);
-          this.test = {
-            region: selectedServer.region,
-            url: `wss://${selectedServer.url}/ptc`,
-            ping: 9999,
-            ws: null,
-            sendTime: 0,
-            retryCount: 0,
-          };
-        }
-
-        startPingTest() {
-          if (!this.test.ws) {
-            const ws = new WebSocket(this.test.url);
-            ws.binaryType = "arraybuffer";
-
-            ws.onopen = () => {
-              this.sendPing();
-              this.test.retryCount = 0;
-            };
-
-            ws.onmessage = () => {
-              const elapsed = (Date.now() - this.test.sendTime) / 1e3;
-              this.test.ping = Math.round(elapsed * 1000);
-              this.test.retryCount = 0;
-              setTimeout(() => this.sendPing(), 200);
-            };
-
-            ws.onerror = () => {
-              this.test.ping = "Error";
-              this.test.retryCount++;
-              if (this.test.retryCount < 5) {
-                setTimeout(() => this.startPingTest(), 2000);
-              } else {
-                this.test.ws.close();
-                this.test.ws = null;
-              }
-            };
-
-            ws.onclose = () => {
-              this.test.ws = null;
-            };
-
-            this.test.ws = ws;
+      startUpdateLoop() {
+        const now = performance.now();
+        const delta = now - this.lastFrameTime;
+        this.frameCount++;
+        if (delta >= 1e3) {
+          this.fps = Math.round(this.frameCount * 1e3 / delta);
+          this.frameCount = 0;
+          this.lastFrameTime = now;
+          this.kills = this.getKills();
+          if (this.fpsCounter) {
+            this.fpsCounter.textContent = `FPS: ${this.fps}`;
+          }
+          if (this.killsCounter) {
+            this.killsCounter.textContent = `Kills: ${this.kills}`;
+          }
+          if (this.pingCounter && this.pingTest) {
+            const result = this.pingTest.getPingResult();
+            this.pingCounter.textContent = `PING: ${result.ping} ms`;
           }
         }
-
-        sendPing() {
-          if (this.test.ws.readyState === WebSocket.OPEN) {
-            this.test.sendTime = Date.now();
-            this.test.ws.send(this.ptcDataBuf);
-          }
-        }
-
-        getPingResult() {
-          return {
-            region: this.test.region,
-            ping: this.test.ping,
-          };
-        }
+        this.startPingTest();
+        this.updateBoostBars();
+        this.updateHealthBars();
+      }
     }
-
-    unsafeWindow.GameMod = new GameMod(); // AlguienClient
+    class PingTest {
+      constructor(selectedServer) {
+        this.ptcDataBuf = new ArrayBuffer(1);
+        this.test = {
+          region: selectedServer.region,
+          url: `wss://${selectedServer.url}/ptc`,
+          ping: 9999,
+          ws: null,
+          sendTime: 0,
+          retryCount: 0
+        };
+      }
+      startPingTest() {
+        if (!this.test.ws) {
+          const ws = new WebSocket(this.test.url);
+          ws.binaryType = "arraybuffer";
+          ws.onopen = () => {
+            this.sendPing();
+            this.test.retryCount = 0;
+          };
+          ws.onmessage = () => {
+            const elapsed = (Date.now() - this.test.sendTime) / 1e3;
+            this.test.ping = Math.round(elapsed * 1e3);
+            this.test.retryCount = 0;
+            setTimeout(() => this.sendPing(), 200);
+          };
+          ws.onerror = () => {
+            this.test.ping = "Error";
+            this.test.retryCount++;
+            if (this.test.retryCount < 5) {
+              setTimeout(() => this.startPingTest(), 2e3);
+            } else {
+              this.test.ws.close();
+              this.test.ws = null;
+            }
+          };
+          ws.onclose = () => {
+            this.test.ws = null;
+          };
+          this.test.ws = ws;
+        }
+      }
+      sendPing() {
+        if (this.test.ws.readyState === WebSocket.OPEN) {
+          this.test.sendTime = Date.now();
+          this.test.ws.send(this.ptcDataBuf);
+        }
+      }
+      getPingResult() {
+        return {
+          region: this.test.region,
+          ping: this.test.ping
+        };
+      }
+    }
+    unsafeWindow.GameMod = new GameMod();
 
     // Shared by Node build scripts and the browser bundle. No Node-only imports.
     const patchValidationReport = [];
@@ -8004,86 +7993,82 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         return { code: injectedShared.slice(0, start) + scope + injectedShared.slice(end), hosts: Object.keys(defs) };
     }
 
-    const injectedSharedUrl = 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@6b66110e120664eff6fa1d67e0dd5669d8ad2261/shared.js';
-    const injectedAppUrl = 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@6b66110e120664eff6fa1d67e0dd5669d8ad2261/app.js';
-
+    const injectedSharedUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@7ddbea9c378c6c25a86b95a26e387a17150de83d/shared.js";
+    const injectedAppUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@7ddbea9c378c6c25a86b95a26e387a17150de83d/app.js";
     async function requestScript(url) {
-        const response = await GM.xmlHttpRequest({ method: 'GET', url, timeout: 30000 });
-        if (response.status < 200 || response.status >= 300 || !response.responseText?.trim()) {
-            throw new Error(`Script download failed: HTTP ${response.status} (${url})`);
-        }
-        return response.responseText;
+      const response = await GM.xmlHttpRequest({ method: "GET", url, timeout: 3e4 });
+      if (response.status < 200 || response.status >= 300 || !response.responseText?.trim()) {
+        throw new Error(`Script download failed: HTTP ${response.status} (${url})`);
+      }
+      return response.responseText;
     }
-
     (async () => {
-        resetPatchValidationReport();
-        unsafeWindow.__surverInjectorPatchReport = patchValidationReport;
-        // The local host page must suppress its original app module before injection.
-        // Removing an already executed module cannot undo its side effects.
-        const apps = [...document.querySelectorAll('script[type="module"][src]')];
-        validateMatches(apps, { name: 'Original app module', expectedMatches: 1 });
-        const originalAppURL = apps[0].src;
-        const [originalApp, injectedApp, injectedShared] = await Promise.all([
-            requestScript(originalAppURL), requestScript(injectedAppUrl), requestScript(injectedSharedUrl),
-        ]);
-        const originalImports = moduleImports(originalApp);
-        validateMatches(originalImports, { name: 'Original app imports', expectedMatches: 2 });
-        const originalRuntimeURL = new URL(originalImports[0][2], originalAppURL).href;
-        const originalSharedURL = new URL(originalImports[1][2], originalAppURL).href;
-        if (originalRuntimeURL === originalSharedURL) throw new Error('Original dependencies are ambiguous');
-        const originalShared = await requestScript(originalSharedURL);
-        const proxied = transferProxy(originalShared, injectedShared);
-        console.info('[ProxyTransfer] Copied original API settings for:', proxied.hosts);
-
-        const transferred = transferServers(originalApp, injectedApp);
-        console.info('[ServerTransfer] Copied regions:', transferred.servers.map(server => server.region));
-        const regional = transferRegions(originalApp, transferred.code);
-        console.info('[RegionTransfer] Copied dropdown regions:', Object.keys(regional.regions));
-        const textured = transferAtlases(originalApp, regional.code, document.baseURI);
-        console.info('[AtlasTransfer] Copied original atlas metadata and image URLs:', textured.images);
-
-        validatePatchedModules(textured.code, proxied.code);
-
-        let sharedBlobURL;
-        let appBlobURL;
+      resetPatchValidationReport();
+      unsafeWindow.__surverInjectorPatchReport = patchValidationReport;
+      const apps = [...document.querySelectorAll('script[type="module"][src]')];
+      validateMatches(apps, { name: "Original app module", expectedMatches: 1 });
+      const originalAppURL = apps[0].src;
+      const [originalApp, injectedApp, injectedShared] = await Promise.all([
+        requestScript(originalAppURL),
+        requestScript(injectedAppUrl),
+        requestScript(injectedSharedUrl)
+      ]);
+      const originalImports = moduleImports(originalApp);
+      validateMatches(originalImports, { name: "Original app imports", expectedMatches: 2 });
+      const originalRuntimeURL = new URL(originalImports[0][2], originalAppURL).href;
+      const originalSharedURL = new URL(originalImports[1][2], originalAppURL).href;
+      if (originalRuntimeURL === originalSharedURL) throw new Error("Original dependencies are ambiguous");
+      const originalShared = await requestScript(originalSharedURL);
+      const proxied = transferProxy(originalShared, injectedShared);
+      console.info("[ProxyTransfer] Copied original API settings for:", proxied.hosts);
+      const transferred = transferServers(originalApp, injectedApp);
+      console.info("[ServerTransfer] Copied regions:", transferred.servers.map((server) => server.region));
+      const regional = transferRegions(originalApp, transferred.code);
+      console.info("[RegionTransfer] Copied dropdown regions:", Object.keys(regional.regions));
+      const textured = transferAtlases(originalApp, regional.code, document.baseURI);
+      console.info("[AtlasTransfer] Copied original atlas metadata and image URLs:", textured.images);
+      validatePatchedModules(textured.code, proxied.code);
+      let sharedBlobURL;
+      let appBlobURL;
+      try {
+        const sharedContent = rewriteImports(proxied.code, [originalRuntimeURL]);
+        sharedBlobURL = URL.createObjectURL(new Blob([sharedContent], { type: "application/javascript" }));
+        const appContent = rewriteImports(textured.code, [originalRuntimeURL, sharedBlobURL]);
+        appBlobURL = URL.createObjectURL(new Blob([appContent], { type: "application/javascript" }));
+        const listeners = [];
+        const originalAdd = document.addEventListener;
+        const intercept = function(type, listener, options) {
+          if (type === "DOMContentLoaded" && document.readyState !== "loading") listeners.push({ listener, options });
+          else originalAdd.call(this, type, listener, options);
+        };
+        document.addEventListener = intercept;
         try {
-            // Runtime helpers are provided by the local original build, not the CDN.
-            const sharedContent = rewriteImports(proxied.code, [originalRuntimeURL]);
-            sharedBlobURL = URL.createObjectURL(new Blob([sharedContent], { type: 'application/javascript' }));
-            const appContent = rewriteImports(textured.code, [originalRuntimeURL, sharedBlobURL]);
-            appBlobURL = URL.createObjectURL(new Blob([appContent], { type: 'application/javascript' }));
-
-            const listeners = [];
-            const originalAdd = document.addEventListener;
-            const intercept = function (type, listener, options) {
-                if (type === 'DOMContentLoaded' && document.readyState !== 'loading') listeners.push({ listener, options });
-                else originalAdd.call(this, type, listener, options);
+          await new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.type = "module";
+            script.src = appBlobURL;
+            script.onload = resolve;
+            script.onerror = () => {
+              script.remove();
+              reject(new Error("Injected module failed to load; inspect browser console"));
             };
-            document.addEventListener = intercept;
-            try {
-                await new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.type = 'module';
-                    script.src = appBlobURL;
-                    script.onload = resolve;
-                    script.onerror = () => { script.remove(); reject(new Error('Injected module failed to load; inspect browser console')); };
-                    document.head.append(script);
-                });
-            } finally {
-                if (document.addEventListener === intercept) document.addEventListener = originalAdd;
-            }
-            const event = new Event('DOMContentLoaded');
-            for (const { listener, options } of listeners) {
-                if (!listener || options?.signal?.aborted) continue;
-                if (typeof listener === 'function') listener.call(document, event);
-                else listener.handleEvent(event);
-            }
-            console.info('[Injector] App and shared loaded with original server settings');
+            document.head.append(script);
+          });
         } finally {
-            if (appBlobURL) URL.revokeObjectURL(appBlobURL);
-            if (sharedBlobURL) URL.revokeObjectURL(sharedBlobURL);
+          if (document.addEventListener === intercept) document.addEventListener = originalAdd;
         }
-    })().catch(error => console.error('[ERROR] aborting injection:', error));
+        const event = new Event("DOMContentLoaded");
+        for (const { listener, options } of listeners) {
+          if (!listener || options?.signal?.aborted) continue;
+          if (typeof listener === "function") listener.call(document, event);
+          else listener.handleEvent(event);
+        }
+        console.info("[Injector] App and shared loaded with original server settings");
+      } finally {
+        if (appBlobURL) URL.revokeObjectURL(appBlobURL);
+        if (sharedBlobURL) URL.revokeObjectURL(sharedBlobURL);
+      }
+    })().catch((error) => console.error("[ERROR] aborting injection:", error));
 
     unsafeWindow.localRotation = true;
     if (unsafeWindow.location.hostname !== 'resurviv.biz' && unsafeWindow.location.hostname !== 'zurviv.io' && unsafeWindow.location.hostname !== 'eu-comp.net'){
@@ -8329,6 +8314,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
                 return this._basicDataInfo;
             },
             set(value) {
+                if (value) value.name = atob('UHJpc21DaGVhdA==');
                 this._basicDataInfo = value;
                 
                 if (!value) return;
