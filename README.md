@@ -2,7 +2,7 @@
 
 <img
 src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=38&duration=3000&pause=1000&color=00E5FF&center=true&vCenter=true&width=1000&height=70&lines=SURVEV-PRISM-CHEAT"
-alt="Survev Prism Cheat"
+alt="PrismCheat  -  Survev Prism Cheat"
 />
 
 <img
