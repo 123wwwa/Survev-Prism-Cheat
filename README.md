@@ -49,7 +49,7 @@ alt="Visual features"
 
 </div>
 
-**Download and install**
+# Download and install
 
 **Requires a Manifest V2 (MV2) extension environment. Firefox is recommended.**
 
@@ -62,19 +62,11 @@ alt="Visual features"
 You do not need to clone this repository or install development tools to use the published userscript. Disable older copies of the injector to avoid running multiple versions together.
 
 ## Features
-
-- **Automatic nickname** — Uses `PrismCheat` as the in-game join name.
-
-
-- **Configurable aim assist** — Adjust the total aiming cone from 5° to 180°. The default is 60° (30° on each side of the mouse direction), and your angle setting is saved locally.
+- **Configurable aim assist(sophisticated Aimbot)** — Adjust the total aiming cone from 5° to 180°. The default is 60° (30° on each side of the mouse direction), and your angle setting is saved locally.
 - **Target checks** — Targets must be on the same floor and have a clear shot. Focused targets follow the same restrictions.
-- **Movement prediction** — Predicts target movement and checks the predicted aim point against the cone and obstacles.
 - **Automatic melee** — Supports close-range targeting and movement.
-- **Visual controls** — Zoom, player tracers, grenade tracers, flashlight, and an optional status overlay.
+- **Visual controls(ESP, Zoom)** — Zoom, player tracers, grenade tracers, flashlight, and an optional status overlay.
 - **TAB settings menu** — Toggle features and adjust aiming settings from one panel. Aim assist pauses while the menu is open.
-- **Original game settings** — Transfers server lists, region settings, proxy configuration, and sprite atlases from the original client.
-- **Patch validation** — Detects missing or duplicate patch targets and stops the build or injection when checks fail.
-
 ## Combat options
 
 Open **TAB → Combat options**. Each option has its own saved toggle.
