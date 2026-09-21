@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    Survev Prism Cheat
 // @namespace    https://github.com/123wwwa/Survev-Prism-Cheat
-// @version      1789990080115
+// @version      1790002028353
 // @description  Survev Prism Cheat: configurable aim assist, ESP, combat tools and a TAB settings menu.
 // @author    fissure
 // @license      GPL3
@@ -22,8 +22,8 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.0.3/pixi.min.js
 // @homepageURL    https://github.com/123wwwa/Survev-Prism-Cheat
 // @supportURL    https://github.com/123wwwa/Survev-Prism-Cheat/issues
-// @updateURL    https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.meta.js
-// @downloadURL  https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.user.js
+// @updateURL    https://update.greasyfork.org/scripts/596621/Survev%20Prism%20Cheat.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/596621/Survev%20Prism%20Cheat.user.js
 // ==/UserScript==
 
 (function () {
@@ -8177,10 +8177,8 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
             if ( !colors[object.obj.type] ) return;
             object.shapes.forEach(shape => {
                 shape.color = colors[object.obj.type];
-                console.log(object);
                 if ( !sizes[object.obj.type] ) return;
                 shape.scale = sizes[object.obj.type];
-                console.log(object);
             });
         });
     };
@@ -8434,10 +8432,8 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         console.log('smokeopacity');
         
         const particles = unsafeWindow.game.m_smokeBarn.m_particles;
-        console.log('smokeopacity', particles, unsafeWindow.game.m_smokeBarn.m_particles);
         particles.push = new Proxy( particles.push, {
             apply( target, thisArgs, args ) {
-                console.log('smokeopacity', args[0]);
                 const particle = args[0];
 
                 Object.defineProperty(particle.sprite, 'alpha', {
