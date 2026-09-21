@@ -2,23 +2,23 @@
   "schemaVersion": 2,
   "upstreamRepository": "https://github.com/survev/survev.git",
   "upstreamCommit": "7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223",
-  "inputHash": "50eb0e1420684747134f0fbaec08bfb652ce10effde827c0e54a85d38c85cbfe",
-  "builtAt": "2026-09-20T11:55:37.364Z",
+  "inputHash": "43888e547af9e193d6f1b7f4e7fb73259b13551228cf551293de47b8e25a3131",
+  "builtAt": "2026-09-21T11:27:51.114Z",
   "license": "GPL-3.0-or-later",
   "artifacts": {
     "app": {
       "file": "app.js",
-      "bytes": 1530908,
-      "sha256": "5ba98be14e6acf121c6b0e2d44934d9f7fa400d0116fcdd08381684df5404ee0",
+      "bytes": 1530973,
+      "sha256": "d55ca1b3e9f0bbb3ff73517511792b57f53a7df0f7e10dc5f4a12d8e1440b083",
       "originalFile": "js/DUJdak-a.js",
-      "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/app.js"
+      "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/app.js"
     },
     "shared": {
       "file": "shared.js",
-      "bytes": 2526582,
-      "sha256": "c62638817e63e01221a075b0f530ff216cfcc85c6ff4054c62f507efa39d7465",
+      "bytes": 2526647,
+      "sha256": "a7c03e9ce3d261f2243282576c8afc20ae8ba6818c313b0ad0cf1f065c31a830",
       "originalFile": "js/ocX2Ek5F.js",
-      "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/shared.js"
+      "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/shared.js"
     }
   },
   "patchValidation": [

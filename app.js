@@ -3,9 +3,10 @@
  * Derived from survev/survev (GPL-3.0-or-later).
  * Upstream commit: 7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223
  * Upstream source: https://github.com/survev/survev/tree/7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223
- * Modified by survev-cheat-injector; modified date (UTC): 2026-09-20T11:55:37.364Z
+ * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-21T11:27:51.114Z
  * Modifications: readable client build and injector hooks/global exports.
- * Modification source: https://github.com/123wwwa/survev-cheat-injector
+ * Modification source: https://github.com/123wwwa/Survev-Prism-Cheat
+ * Injector base source: https://github.com/123wwwa/Survev-Prism-Cheat
  * This modified program is free software: you may redistribute it and/or
  * modify it under the GNU General Public License, version 3 or (at your
  * option) any later version. Distributed WITHOUT ANY WARRANTY; without
