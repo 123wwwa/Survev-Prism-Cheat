@@ -1,9 +1,9 @@
 export const metadata = `// ==UserScript==
-// @name         survev-ultimate-cheat-injector
+// @name         Survev Prism Cheat
 // @namespace    survev-cheat-injector
 // @version      0.1
-// @description  survev ESP, aimbot, spinbot and more
-// @author       survev-cheat-injector contributors
+// @description  Survev Prism Cheat: configurable aim assist, ESP, combat tools and a TAB settings menu.
+// @author       Survev Prism Cheat contributors
 // @license      GPL3
 // @match        http://localhost/*
 // @match        https://localhost/*

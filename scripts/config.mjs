@@ -40,7 +40,7 @@ export async function loadConfig(root,env=process.env){
 export function updateMetadata(metadata,config){
   let result=metadata.replace(/^\/\/ @(?:updateURL|downloadURL)\s+[^\r\n]*\r?\n/gm,'');
   const project=config.publishRepository.replace(/\.git$/,'');
-  const fields={name:config.userscript.name||'survev-ultimate-cheat-injector',author:config.userscript.author||'survev-cheat-injector contributors',namespace:config.userscript.namespace||project,homepageURL:project,supportURL:project+'/issues'};
+  const fields={name:config.userscript.name||'Survev Prism Cheat',author:config.userscript.author||'Survev Prism Cheat contributors',namespace:config.userscript.namespace||project,homepageURL:project,supportURL:project+'/issues'};
   for(const [key,value] of Object.entries(fields))result=result.replace(new RegExp(`^// @${key}\\s+[^\\r\\n]*`,'m'),()=>`// @${key}    ${value}`);
   const id=config.userscript.greasyForkScriptId;
   const directives=id

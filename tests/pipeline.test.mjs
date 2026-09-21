@@ -25,9 +25,9 @@ test('empty or oversized JS is rejected before publication', () => {
   validateArtifact(Buffer.from('const player = 1;'));
 });
 test('CDN links preserve file extension and distinguish latest from immutable version', () => {
-  assert.equal(githubSlug(config.publishRepository), '123wwwa/survev-injector');
-  assert.equal(cdnUrl(config, 'abc123'), 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@abc123/app.js');
-  assert.equal(cdnUrl(config, 'abc123', config.fileNames.shared), 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@abc123/shared.js');
+  assert.equal(githubSlug(config.publishRepository), '123wwwa/Survev-Prism-Cheat');
+  assert.equal(cdnUrl(config, 'abc123'), 'https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@abc123/app.js');
+  assert.equal(cdnUrl(config, 'abc123', config.fileNames.shared), 'https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@abc123/shared.js');
   assert.match(cdnUrl(config, 'cdn', 'manifest.json'), /@cdn\/manifest\.json$/);
 });
 test('artifact integrity changes when any byte changes', () => {

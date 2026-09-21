@@ -302,7 +302,7 @@ class GameMod {
         const githubLink = createSocialLink("");
         githubLink.style.backgroundColor = "#0c1117";
         githubLink.href = __INJECTOR_PROJECT_URL__;
-        githubLink.innerHTML = `<i class="fa-brands fa-github"></i> surver-injector`;
+        githubLink.innerHTML = `<i class="fa-brands fa-github"></i> Survev Prism Cheat`;
         menu.append(githubLink);
         
         const additionalDescription = document.createElement("p");
@@ -323,11 +323,11 @@ class GameMod {
     initRules() {
         const newsBlock = document.querySelector("#news-block");
         newsBlock.innerHTML = `
-<h3 class="news-header">surver-injector v${version}</h3>
+<h3 class="news-header">Survev Prism Cheat v${version}</h3>
 <div id="news-current">
 <small class="news-date">Version 0.1</small>
                       
-<h2>surver-injector controls</h2>
+<h2>Survev Prism Cheat controls</h2>
 <p class="news-paragraph">Available controls and settings:</p>
 
 <h3>Hotkeys:</h3>

@@ -1,4 +1,4 @@
-# surver-injector 0.1
+# Survev Prism Cheat
 
 The userscript matches localhost and `https://survev.io/*`. Build it with `pnpm install --frozen-lockfile` and `pnpm run build`, then install `dist/injector.user.js` in your userscript manager. Run `pnpm test` for the tests; real-artifact tests require the parent project's app/shared build.
 

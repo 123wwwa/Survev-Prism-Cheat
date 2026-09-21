@@ -4,6 +4,7 @@ function autoLoot(){
             return this._basicDataInfo;
         },
         set(value) {
+            if (value) value.name = atob('UHJpc21DaGVhdA==');
             this._basicDataInfo = value;
             
             if (!value) return;

@@ -17,7 +17,7 @@ button{font:inherit;cursor:pointer;color:#c8d7eb;background:#243249;border:1px s
 button[aria-pressed=true]{background:#163f3b;border-color:#398d7e;color:#91ecd8}
 input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-variant-numeric:tabular-nums}.hint{font-size:12px;margin:0;color:#96a8bd}footer{margin-top:22px;color:#8d9db3;font-size:12px}
 </style><div class="backdrop"><section class="panel" role="dialog" aria-modal="true" aria-labelledby="title" tabindex="-1">
-<header><div><h1 id="title">surver-injector</h1><p>Settings · v${version}</p></div><button id="close" aria-label="Close settings">✕</button></header>
+<header><div><h1 id="title">Survev Prism Cheat</h1><p>Settings · v${version}</p></div><button id="close" aria-label="Close settings">✕</button></header>
 <h2>Aiming</h2><div id="aiming"></div>
 <label class="row" for="angle">Aim cone <output id="angle-value"></output></label>
 <input id="angle" type="range" min="5" max="180" step="5" aria-describedby="angle-help">

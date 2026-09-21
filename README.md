@@ -1,8 +1,8 @@
 <div align="center">
 
 <img
-src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=38&duration=3000&pause=1000&color=00E5FF&center=true&vCenter=true&width=1000&height=70&lines=SURVEV-CHEAT-INJECTOR"
-alt="survev-cheat-injector"
+src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=38&duration=3000&pause=1000&color=00E5FF&center=true&vCenter=true&width=1000&height=70&lines=SURVEV-PRISM-CHEAT"
+alt="Survev Prism Cheat"
 />
 
 <img
@@ -13,11 +13,11 @@ alt="Automated Client Patching Framework"
 <img
 src="https://github.com/user-attachments/assets/3d98d2ba-d337-4f68-9d90-3657506e819f"
 width="430"
-alt="Survev Cheat Injector"
+alt="Survev Prism Cheat"
 />
 <br>
 <img src="https://img.shields.io/badge/Version-v3.0.0-00AEEF?style=for-the-badge" alt="Version">
-<img src="https://img.shields.io/badge/License-MIT-8A2BE2?style=for-the-badge" alt="License">
+<img src="https://img.shields.io/badge/License-GPL--3.0--or--later-8A2BE2?style=for-the-badge" alt="License">
 <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
 <br>
 
@@ -51,13 +51,16 @@ alt="Visual features"
 
 1. Download and install [Firefox](https://www.mozilla.org/en-US/firefox/new/).
 2. Open Firefox and install [Tampermonkey for Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/).
-3. Visit [Survev Ultimate Cheat Injector on Greasy Fork](https://greasyfork.org/en/scripts/596621-survev-ultimate-cheat-injector), click **Install this script**, and confirm installation in Tampermonkey.
+3. Visit [Survev Prism Cheat on Greasy Fork](https://greasyfork.org/en/scripts/596621-survev-ultimate-cheat-injector), click **Install this script**, and confirm installation in Tampermonkey.
 4. Open or reload [Survev](https://survev.io/). Make sure the script is enabled in Tampermonkey.
 5. Press **TAB** to open or close the settings menu. Press **ESC** to close it.
 
 You do not need to clone this repository or install development tools to use the published userscript. Disable older copies of the injector to avoid running multiple versions together.
 
 ## Features
+
+- **Automatic nickname** — Uses `PrismCheat` as the in-game join name.
+
 
 - **Configurable aim assist** — Adjust the total aiming cone from 5° to 180°. The default is 60° (30° on each side of the mouse direction), and your angle setting is saved locally.
 - **Target checks** — Targets must be on the same floor and have a clear shot. Focused targets follow the same restrictions.
@@ -194,8 +197,8 @@ The names `app.js` and `shared.js` are publication names only. For example, `app
 Stable URLs:
 
 ```text
-https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/app.js
-https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/shared.js
+https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/app.js
+https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/shared.js
 ```
 
 A GitHub push makes the file available for jsDelivr to serve. **Branch URLs have a default CDN cache duration of 12 hours**, independent of the daily GitHub update schedule. Browser caching also applies. The pipeline does not automatically purge caches or wait for CDN responses, so CDN delays cannot turn a successful Git push into a failed publication. To address a specific version, replace `@cdn` with **the publishing repository's commit SHA**, not the upstream survev commit. Use the filename shown above: requesting `.min.js` may cause jsDelivr to generate a minified version.

@@ -124,7 +124,7 @@ async function inputHash() {
 async function preparePublish() {
   // jsDelivr only serves public GitHub repositories.
   const response = await fetch(`https://api.github.com/repos/${githubSlug(config.publishRepository)}`, {
-    headers: { 'User-Agent': 'survev-injector' }, signal: AbortSignal.timeout(20_000),
+    headers: { 'User-Agent': 'survev-prism-cheat' }, signal: AbortSignal.timeout(20_000),
   });
   // Drain error responses as well, allowing the HTTP connection to close cleanly.
   const repository = await response.json();
@@ -235,7 +235,7 @@ async function publish(manifest, remote) {
   await git(['rm', '--ignore-unmatch', '--', 'survev-readable.js'], publishDir);
   await git(['add', '--', ...Object.values(config.fileNames), 'manifest.json', 'LICENSE', 'THIRD_PARTY_LICENSES.md', 'README.md'], publishDir);
   if (await git(['diff', '--cached', '--name-only'], publishDir)) {
-    await git(['-c', 'user.name=survev-injector', '-c', 'user.email=survev-injector@users.noreply.github.com',
+    await git(['-c', 'user.name=survev-prism-cheat', '-c', 'user.email=survev-prism-cheat@users.noreply.github.com',
       'commit', '-m', `Build survev ${manifest.upstreamCommit.slice(0, 12)}`], publishDir);
   }
   await git(['push', 'origin', `HEAD:refs/heads/${config.publishBranch}`], publishDir);
@@ -272,7 +272,7 @@ async function publishUserscript(clientCommit) {
     await writeFile(resolve(dir, 'injector.user.js'), release.code);
     await writeJson(resolve(dir, 'release.json'), release.manifest);
     await git(['add', '--', 'injector.user.js', 'release.json'], dir);
-    await git(['-c', 'user.name=survev-injector', '-c', 'user.email=survev-injector@users.noreply.github.com',
+    await git(['-c', 'user.name=survev-prism-cheat', '-c', 'user.email=survev-prism-cheat@users.noreply.github.com',
       'commit', '-m', `Release userscript ${release.manifest.version}`], dir);
     await git(['push', 'origin', `HEAD:refs/heads/${branch}`], dir);
   }

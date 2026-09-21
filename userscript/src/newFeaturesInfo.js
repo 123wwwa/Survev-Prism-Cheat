@@ -6,7 +6,7 @@ const newFeaturesShown = GM_getValue(newFeaturesKey, false);
 
 if (!newFeaturesShown) {
     const message = `
-        <strong style="font-size:20px;display:block;">surver-injector v${version}</strong><br>
+        <strong style="font-size:20px;display:block;">Survev Prism Cheat v${version}</strong><br>
         Loads patched app and shared modules from jsDelivr.<br>
         Open the settings menu with TAB.<br>
     `;

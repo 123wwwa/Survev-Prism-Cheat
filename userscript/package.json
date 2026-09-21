@@ -1,5 +1,5 @@
 {
-  "name": "surver-injector",
+  "name": "survev-prism-cheat",
   "version": "0.1.0",
   "description": "Loads patched Survev client modules with the original server settings and sprite atlases.",
   "main": "init.js",

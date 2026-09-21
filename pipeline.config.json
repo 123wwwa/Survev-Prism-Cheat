@@ -1,7 +1,7 @@
 {
   "upstreamRepository": "https://github.com/survev/survev.git",
   "upstreamBranch": "master",
-  "publishRepository": "https://github.com/123wwwa/survev-injector.git",
+  "publishRepository": "https://github.com/123wwwa/Survev-Prism-Cheat.git",
   "publishingEnabled": false,
   "userscript": { "publish": false, "greasyForkScriptId": null },
   "publishBranch": "cdn",

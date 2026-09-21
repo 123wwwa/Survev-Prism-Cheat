@@ -6,7 +6,7 @@ overlay.className = 'surver-injector-overlay';
 
 const injectorTitle = document.createElement('h3');
 injectorTitle.className = 'surver-injector-title';
-injectorTitle.innerText = `surver-injector ${version}`;
+injectorTitle.innerText = `Survev Prism Cheat ${version}`;
 
 export const aimbotDot = document.createElement('div')
 aimbotDot.className = 'aimbotDot';
