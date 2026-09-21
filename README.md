@@ -1,7 +1,7 @@
 # survev-cheat-injector / automated client patching framework
 
 A Survev userscript with configurable aim assist, visual options, and a TAB settings menu.
-<img width="1962" height="1215" alt="Image" src="https://github.com/user-attachments/assets/c4bf0d20-97a2-4755-9fe9-e18dff115fef" />
+<img width="409" height="1145" alt="Image" src="https://github.com/user-attachments/assets/e1846861-12fa-44ef-8e3a-c6a627162b65" />
 <img width="2547" height="1172" alt="Image" src="https://github.com/user-attachments/assets/f5a8169d-8055-4c87-9b3b-196ca4b18d61" />
 ## Download and install
 
