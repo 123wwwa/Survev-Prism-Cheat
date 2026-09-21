@@ -49,38 +49,5 @@ export function chooseWeapon(weapons,current,range,guns,bullets,useOneGun,melee,
     const best=candidates[0], own=candidates.find(c=>c.slot===current);
     return Number.isFinite(best.score) && (!Number.isFinite(own?.score) || best.score+0.3<own.score) ? best.slot : current;
 }
-export function previewThrow(start, target, def, velocity={x:0,y:0}, obstacles=[], layer=0, remaining=def.fuseTime, obstacleDefs={}) {
-    const physics=def.throwPhysics;
-    if (!physics || !Number.isFinite(remaining) || remaining<=0) return null;
-    const dx=target.x-start.x,dy=target.y-start.y,len=Math.hypot(dx,dy);
-    if (!len) return null;
-    const dir={x:dx/len,y:dy/len}, strength=def.forceMaxThrowDistance?1:Math.min(1,len/18);
-    let p={x:start.x+dir.x*0.5+dir.y,y:start.y+dir.y*0.5-dir.x};
-    let vx=dir.x*physics.speed*strength+velocity.x*physics.playerVelMult;
-    let vy=dir.y*physics.speed*strength+velocity.y*physics.playerVelMult;
-    let z=0.5,vz=physics.velZ;
-    // Before the first bounce, drag only slows travel along this ray. Cull once.
-    const horizon=(Math.ceil(Math.min(remaining,10)*60)+1)/60;
-    const limit={x:p.x+vx*horizon,y:p.y+vy*horizon};
-    const candidates=obstacles.filter(o=>o.active && !o.dead && o.collidable &&
-        ((o.layer&1)===(layer&1) || (o.layer&2 && layer&2)) && intersectsSegment(p,limit,o.collider));
-    const broken=new Set();
-    const points=[{...start},p]; let blocked=false;
-    const dt=1/60;
-    for(let t=0;t<Math.min(remaining,10);t+=dt) {
-        if(z<=0){vx/=1+dt*2.3;vy/=1+dt*2.3;}
-        const next={x:p.x+vx*dt,y:p.y+vy*dt};
-        vz-=10.5*dt; z=Math.max(0,Math.min(5,z+vz*dt));
-        if(candidates.some(o=>{
-            if(broken.has(o) || !(o.height>(physics.fixedCollisionHeight||z)) || !intersectsSegment(p,next,o.collider)) return false;
-            const data=obstacleDefs?.[o.type];
-            // One impact damage breaks ordinary windows; reinforced windows still block.
-            const health=data?.health*o.healthT;
-            if(o.isWindow && o.destructible && Number.isFinite(health) && health<=1){broken.add(o);return false;}
-            return true;
-        })){blocked=true;break;}
-        p=next; points.push(p);
-    }
-    return {points,end:p,blocked};
-}
+export { previewThrow } from './throwPhysics.js';
 export { distance };

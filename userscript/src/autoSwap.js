@@ -20,9 +20,15 @@ export function createAutoSwap() {
             if (now > pending.deadline || weapons[pending.from]?.type !== pending.type || ![pending.from, pending.to].includes(slot)) {
                 pending = null; return;
             }
-            // Wait for the observed equip before returning; never send both in one input message.
+            // Recheck the destination after equip: the initial ammo snapshot can be stale.
             if (slot === pending.to && inputs.length === 0) {
-                inputs.push(equip[pending.from]); pending = null; state.autoSwapUntil = now + 700;
+                const destination = weapons[slot];
+                const reloading = [1, 2].includes(me.m_netData?.m_actionType) &&
+                    me.m_netData.m_actionItem === destination?.type;
+                if (pending.returnAlways || !(destination?.ammo > 0) || reloading) {
+                    inputs.push(equip[pending.from]);
+                }
+                pending = null; state.autoSwapUntil = now + 700;
             }
             return;
         }
@@ -32,12 +38,9 @@ export function createAutoSwap() {
         if (!old || old.type !== weapon.type || !(weapon.ammo < old.ammo) || inputs.some(command => command.startsWith('Equip'))) return;
         const other = 1 - slot, alternate = weapons[other];
         state.autoSwapUntil = now + 1500;
-        if (!state.isUseOneGunEnabled && alternate?.ammo > 0 && eligible(guns?.[alternate.type])) {
-            inputs.push(equip[other]);
-        } else {
-            const to = alternate?.type ? other : 2;
-            inputs.push(equip[to]);
-            pending = { from: slot, to, type: weapon.type, deadline: now + 1500 };
-        }
+        const to = alternate?.type ? other : 2;
+        const returnAlways = state.isUseOneGunEnabled || !(alternate?.ammo > 0) || !eligible(guns?.[alternate?.type]);
+        inputs.push(equip[to]);
+        pending = { from: slot, to, type: weapon.type, returnAlways, deadline: now + 1500 };
     };
 }

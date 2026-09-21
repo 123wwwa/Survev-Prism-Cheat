@@ -1,17 +1,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { panBlocks, targetScore, chooseWeapon, previewThrow, weaponScore } from '../src/combatLogic.js';
-test('throw passes breakable windows but stops at reinforced windows and subsequent walls',()=>{
+test('throw passes breakable windows but bounces at reinforced windows and subsequent walls',()=>{
     const def={fuseTime:4,throwPhysics:{speed:20,velZ:5,playerVelMult:0.6}};
     const window={type:'window',isWindow:true,destructible:true,healthT:1,active:true,collidable:true,height:10,layer:0,collider:{type:1,min:{x:4,y:-3},max:{x:5,y:3}}};
     const simulate=(obstacles,health=1)=>previewThrow({x:0,y:0},{x:18,y:0},def,{x:0,y:0},obstacles,0,4,{window:{health}});
     assert.equal(simulate([window]).blocked,false);
-    assert.equal(simulate([window],75).blocked,true);
+    assert.equal(simulate([window],75).collisions.length,1);
     assert.equal(simulate([{...window,healthT:0.01}],75).blocked,false);
-    assert.equal(simulate([{...window,healthT:undefined}]).blocked,true);
-    assert.equal(simulate([{...window,destructible:false}]).blocked,true);
+    assert.equal(simulate([{...window,healthT:undefined}]).collisions.length,1);
+    assert.equal(simulate([{...window,destructible:false}]).collisions.length,1);
     const wall={...window,isWindow:false,collider:{type:1,min:{x:10,y:-3},max:{x:11,y:3}}};
-    const hit=simulate([window,wall]);assert.equal(hit.blocked,true);assert.ok(hit.end.x>5);
+    const hit=simulate([window,wall]);assert.equal(hit.collisions.length,1);assert.ok(hit.collisions[0].x>5);
     assert.equal(window.healthT,1);assert.equal(window.dead,undefined);
     assert.equal(simulate([{...wall,layer:1}]).blocked,false);
 });
@@ -48,13 +48,13 @@ test('threat priority favors enemies facing and approaching the player',()=>{
     assert.ok(facing<targetScore(args));
     assert.equal(targetScore({...args,threat:false}),10);
 });
-test('throw estimation scales with mouse distance and stops at collisions',()=>{
+test('throw estimation scales with mouse distance and bounces at collisions',()=>{
     const def={fuseTime:4,throwPhysics:{speed:20,velZ:5,playerVelMult:0.6}};
     const a={x:0,y:0};
     const near=previewThrow(a,{x:3,y:0},def), far=previewThrow(a,{x:18,y:0},def);
     assert.ok(far.end.x>near.end.x);
     assert.equal(far.blocked,false);
     const wall={active:true,collidable:true,height:5,layer:0,collider:{type:1,min:{x:4,y:-3},max:{x:5,y:3}}};
-    assert.equal(previewThrow(a,{x:18,y:0},def,{x:0,y:0},[wall]).blocked,true);
+    assert.equal(previewThrow(a,{x:18,y:0},def,{x:0,y:0},[wall]).collisions.length,1);
     assert.equal(previewThrow(a,a,def),null);
 });

@@ -25,6 +25,21 @@ test('reload, first observation and gun replacement do not trigger swaps',()=>{
     f.local.m_weapons[0]={type:'m870',ammo:2};f.tick();
     assert.deepEqual(f.inputs,[]);
 });
+
+test('empty or reloading destination returns once after equip, including changed ammo snapshots',()=>{
+    for(const mode of ['empty','became-empty','reloading']){
+        const f=fixture();
+        f.local.m_weapons[1]={type:'m870',ammo:mode==='empty'?0:2};f.tick();
+        f.local.m_weapons[0].ammo--;f.tick();
+        assert.deepEqual(f.inputs,['EquipSecondary']);
+        f.inputs.length=0;f.tick();assert.deepEqual(f.inputs,[]);
+        f.local.m_curWeapIdx=1;
+        if(mode==='became-empty') f.local.m_weapons[1].ammo=0;
+        if(mode==='reloading') Object.assign(f.game.m_activePlayer.m_netData,{m_actionType:1,m_actionItem:'m870'});
+        f.tick();assert.deepEqual(f.inputs,['EquipPrimary']);
+        f.inputs.length=0;f.local.m_curWeapIdx=0;f.tick();f.tick();assert.deepEqual(f.inputs,[]);
+    }
+});
 test('two eligible guns stay switched unless one-gun mode is enabled',()=>{
     for(const one of [false,true]){
         const f=fixture(); f.state.isUseOneGunEnabled=one;

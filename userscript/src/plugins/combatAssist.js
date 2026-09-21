@@ -4,6 +4,7 @@ import { inputs, inputCommands } from '../overrideInputs.js';
 import { getTeam } from '../utils.js';
 import { position, angleFromMouse } from '../aimGeometry.js';
 import { chooseWeapon, previewThrow } from '../combatLogic.js';
+import { cookTimer } from '../throwTimers.js';
 const samples=new Map();
 let lastSwitch=0, previousGame;
 export function observeMotion(player,now=performance.now()) {
@@ -37,10 +38,11 @@ function drawPreview(game,me){
     const def=unsafeWindow.throwable?.[me.m_netData.m_activeWeapon];
     if(!state.isThrowPreviewEnabled || !def || me.m_localData.m_curWeapIdx!==3){hidePreview();return;}
     const now=performance.now();
+    const fuse=cookTimer(me,def,now);
     if(now-lastPreview<50) return; // 20 Hz overlay; physics integration remains 60 Hz.
     lastPreview=now;
     const camera=game.m_camera, mouse=camera.m_screenToPoint(position(game.m_input.mousePos));
-    const preview=previewThrow(position(me.m_pos),mouse,def,observeMotion(me),game.m_map.m_obstaclePool.m_pool,me.layer,def.fuseTime,unsafeWindow.objects);
+    const preview=previewThrow(position(me.m_pos),mouse,def,observeMotion(me),game.m_map.m_obstaclePool.m_pool,me.layer,fuse.remaining,unsafeWindow.objects);
     if(!preview){hidePreview();return;}
     if(!canvas){canvas=document.createElement('canvas');Object.assign(canvas.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:'900'});document.body.append(canvas);ctx=canvas.getContext('2d');}
     canvas.style.display='block';
@@ -50,6 +52,9 @@ function drawPreview(game,me){
     ctx.strokeStyle=preview.blocked?'#ffbb66':'#65e7cf';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.beginPath();
     preview.points.forEach((p,i)=>{if(i%3 && i!==preview.points.length-1)return;const s=camera.m_pointToScreen(p);i?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y);});ctx.stroke();ctx.setLineDash([]);
     const end=camera.m_pointToScreen(preview.end), radius=unsafeWindow.explosions?.[def.explosionType]?.rad?.max;
+    for(const point of preview.collisions||[]){const s=camera.m_pointToScreen(point);ctx.beginPath();ctx.arc(s.x,s.y,4,0,Math.PI*2);ctx.stroke();}
+    if(preview.landing){const s=camera.m_pointToScreen(preview.landing);ctx.strokeRect(s.x-4,s.y-4,8,8);}
+    ctx.beginPath();ctx.arc(end.x,end.y,6,0,Math.PI*2);ctx.stroke();
     if(!preview.blocked && Number.isFinite(radius)){const edge=camera.m_pointToScreen({x:preview.end.x+radius,y:preview.end.y});ctx.beginPath();ctx.arc(end.x,end.y,Math.abs(edge.x-end.x),0,Math.PI*2);ctx.stroke();}
     const origin=camera.m_pointToScreen(position(me.m_pos)), rawMouse=position(game.m_input.mousePos), myTeam=getTeam(me);
     let candidate=null, best=Infinity;
@@ -61,11 +66,11 @@ function drawPreview(game,me){
     }
     if(candidate){
         const p=position(candidate.m_pos), v=observeMotion(candidate);
-        const future=camera.m_pointToScreen({x:p.x+v.x*def.fuseTime,y:p.y+v.y*def.fuseTime});
+        const future=camera.m_pointToScreen({x:p.x+v.x*preview.time,y:p.y+v.y*preview.time});
         if(Number.isFinite(future.x)&&Number.isFinite(future.y)){
             ctx.strokeStyle='#f7c977';ctx.beginPath();ctx.moveTo(future.x-7,future.y);ctx.lineTo(future.x+7,future.y);ctx.moveTo(future.x,future.y-7);ctx.lineTo(future.x,future.y+7);ctx.stroke();
-            ctx.fillStyle='#f7c977';ctx.font='12px system-ui';ctx.fillText('Target at full fuse (estimate)',future.x+10,future.y+12);
+            ctx.fillStyle='#f7c977';ctx.font='12px system-ui';ctx.fillText('Target at detonation (estimate)',future.x+10,future.y+12);
         }
     }
-    ctx.fillStyle='#e8edf5';ctx.font='12px system-ui';ctx.fillText(preview.blocked?'Collision: bounce path unknown':'Estimated throw · full fuse · dry ground',end.x+10,end.y-10);
+    ctx.fillStyle='#e8edf5';ctx.font='12px system-ui';ctx.fillText(`~${preview.time.toFixed(1)}s · ${preview.collisions.length} bounces · dry ground`,end.x+10,end.y-10);
 }

@@ -2,6 +2,8 @@ export const metadata = `// ==UserScript==
 // @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
 // @version      0.1
+// @updateURL    https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.user.js
 // @description  survev ESP, aimbot, spinbot and more
 // @author       fissure
 // @license      GPL3
