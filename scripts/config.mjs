@@ -43,8 +43,9 @@ export function updateMetadata(metadata,config){
   const fields={name:config.userscript.name||'Survev Prism Cheat',author:config.userscript.author||'Survev Prism Cheat contributors',namespace:config.userscript.namespace||project,homepageURL:project,supportURL:project+'/issues'};
   for(const [key,value] of Object.entries(fields))result=result.replace(new RegExp(`^// @${key}\\s+[^\\r\\n]*`,'m'),()=>`// @${key}    ${value}`);
   const id=config.userscript.greasyForkScriptId;
+  const scriptFileName=encodeURIComponent(fields.name);
   const directives=id
-    ? `// @updateURL    https://update.greasyfork.org/scripts/${id}/survev-ultimate-cheat-injector.meta.js\n// @downloadURL  https://update.greasyfork.org/scripts/${id}/survev-ultimate-cheat-injector.user.js\n`
+    ? `// @updateURL    https://update.greasyfork.org/scripts/${id}/${scriptFileName}.meta.js\n// @downloadURL  https://update.greasyfork.org/scripts/${id}/${scriptFileName}.user.js\n`
     : '// @updateURL    none\n';
   return result.replace('// ==/UserScript==',directives+'// ==/UserScript==');
 }

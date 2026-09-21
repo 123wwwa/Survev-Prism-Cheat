@@ -55,7 +55,7 @@ alt="Visual features"
 
 1. Download and install [Firefox](https://www.mozilla.org/en-US/firefox/new/).
 2. Open Firefox and install [Tampermonkey for Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/).
-3. Visit [Survev Prism Cheat on Greasy Fork](https://greasyfork.org/en/scripts/596621-survev-ultimate-cheat-injector), click **Install this script**, and confirm installation in Tampermonkey.
+3. Visit [Survev Prism Cheat on Greasy Fork](https://greasyfork.org/en/scripts/596621), click **Install this script**, and confirm installation in Tampermonkey.
 4. Open or reload [Survev](https://survev.io/). Make sure the script is enabled in Tampermonkey.
 5. Press **TAB** to open or close the settings menu. Press **ESC** to close it.
 
