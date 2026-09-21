@@ -1,7 +1,9 @@
 // ==UserScript==
 // @name         survev-ultimate-cheat-injector
 // @namespace    https://github.com/123wwwa/survev-injector
-// @version      1789950139827
+// @version      1789951859590
+// @updateURL    https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.user.js
 // @description  survev ESP, aimbot, spinbot and more
 // @author       fissure
 // @license      GPL3
