@@ -16,7 +16,7 @@ The injector runs at `document-end` and cannot undo a module that already ran. G
 
 Userscript request metadata follows the [Tampermonkey API documentation](https://www.tampermonkey.net/documentation.php#GM_xmlhttpRequest): `GM.xmlHttpRequest` is granted, with connections to the current host and `cdn.jsdelivr.net` allowed.
 
-Published releases use commit-pinned app/shared URLs and an automatically increasing version. The parent update command publishes them to the `userscript` branch for Greasy Fork synchronization; see the root README for one-time webhook setup. Local-only builds retain development URLs.
+Published releases use commit-pinned app/shared URLs and an automatically increasing version. The parent update command publishes them to the `userscript` branch for Greasy Fork synchronization; see the [development guide](../docs/development.md#greasy-fork-automatic-synchronization) for one-time webhook setup. Local-only builds retain development URLs.
 
 ## Optional combat settings
 
