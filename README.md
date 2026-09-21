@@ -2,7 +2,8 @@
 
 A Survev userscript with configurable aim assist, visual options, and a TAB settings menu.
 <img width="409" height="1145" alt="Image" src="https://github.com/user-attachments/assets/e1846861-12fa-44ef-8e3a-c6a627162b65" />
-<img width="2547" height="1172" alt="Image" src="https://github.com/user-attachments/assets/f5a8169d-8055-4c87-9b3b-196ca4b18d61" />
+<img width="1277" height="641" alt="Image" src="https://github.com/user-attachments/assets/3e5e84f2-a4ba-4d57-b540-3f32327a5435" />
+<img width="929" height="690" alt="Image" src="https://github.com/user-attachments/assets/8d4d25d1-346d-4ffc-91b1-b7f27e323a47" />
 ## Download and install
 
 **Requires a Manifest V2 (MV2) extension environment. Firefox is recommended.**
