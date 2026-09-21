@@ -1,4 +1,5 @@
 import { addLicenseNotice } from './license-notice.mjs';
+import { loadConfig } from './config.mjs';
 import { prepareUserscriptRelease } from './userscript-release.mjs';
 import { patchValidationReport, resetPatchValidationReport } from './patch-validation.mjs';
 import { spawn } from 'node:child_process';
@@ -7,12 +8,12 @@ import { readFile, writeFile, mkdir, open, unlink, rename, copyFile } from 'node
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
-import { sha256, validateConfig, validateArtifact, matchesBuild, githubSlug, cdnUrl } from './lib.mjs';
+import { sha256, validateArtifact, matchesBuild, githubSlug, cdnUrl } from './lib.mjs';
 import { patchSharedScript } from './shared-patches.mjs';
 import { patchAppScript } from './app-patches.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const config = validateConfig(JSON.parse(await readFile(resolve(root, 'pipeline.config.json'), 'utf8')));
+const config = await loadConfig(root);
 const source = resolve(root, 'vendor/survev');
 const stateDir = resolve(root, '.pipeline');
 const publishDir = resolve(stateDir, 'publish');
@@ -107,6 +108,7 @@ async function inputHash() {
     'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/license-notice.mjs', 'LICENSE', 'scripts/shared-patches.mjs', 'scripts/patch-validation.mjs', 'scripts/app-patches.mjs', 'scripts/invoke-pnpm.ps1'];
   const normalized = async path => Buffer.from((await readFile(path, 'utf8')).replaceAll('\r\n', '\n'));
   const contents = await Promise.all(files.map(file => normalized(resolve(root, file))));
+  contents.push(Buffer.from(JSON.stringify({ fileNames: config.fileNames, publishRepository: config.publishRepository })));
   // Also observe locally supplied client build configuration without publishing it.
   for (const file of ['client/.env', 'client/.env.local',
     'client/.env.production', 'client/.env.production.local']) {
@@ -178,7 +180,7 @@ async function build(revision) {
         console.error('[ERROR] aborting build/publication');
         throw error;
       }
-      data = Buffer.from(addLicenseNotice(patched.code, { upstreamCommit: revision, modifiedAt }));
+      data = Buffer.from(addLicenseNotice(patched.code, { upstreamCommit: revision, modifiedAt, modificationSource: config.publishRepository.replace(/\.git$/, '') }));
       if (name === 'shared') sharedPatches = patched.applied;
       else appPatches = patched.applied;
       validationPath = resolve(buildDir, `patched-${name}.mjs`);
@@ -241,6 +243,7 @@ async function publish(manifest, remote) {
 }
 
 async function publishUserscript(clientCommit) {
+  if (!config.userscript.publish) { log('Userscript publication disabled; no userscript branch push or sync notification.'); return; }
   const dir = userscriptPublishDir;
   const branch = 'userscript';
   if (!existsSync(resolve(dir, '.git/config'))) {
@@ -276,8 +279,11 @@ async function publishUserscript(clientCommit) {
   const url = `https://raw.githubusercontent.com/${githubSlug(config.publishRepository)}/${branch}/injector.user.js`;
   await writeJson(resolve(stateDir, 'userscript-published.json'), { ...release.manifest, syncUrl: url });
   log(`Userscript ${release.unchanged ? 'unchanged' : 'published'}: ${release.manifest.version}`);
-  log(`Greasy Fork sync source: ${url}`);
-  log('Greasy Fork requires one-time sync/webhook setup; this push alone does not confirm Greasy Fork synchronization.');
+  log(`Userscript publication source: ${url}`);
+  if (config.userscript.greasyForkScriptId) {
+    log(`Greasy Fork script ${config.userscript.greasyForkScriptId}: configure this source and repository webhook in your own accounts.`);
+    log('Git publication does not confirm Greasy Fork synchronization.');
+  } else log('Greasy Fork integration is not configured. Existing remote webhooks, if any, must be managed in GitHub Settings.');
 }
 
 async function recordPublication(revision) {
@@ -302,6 +308,7 @@ async function checkUpdates() {
   log(`Local build: ${local?.upstreamCommit ?? 'none'}`);
   log(matchesBuild(local, revision, await inputHash()) ? 'Local build is up to date.' : 'An update/build is available. Run .\\run.ps1 update to build and publish.');
   // Read-only: no checkout, build, commit, push, or CDN purge.
+  if (!config.publishingEnabled) { log('Publication disabled; checking local build only.'); return; }
   const publicManifest = await fetch(`https://raw.githubusercontent.com/${githubSlug(config.publishRepository)}/${config.publishBranch}/manifest.json`, {
     signal: AbortSignal.timeout(20_000),
   });
@@ -319,7 +326,9 @@ async function cycle() {
   if (mode === 'userscript') return;
   const revision = await syncSource();
   const hash = await inputHash();
-  const remote = mode === 'build' ? null : await preparePublish();
+  const shouldPublish = mode !== 'build' && config.publishingEnabled;
+  if (!shouldPublish) log('Local build only: publication is disabled for this run.');
+  const remote = shouldPublish ? await preparePublish() : null;
   if (remote && matchesBuild(remote.manifest, revision, hash)) {
     log(`CDN unchanged: ${revision.slice(0, 12)}. No app/shared build or push needed; userscript was rebuilt.`);
     await recordPublication(remote.sha);
@@ -337,7 +346,7 @@ async function cycle() {
   }
   if (!validLocal) manifest = await build(revision);
   else log(`Reusing verified local build ${revision.slice(0, 12)}`);
-  if (mode !== 'build') {
+  if (shouldPublish) {
     const sha = await publish(manifest, remote);
     await recordPublication(sha);
     await publishUserscript(sha);

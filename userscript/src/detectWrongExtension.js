@@ -62,10 +62,10 @@ function alertMsgAndcleanPage() {
 
                 <li>
                     Visit
-                    <a href="https://greasyfork.org/en/scripts/596621-survev-ultimate-cheat-injector"
+                    <a href="${__INJECTOR_INSTALL_URL__}"
                        target="_blank"
                        rel="noopener noreferrer">
-                        Survev Ultimate Cheat Injector on Greasy Fork
+                        Project installation page
                     </a>,
                     click <strong>Install this script</strong>,
                     and confirm installation in Tampermonkey.

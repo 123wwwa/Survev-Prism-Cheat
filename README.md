@@ -48,6 +48,38 @@ Target indicators: red solid lines mark unobstructed enemies; amber dashed lines
 
 ## Development
 
+### Clone/fork defaults and optional publication
+
+A fresh clone builds locally: `update` does not push either publication branch by default. The checked-in `publishingEnabled` and `userscript.publish` settings are both false. GitHub Actions skips the daily/manual publication job unless repository variable `PUBLISH_ENABLED` is `true`. Normal users installing from Greasy Fork do not need any of this setup.
+
+For your own publication, copy `pipeline.local.example.json` to `pipeline.local.json` and set `publishRepository` to **your own public repository**. This local override is ignored by Git and is never loaded in Actions. `publishingEnabled` enables app/shared publication; `userscript.publish` independently enables the `userscript` release branch. Leave `userscript.greasyForkScriptId` null unless you own a Greasy Fork script and want that integration. Local builds with no script ID use `@updateURL none`, preventing updates from overwriting your fork with the original project. The default CDN repository still supplies the original app/shared; configure your own repository to consume your own published modules.
+
+To use GitHub Actions, set repository **Settings → Secrets and variables → Actions → Variables**:
+
+| Variable | Value |
+| --- | --- |
+| `PUBLISH_ENABLED` | `true` to enable publication runs |
+| `USERSCRIPT_PUBLISH_ENABLED` | `true` to also publish the userscript branch; otherwise false |
+| `GREASYFORK_SCRIPT_ID` | Your own script's numeric ID, or leave unset |
+| `USERSCRIPT_NAME` | Optional script display name |
+| `USERSCRIPT_AUTHOR` | Optional author name; defaults to project contributors |
+| `USERSCRIPT_NAMESPACE` | Optional stable identity namespace; defaults to your publication repository |
+
+Local setup, step by step:
+
+1. Run `Copy-Item pipeline.local.example.json pipeline.local.json` from the project folder. Preserve an existing local configuration before replacing it.
+2. Edit `publishRepository` to your own GitHub repository. It also supplies CDN module URLs, homepage/support links, UI project links and the modification-source notice.
+3. Use `publishingEnabled: false` for local builds only, or `true` to permit pushes. Set `userscript.publish: true` only if you want a userscript release branch too.
+4. Set `userscript.name`, `userscript.author`, and `userscript.namespace` for your fork. Keep name/namespace stable after distributing it; changing script identity can create a separate installation.
+5. Keep `userscript.greasyForkScriptId: null` if you do not use Greasy Fork. Otherwise enter **your own** numeric script ID and configure remote synchronization as described below.
+6. Run `.\run.cmd userscript` to inspect a local build. Run `.\run.cmd update` to build app/shared and publish only when enabled.
+
+Precedence is checked-in `pipeline.config.json` → ignored `pipeline.local.json` → environment variables. Actions ignores the local file and receives values from repository Variables. These values are not authentication secrets. Git credentials stay in your credential manager locally, and Actions uses its scoped token. The workflow fixes the publication target to its own repository. Original-project installation links and attribution in this README/license remain as provenance, not publication credentials.
+
+Actions publishes to the repository running the workflow, using its scoped GitHub token. Fork owners must enable Actions and allow the workflow write access. Forking/cloning does not provide credentials to the original repository or copy its GitHub webhook configuration.
+
+Greasy Fork synchronization is separate from browser auto-updates. The pipeline pushes `userscript/injector.user.js`; a repository webhook tells Greasy Fork to fetch the synchronization URL configured by the script owner. A script ID only sets the installable script's `@updateURL`/`@downloadURL`; it is not an upload credential and does not create a webhook. Configure synchronization and the webhook once in your own accounts. Existing webhooks are external settings: to stop an existing integration completely, also disable its webhook/sync setting. See the optional setup below.
+
 The sections below cover building, updating, and publishing the project from source.
 
 Builds the upstream `survev/survev` project in production mode, extracts **the game entry and its shared chunk before identifier minification** as `app.js` and `shared.js`, and publishes both to this repository's `cdn` branch. jsDelivr serves the public GitHub files directly; no separate CDN upload or API key is required.
@@ -148,14 +180,14 @@ Run `.\run.cmd build` after changes and reinstall `userscript/dist/injector.user
 
 ### Greasy Fork automatic synchronization
 
-`update`, `deploy`, and scheduled runs now publish `injector.user.js` to the dedicated `userscript` branch after publishing or verifying app/shared. Both module URLs are pinned to the same full CDN commit SHA, avoiding stale branch caches. The userscript is built first as a preflight; its URLs and version header are finalized after the client commit is known and syntax is checked again before publishing.
+`update`, `deploy`, and scheduled runs, when both publication switches are enabled, publish `injector.user.js` to the dedicated `userscript` branch after publishing or verifying app/shared. Both module URLs are pinned to the same full CDN commit SHA, avoiding stale branch caches. The userscript is built first as a preflight; its URLs and version header are finalized after the client commit is known and syntax is checked again before publishing.
 
 The numeric `@version` increases only when the final script content changes, including a new client commit or discovered blocking rules. Unchanged releases retain their version and do not push. `.pipeline/userscript-published.json` records the release, and `release.json` on the publication branch records its checksum. Publication is fast-forward only. If userscript publication fails after client publication, rerun `update`; the client commit can be reused.
 
 One-time account setup:
 
-1. Sign in to Greasy Fork as the owner of [script 596621](https://greasyfork.org/en/scripts/596621-survev-ultimate-cheat-injector) and open its synchronization settings.
-2. Set the source URL to `https://raw.githubusercontent.com/123wwwa/survev-injector/userscript/injector.user.js`. Use this raw GitHub URL, not a jsDelivr branch URL.
+1. Create your own script on Greasy Fork (or sign in as its owner), record its numeric ID, and open its synchronization settings. Do not use the original project script ID for your fork.
+2. Set the source URL to `https://raw.githubusercontent.com/YOUR_NAME/YOUR_REPOSITORY/userscript/injector.user.js`. Use this raw GitHub URL, not a jsDelivr branch URL.
 3. Open [Greasy Fork webhook instructions](https://greasyfork.org/en/users/webhook-info). In the GitHub repository's **Settings → Webhooks**, configure a webhook using the URL and any secret/options shown there, with push events enabled. Keep secrets out of source control.
 4. Run a manual sync once and verify that Greasy Fork displays the published version. Subsequent changed releases are synchronized through the webhook. Automatic periodic synchronization is an alternative if immediate updates are unnecessary.
 

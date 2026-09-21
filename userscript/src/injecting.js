@@ -5,8 +5,8 @@ import { transferAtlases } from './atlasTransfer.js';
 import { transferRegions } from './regionTransfer.js';
 import { transferProxy } from './proxyTransfer.js';
 
-const injectedSharedUrl = 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/shared.js';
-const injectedAppUrl = 'https://cdn.jsdelivr.net/gh/123wwwa/survev-injector@cdn/app.js';
+const injectedSharedUrl = __INJECTOR_SHARED_URL__;
+const injectedAppUrl = __INJECTOR_APP_URL__;
 
 async function requestScript(url) {
     const response = await GM.xmlHttpRequest({ method: 'GET', url, timeout: 30000 });

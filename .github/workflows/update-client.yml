@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   update:
+    if: ${{ vars.PUBLISH_ENABLED == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
@@ -32,4 +33,11 @@ jobs:
       - name: Update, build and publish
         env:
           GH_TOKEN: ${{ github.token }}
+          PUBLISH_ENABLED: ${{ vars.PUBLISH_ENABLED }}
+          PUBLISH_REPOSITORY: https://github.com/${{ github.repository }}.git
+          USERSCRIPT_PUBLISH_ENABLED: ${{ vars.USERSCRIPT_PUBLISH_ENABLED || 'false' }}
+          GREASYFORK_SCRIPT_ID: ${{ vars.GREASYFORK_SCRIPT_ID }}
+          USERSCRIPT_NAME: ${{ vars.USERSCRIPT_NAME }}
+          USERSCRIPT_AUTHOR: ${{ vars.USERSCRIPT_AUTHOR }}
+          USERSCRIPT_NAMESPACE: ${{ vars.USERSCRIPT_NAMESPACE }}
         run: node scripts/pipeline.mjs update

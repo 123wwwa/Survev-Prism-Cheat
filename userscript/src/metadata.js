@@ -1,11 +1,9 @@
 export const metadata = `// ==UserScript==
 // @name         survev-ultimate-cheat-injector
-// @namespace    https://github.com/123wwwa/survev-injector
+// @namespace    survev-cheat-injector
 // @version      0.1
-// @updateURL    https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.meta.js
-// @downloadURL  https://update.greasyfork.org/scripts/596621/survev-ultimate-cheat-injector.user.js
 // @description  survev ESP, aimbot, spinbot and more
-// @author       fissure
+// @author       survev-cheat-injector contributors
 // @license      GPL3
 // @match        http://localhost/*
 // @match        https://localhost/*
@@ -21,7 +19,7 @@ export const metadata = `// ==UserScript==
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @require      https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.0.3/pixi.min.js
-// @homepageURL  https://github.com/123wwwa/survev-cheat-injector
-// @supportURL   https://github.com/123wwwa/survev-cheat-injector/issues
+// @homepageURL  CONFIGURED_AT_BUILD
+// @supportURL   CONFIGURED_AT_BUILD
 // ==/UserScript==
 `;

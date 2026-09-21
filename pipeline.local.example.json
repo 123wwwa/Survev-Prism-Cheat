@@ -1,0 +1,11 @@
+{
+  "publishRepository": "https://github.com/YOUR_NAME/YOUR_REPOSITORY.git",
+  "publishingEnabled": true,
+  "userscript": {
+    "name": "My Survev Injector",
+    "author": "YOUR_NAME",
+    "namespace": "https://github.com/YOUR_NAME/YOUR_REPOSITORY",
+    "publish": true,
+    "greasyForkScriptId": null
+  }
+}

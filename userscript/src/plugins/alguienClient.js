@@ -301,7 +301,7 @@ class GameMod {
       
         const githubLink = createSocialLink("");
         githubLink.style.backgroundColor = "#0c1117";
-        githubLink.href = "https://github.com/123wwwa/survev-injector";
+        githubLink.href = __INJECTOR_PROJECT_URL__;
         githubLink.innerHTML = `<i class="fa-brands fa-github"></i> surver-injector`;
         menu.append(githubLink);
         
@@ -358,7 +358,7 @@ class GameMod {
     <li>The map is color-coded: white circle - Mosin, gold container - SV98, etc.</li>
 </ul>
 
-<p class="news-paragraph">Project details and updates: <a href="https://github.com/123wwwa/survev-injector">surver-injector on GitHub</a>.</p></div>`;
+<p class="news-paragraph">Project details and updates: <a href="${__INJECTOR_PROJECT_URL__}">Project on GitHub</a>.</p></div>`;
     
     
     }
