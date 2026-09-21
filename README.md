@@ -1,10 +1,51 @@
-# survev-cheat-injector / automated client patching framework
+<div align="center">
 
-A Survev userscript with configurable aim assist, visual options, and a TAB settings menu.
-<img width="409" height="1145" alt="Image" src="https://github.com/user-attachments/assets/e1846861-12fa-44ef-8e3a-c6a627162b65" />
-<img width="1277" height="641" alt="Image" src="https://github.com/user-attachments/assets/3e5e84f2-a4ba-4d57-b540-3f32327a5435" />
-<img width="929" height="690" alt="Image" src="https://github.com/user-attachments/assets/8d4d25d1-346d-4ffc-91b1-b7f27e323a47" />
-## Download and install
+<img
+src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=38&duration=3000&pause=1000&color=00E5FF&center=true&vCenter=true&width=1000&height=70&lines=SURVEV-CHEAT-INJECTOR"
+alt="survev-cheat-injector"
+/>
+
+<img
+src="https://readme-typing-svg.demolab.com?font=Share+Tech+Mono&size=19&duration=3000&pause=1000&color=8A7DFF&center=true&vCenter=true&width=900&height=40&lines=%3E+AUTOMATED+CLIENT+PATCHING+FRAMEWORK_"
+alt="Automated Client Patching Framework"
+/>
+
+<img
+src="https://github.com/user-attachments/assets/3d98d2ba-d337-4f68-9d90-3657506e819f"
+width="430"
+alt="Survev Cheat Injector"
+/>
+<br>
+<img src="https://img.shields.io/badge/Version-v3.0.0-00AEEF?style=for-the-badge" alt="Version">
+<img src="https://img.shields.io/badge/License-MIT-8A2BE2?style=for-the-badge" alt="License">
+<img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
+<br>
+
+**⚡ A Survev userscript with configurable aim assist, visual options, and a TAB settings menu.**
+
+<br>
+<img
+src="https://github.com/user-attachments/assets/e1846861-12fa-44ef-8e3a-c6a627162b65"
+width="300"
+alt="Settings menu"
+/>
+<br>
+<img
+src="https://github.com/user-attachments/assets/3e5e84f2-a4ba-4d57-b540-3f32327a5435"
+width="850"
+alt="Gameplay"
+/>
+<br>
+
+<img
+src="https://github.com/user-attachments/assets/8d4d25d1-346d-4ffc-91b1-b7f27e323a47"
+width="750"
+alt="Visual features"
+/>
+
+</div>
+
+**Download and install**
 
 **Requires a Manifest V2 (MV2) extension environment. Firefox is recommended.**
 
