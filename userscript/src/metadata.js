@@ -1,6 +1,6 @@
 export const metadata = `// ==UserScript==
 // @name         Survev Prism Cheat
-// @namespace    survev-cheat-injector
+// @namespace    https://github.com/123wwwa/Survev-Prism-Cheat
 // @version      0.1
 // @description  Survev Prism Cheat: configurable aim assist, ESP, combat tools and a TAB settings menu.
 // @author       Survev Prism Cheat contributors

@@ -1,3 +1,7 @@
+# PrismCheat — Survev Prism Cheat
+
+PrismCheat is an open-source cheat userscript for Survev, featuring configurable aim assist, ESP, combat tools, and automated client updates. It includes a TAB settings menu and a source-based pipeline for building and validating patched client modules.
+
 <div align="center">
 
 <img
