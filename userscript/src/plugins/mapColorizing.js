@@ -20,10 +20,8 @@ unsafeWindow.mapColorizing = map => {
         if ( !colors[object.obj.type] ) return;
         object.shapes.forEach(shape => {
             shape.color = colors[object.obj.type];
-            console.log(object);
             if ( !sizes[object.obj.type] ) return;
             shape.scale = sizes[object.obj.type];
-            console.log(object);
         });
     });
 }

@@ -2,10 +2,8 @@ export function smokeOpacity(){
     console.log('smokeopacity')
     
     const particles = unsafeWindow.game.m_smokeBarn.m_particles;
-    console.log('smokeopacity', particles, unsafeWindow.game.m_smokeBarn.m_particles)
     particles.push = new Proxy( particles.push, {
         apply( target, thisArgs, args ) {
-            console.log('smokeopacity', args[0]);
             const particle = args[0];
 
             Object.defineProperty(particle.sprite, 'alpha', {
