@@ -1,9 +1,9 @@
 /*!
  * SPDX-License-Identifier: GPL-3.0-or-later
  * Derived from survev/survev (GPL-3.0-or-later).
- * Upstream commit: 7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223
- * Upstream source: https://github.com/survev/survev/tree/7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223
- * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-21T11:27:51.114Z
+ * Upstream commit: fa453915e656ae7780275556bf5c321350463312
+ * Upstream source: https://github.com/survev/survev/tree/fa453915e656ae7780275556bf5c321350463312
+ * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-22T10:39:20.587Z
  * Modifications: readable client build and injector hooks/global exports.
  * Modification source: https://github.com/123wwwa/Survev-Prism-Cheat
  * Injector base source: https://github.com/123wwwa/Survev-Prism-Cheat
@@ -15,7 +15,7 @@
  * Bundled third-party notices are retained; see THIRD_PARTY_LICENSES.md.
  */
 import { a as __toESM } from "./7_rZTKki.js";
-import { $ as Graphics, A as SCOPE_LEVELS, B as Anim, C as MapObjectDefs, D as PingDefs, E as QuestDefs, F as assert, G as HasteType, H as EmoteSlot, I as util, J as Rarity, K as Input, L as math, M as EmotesDefs, N as CrosshairDefs, O as PassDefs, P as BulletDefs, Q as BasePrepare, R as v2, S as GameObjectDefs, T as coldet, U as GameConfig, V as DamageType, W as GasMode, X as WeaponSlot, Y as TeamMode, Z as Spritesheet, _ as ObjectType, a as helpers, at as Container, b as InputMsg, c as proxy, ct as Point, d as MsgStream, dt as PRECISION, et as LINE_JOIN, f as MsgType, ft as RENDERER_TYPE, g as getPlayerStatusUpdateRate, h as UpdateMsg, i as ConfigManager, it as Sprite, j as EmoteCategory, k as GEAR_TYPES, l as loadout, lt as Color$1, m as UpdatePassMsg, mt as require_jquery, n as SDK, nt as Text, o as MapDefs, ot as RenderTexture, p as PickupMsgType, pt as SCALE_MODES, r as device, rt as TextStyle, s as api, st as Texture, t as Localization, tt as Application$1, u as Constants, ut as settings, v as MapMsg, w as collider, x as BitStream, y as JoinMsg, z as Action } from "./ocX2Ek5F.js";
+import { $ as Graphics, A as SCOPE_LEVELS, B as Anim, C as MapObjectDefs, D as PingDefs, E as QuestDefs, F as assert, G as HasteType, H as EmoteSlot, I as util, J as Rarity, K as Input, L as math, M as EmotesDefs, N as CrosshairDefs, O as PassDefs, P as BulletDefs, Q as BasePrepare, R as v2, S as GameObjectDefs, T as coldet, U as GameConfig, V as DamageType, W as GasMode, X as WeaponSlot, Y as TeamMode, Z as Spritesheet, _ as ObjectType, a as helpers, at as Container, b as InputMsg, c as proxy, ct as Point, d as MsgStream, dt as PRECISION, et as LINE_JOIN, f as MsgType, ft as RENDERER_TYPE, g as getPlayerStatusUpdateRate, h as UpdateMsg, i as ConfigManager, it as Sprite, j as EmoteCategory, k as GEAR_TYPES, l as loadout, lt as Color$1, m as UpdatePassMsg, mt as require_jquery, n as SDK, nt as Text, o as MapDefs, ot as RenderTexture, p as PickupMsgType, pt as SCALE_MODES, r as device, rt as TextStyle, s as api, st as Texture, t as Localization, tt as Application$1, u as Constants, ut as settings, v as MapMsg, w as collider, x as BitStream, y as JoinMsg, z as Action } from "./C0uD4Xfr.js";
 
 //#region ../shared/net/aliveCountsMsg.ts
 var AliveCountsMsg = class {
@@ -25519,7 +25519,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 		stacktrace,
 		browser: navigator.userAgent,
 		protocol: GameConfig.protocolVersion,
-		clientGitVersion: "7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223",
+		clientGitVersion: "fa453915e656ae7780275556bf5c321350463312",
 		serverGitVersion: App.siteInfo.info.gitRevision
 	};
 	const errStr = JSON.stringify(errObj);

@@ -1,9 +1,9 @@
 /*!
  * SPDX-License-Identifier: GPL-3.0-or-later
  * Derived from survev/survev (GPL-3.0-or-later).
- * Upstream commit: 7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223
- * Upstream source: https://github.com/survev/survev/tree/7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223
- * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-21T11:27:51.114Z
+ * Upstream commit: fa453915e656ae7780275556bf5c321350463312
+ * Upstream source: https://github.com/survev/survev/tree/fa453915e656ae7780275556bf5c321350463312
+ * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-22T10:39:20.587Z
  * Modifications: readable client build and injector hooks/global exports.
  * Modification source: https://github.com/123wwwa/Survev-Prism-Cheat
  * Injector base source: https://github.com/123wwwa/Survev-Prism-Cheat
@@ -88403,8 +88403,8 @@ var quest_damage_12gauge = "12 gauge damage";
 var quest_damage_12gauge_ltm = "12 gauge damage";
 var quest_damage_45acp = ".45 ACP damage";
 var quest_damage_potato_ammo = "Potato weapon damage";
-var quest_damage_rare_ammo = ".50AE/.308 damage";
-var quest_damage_rare_ammo_ltm = ".50AE/.308 damage";
+var quest_damage_rare_ammo = ".50 Cal/.308 damage";
+var quest_damage_rare_ammo_ltm = ".50 Cal/.308 damage";
 var quest_damage_woods_king = "Damage as Woods King";
 var quest_damage_grenade = "Grenade damage";
 var quest_damage_grenade_ltm = "Grenade damage";

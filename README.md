@@ -1,6 +1,6 @@
 # Survev client build
 
-Source: https://github.com/survev/survev/tree/7e21fbfe5dbb1fbeb4f2883b1d3455b4ccf9a223
+Source: https://github.com/survev/survev/tree/fa453915e656ae7780275556bf5c321350463312
 
 Build scripts: https://github.com/123wwwa/Survev-Prism-Cheat
 
