@@ -22,7 +22,12 @@ alt="Survev Prism Cheat"
 <br>
 <img src="https://img.shields.io/badge/Version-v3.0.0-00AEEF?style=for-the-badge" alt="Version">
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-8A2BE2?style=for-the-badge" alt="License">
-<img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
+<a href="https://github.com/123wwwa/Survev-Prism-Cheat">
+  <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repository">
+</a>
+<a href="https://discord.gg/FVWzqn5k">
+  <img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord">
+</a>
 <br>
 
 **⚡ A Survev userscript with configurable aim assist, visual options, and a TAB settings menu.**
