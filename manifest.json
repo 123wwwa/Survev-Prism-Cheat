@@ -1,23 +1,23 @@
 {
   "schemaVersion": 2,
   "upstreamRepository": "https://github.com/survev/survev.git",
-  "upstreamCommit": "fa453915e656ae7780275556bf5c321350463312",
+  "upstreamCommit": "3d68ff85cef50aef8de992fa21c45b711952694d",
   "inputHash": "43888e547af9e193d6f1b7f4e7fb73259b13551228cf551293de47b8e25a3131",
-  "builtAt": "2026-09-22T10:39:20.587Z",
+  "builtAt": "2026-09-25T17:42:06.844Z",
   "license": "GPL-3.0-or-later",
   "artifacts": {
     "app": {
       "file": "app.js",
-      "bytes": 1530973,
-      "sha256": "5ad8b1e868ffe687fddfd06054c7cca5904ba747eccc9f89e1b765b5f69a2a67",
-      "originalFile": "js/ChgDrT8o.js",
+      "bytes": 1540555,
+      "sha256": "a1a9052c47f9db5b96a01f8d7b2ebb353c1463167eaab81a40a4a320eb9dcff9",
+      "originalFile": "js/CYv_mzN3.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/app.js"
     },
     "shared": {
       "file": "shared.js",
-      "bytes": 2526651,
-      "sha256": "03d478dca587f6cc06468099b313eb8e155c028cffd528a96c48afa30fb5a267",
-      "originalFile": "js/C0uD4Xfr.js",
+      "bytes": 2549185,
+      "sha256": "041eabef5c66e7ad68593c6d401c4510c64fa77b4b3c864c56fdc1f437abe077",
+      "originalFile": "js/BBMqg-pj.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/shared.js"
     }
   },
@@ -130,20 +130,20 @@
     "GameInitInjection",
     "Override gameControls"
   ],
-  "sourceUrl": "https://github.com/survev/survev/tree/fa453915e656ae7780275556bf5c321350463312",
+  "sourceUrl": "https://github.com/survev/survev/tree/3d68ff85cef50aef8de992fa21c45b711952694d",
   "build": {
     "artifacts": {
       "app": {
-        "entry": "js/ChgDrT8o.js",
+        "entry": "js/CYv_mzN3.js",
         "readableEntry": "readable-app.js",
         "imports": [
           "js/7_rZTKki.js",
-          "js/C0uD4Xfr.js"
+          "js/BBMqg-pj.js"
         ],
         "dynamicImports": []
       },
       "shared": {
-        "entry": "js/C0uD4Xfr.js",
+        "entry": "js/BBMqg-pj.js",
         "readableEntry": "readable-shared.js",
         "imports": [
           "js/7_rZTKki.js"
@@ -154,16 +154,16 @@
     "minify": false,
     "propertyObfuscation": false,
     "generatedJavaScript": [
-      "js/ChgDrT8o.js",
-      "js/CvflBnfW.js",
+      "js/CYv_mzN3.js",
+      "js/kSmlWr9g.js",
       "js/7_rZTKki.js",
-      "js/C0uD4Xfr.js"
+      "js/BBMqg-pj.js"
     ],
     "productionHashes": {
-      "js/ChgDrT8o.js": "3b4c016ab49f2725b40c23cf7444f276aca537adc85a9384ad25e4b24520de72",
-      "js/CvflBnfW.js": "6102c30d7d68ccd527b9e42413d322afc5dbc12f30231cb1041f13b6f74e627c",
+      "js/CYv_mzN3.js": "8226c58d922be5f3ce3bc60791ecaeca640730dd74370624d497673889e206ed",
+      "js/kSmlWr9g.js": "d222707232e9e058f32ce33992c09683e9e2e9675d4d82637916381576bf11fe",
       "js/7_rZTKki.js": "ee6f7f26af65d579908c6904c08fa7fd954f22673d48974bf74dd8036a83cc71",
-      "js/C0uD4Xfr.js": "08854d0cce629514600679d9c99a5c2b0fe2844e81b26000a15a7e3ec50b202a"
+      "js/BBMqg-pj.js": "81d6d64169e8a74c7766c25891f29a06bbbcb7c8ea772b6d3202ad2cb461375f"
     }
   },
   "publicationMode": "readable-app-and-shared-original-production-imports"
