@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    Survev Prism Cheat
 // @namespace    https://github.com/123wwwa/Survev-Prism-Cheat
-// @version      1790358148674
+// @version      1790358813149
 // @description  Survev Prism Cheat: configurable aim assist, ESP, combat tools and a TAB settings menu.
 // @author    fissure
 // @license      GPL3
@@ -7958,8 +7958,8 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         return { code: injectedShared.slice(0, start) + scope + injectedShared.slice(end), hosts: Object.keys(defs) };
     }
 
-    const injectedSharedUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@8c6f0afaa2cc1419b95ef37acb44a6dfb856cdce/shared.js";
-    const injectedAppUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@8c6f0afaa2cc1419b95ef37acb44a6dfb856cdce/app.js";
+    const injectedSharedUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@94f4e34f47d5dbc522c6ac4cccd25f7562a5d5b8/shared.js";
+    const injectedAppUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@94f4e34f47d5dbc522c6ac4cccd25f7562a5d5b8/app.js";
     async function requestScript(url) {
       const response = await GM.xmlHttpRequest({ method: "GET", url, timeout: 3e4 });
       if (response.status < 200 || response.status >= 300 || !response.responseText?.trim()) {
