@@ -1,7 +1,7 @@
 {
   "kind": "survev-userscript-release",
-  "version": "1790359961305",
-  "contentHash": "7f2a92a04e75a0fee5bf71851c9d366cbb0f78302cd6345489f33206e22eaf2e",
-  "sha256": "852925414b4b6d497bf576c6d724134f91fc45a15173e581468687538694d239",
-  "clientCommit": "94f4e34f47d5dbc522c6ac4cccd25f7562a5d5b8"
+  "version": "1790360418961",
+  "contentHash": "db68f1b4570eb0dd4d3b3546e6f020691302bb24f7830766dcad82cad2040435",
+  "sha256": "d23f77e178a98680e50afb7aa8996da00deb6a448bc59dbde65a7dca4a39fcc9",
+  "clientCommit": "927621b418743cc59f255bc49f7808db962366bc"
 }
