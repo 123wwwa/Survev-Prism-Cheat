@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    Survev Prism Cheat
 // @namespace    https://github.com/123wwwa/Survev-Prism-Cheat
-// @version      1790073570619
+// @version      1790358148674
 // @description  Survev Prism Cheat: configurable aim assist, ESP, combat tools and a TAB settings menu.
 // @author    fissure
 // @license      GPL3
@@ -1031,13 +1031,12 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     }, true);
     updateButtonColors();
 
-    class GameMod {
+    class ClientUi {
       constructor() {
         this.lastFrameTime = performance.now();
         this.frameCount = 0;
         this.fps = 0;
         this.kills = 0;
-        this.setAnimationFrameCallback();
         if (unsafeWindow.location.hostname !== "resurviv.biz" && unsafeWindow.location.hostname !== "zurviv.io" && unsafeWindow.location.hostname !== "eu-comp.net") {
           this.initCounter("fpsCounter");
           this.initCounter("pingCounter");
@@ -1065,9 +1064,6 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         if (uiTopLeft) {
           uiTopLeft.appendChild(this[id]);
         }
-      }
-      setAnimationFrameCallback() {
-        this.animationFrameCallback = (callback) => setTimeout(callback, 1);
       }
       getKills() {
         const killElement = document.querySelector(
@@ -1191,7 +1187,6 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
             const weaponName = weaponNameElement.textContent.trim();
             let border = "#FFFFFF";
             switch (weaponName.toUpperCase()) {
-              //yellow
               case "CZ-3A1":
               case "G18C":
               case "M9":
@@ -1206,7 +1201,6 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
               case "FLAMETHROWER":
                 border = "#FFAE00";
                 break;
-              //blue 
               case "AK-47":
               case "OT-38":
               case "OTS-38":
@@ -1226,7 +1220,6 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
               case "GROZA-S":
                 border = "#007FFF";
                 break;
-              //green
               case "FAMAS":
               case "M416":
               case "M249":
@@ -1237,7 +1230,6 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
               case "L86A2":
                 border = "#0f690d";
                 break;
-              //red 
               case "M870":
               case "MP220":
               case "SAIGA-12":
@@ -1248,7 +1240,6 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
               case "M1100":
                 border = "#FF0000";
                 break;
-              //purple
               case "MODEL 94":
               case "PEACEMAKER":
               case "VECTOR (.45 ACP)":
@@ -1256,22 +1247,18 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
               case "M1A1":
                 border = "#800080";
                 break;
-              //black
               case "DEAGLE 50":
               case "RAINBOW BLASTER":
                 border = "#000000";
                 break;
-              //olive
               case "AWM-S":
               case "MK 20 SSR":
                 border = "#808000";
                 break;
-              //brown
               case "POTATO CANNON":
               case "SPUD GUN":
                 border = "#A52A2A";
                 break;
-              //other Guns
               case "FLARE GUN":
                 border = "#FF4500";
                 break;
@@ -1285,7 +1272,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
                 border = "#FFFFFF";
                 break;
             }
-            if (weaponContainer.id !== "ui-weapon-id-4") {
+            if (weaponContainer && weaponContainer.id !== "ui-weapon-id-4") {
               weaponContainer.style.border = `3px solid ${border}`;
             }
           });
@@ -1296,10 +1283,9 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
           });
         });
       }
-      //menu
       initMenu() {
         const middleRow = document.querySelector("#start-row-top");
-        Object.assign(middleRow.style, {
+        if (middleRow) Object.assign(middleRow.style, {
           display: "flex",
           flexDirection: "row"
         });
@@ -1315,9 +1301,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
           color: "#fff",
           maxWidth: "300px",
           height: "100%",
-          //   maxHeight: "320px",
           overflowY: "auto",
-          //   marginTop: "20px",
           marginRight: "30px",
           boxSizing: "border-box"
         });
@@ -1338,6 +1322,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
           const a = document.createElement("a");
           a.textContent = `${text}`;
           a.target = "_blank";
+          a.rel = "noopener noreferrer";
           Object.assign(a.style, {
             display: "block",
             border: "none",
@@ -1358,13 +1343,18 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         githubLink.href = "https://github.com/123wwwa/Survev-Prism-Cheat";
         githubLink.innerHTML = `<i class="fa-brands fa-github"></i> Survev Prism Cheat`;
         menu.append(githubLink);
+        const discordLink = createSocialLink("Join Discord");
+        discordLink.href = "https://discord.gg/FVWzqn5k";
+        discordLink.style.backgroundColor = "#5865F2";
+        menu.append(discordLink);
         const additionalDescription = document.createElement("p");
         additionalDescription.className = "news-paragraph";
         additionalDescription.style.fontSize = "14px";
-        additionalDescription.innerHTML = `If you support this project star github repository.`;
+        additionalDescription.innerHTML = `Star the repository to support the project, or join Discord for discussion.`;
         menu.append(additionalDescription);
         const leftColumn = document.querySelector("#left-column");
-        leftColumn.innerHTML = ``;
+        if (!leftColumn) return;
+        leftColumn.replaceChildren();
         leftColumn.style.marginTop = "10px";
         leftColumn.style.marginBottom = "27px";
         leftColumn.append(menu);
@@ -1372,43 +1362,18 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
       }
       initRules() {
         const newsBlock = document.querySelector("#news-block");
+        if (!newsBlock) return;
         newsBlock.innerHTML = `
 <h3 class="news-header">Survev Prism Cheat v${version$1}</h3>
-<div id="news-current">
-<small class="news-date">Version 0.1</small>
-                      
-<h2>Survev Prism Cheat controls</h2>
-<p class="news-paragraph">Available controls and settings:</p>
-
-<h3>Hotkeys:</h3>
+<p class="news-paragraph">Press <strong>TAB</strong> to open settings and <strong>ESC</strong> to close them.</p>
 <ul>
-    <li><strong>[B]</strong> - Toggle AimBot</li>
-    <li><strong>[Z]</strong> - Toggle Zoom</li>
-    <li><strong>[M]</strong> - Toggle Melee Attack</li>
-    <li><strong>[Y]</strong> - Toggle SpinBot</li>
-    <li><strong>[T]</strong> - Focus on enemy</li>
-    <li><strong>[V]</strong> - Lock weapon</li>
-</ul>
-
-<h3>Features:</h3>
-<ul>
-    <li><strong>[TAB]</strong> - Open Cheats Menu</li>
-    <li>AimBot activates when you shoot.</li>
-    <li><strong>AutoMelee:</strong> If the enemy is close enough (4 game coordinates), AutoMelee will automatically move towards and attack them when holding down the left mouse button. If you equip a melee weapon, AutoMelee will work at a distance of 8 game coordinates.</li>
-    <li><strong>AutoSwitch:</strong> By default, quickly switch weapons to avoid cooldown after shooting.</li>
-    <li><strong>BumpFire:</strong> Shoot without constant clicking.</li>
-    <li><strong>FocusedEnemy:</strong> Press <strong>[T]</strong> to focus on an enemy. AimBot will continuously target the focused enemy. Press <strong>[T]</strong> again to reset.</li>
-    <li><strong>UseOneGun:</strong> Press <strong>[V]</strong> to lock a weapon and shoot only from it using autoswitch. Useful when you have a shotgun and a rifle, and the enemy is far away.
-</ul>
-
-<h3>Recommendations:</h3>
-<ul>
-    <li>Play smart and don't rush headlong, as the cheat does not provide immortality.</li>
-    <li>Use adrenaline to the max to heal and run fast.</li>
-    <li>The map is color-coded: white circle - Mosin, gold container - SV98, etc.</li>
-</ul>
-
-<p class="news-paragraph">Project details and updates: <a href="${"https://github.com/123wwwa/Survev-Prism-Cheat"}">Project on GitHub</a>.</p></div>`;
+    <li><strong>B</strong> — Aim assist</li>
+    <li><strong>Z</strong> — Zoom</li>
+    <li><strong>M</strong> — Automatic melee</li>
+    <li><strong>Y</strong> — Spin</li>
+    <li><strong>T</strong> — Focus target</li>
+    <li><strong>V</strong> — Lock weapon</li>
+</ul>`;
       }
       startUpdateLoop() {
         const now = performance.now();
@@ -1490,7 +1455,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         };
       }
     }
-    unsafeWindow.GameMod = new GameMod();
+    unsafeWindow.GameMod = new ClientUi();
 
     // Shared by Node build scripts and the browser bundle. No Node-only imports.
     const patchValidationReport = [];
@@ -7993,8 +7958,8 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         return { code: injectedShared.slice(0, start) + scope + injectedShared.slice(end), hosts: Object.keys(defs) };
     }
 
-    const injectedSharedUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@3faad187237f172f4dc69d5d67d05660025fd64c/shared.js";
-    const injectedAppUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@3faad187237f172f4dc69d5d67d05660025fd64c/app.js";
+    const injectedSharedUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@8c6f0afaa2cc1419b95ef37acb44a6dfb856cdce/shared.js";
+    const injectedAppUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@8c6f0afaa2cc1419b95ef37acb44a6dfb856cdce/app.js";
     async function requestScript(url) {
       const response = await GM.xmlHttpRequest({ method: "GET", url, timeout: 3e4 });
       if (response.status < 200 || response.status >= 300 || !response.responseText?.trim()) {
