@@ -1,9 +1,9 @@
 /*!
  * SPDX-License-Identifier: GPL-3.0-or-later
  * Derived from survev/survev (GPL-3.0-or-later).
- * Upstream commit: 3d68ff85cef50aef8de992fa21c45b711952694d
- * Upstream source: https://github.com/survev/survev/tree/3d68ff85cef50aef8de992fa21c45b711952694d
- * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-25T17:42:06.844Z
+ * Upstream commit: bbc579e2e8f55dc9f217d7dc15594d1962a936a2
+ * Upstream source: https://github.com/survev/survev/tree/bbc579e2e8f55dc9f217d7dc15594d1962a936a2
+ * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-25T17:52:11.379Z
  * Modifications: readable client build and injector hooks/global exports.
  * Modification source: https://github.com/123wwwa/Survev-Prism-Cheat
  * Injector base source: https://github.com/123wwwa/Survev-Prism-Cheat
@@ -31964,7 +31964,7 @@ var FactionTeam = /* @__PURE__ */ function(FactionTeam) {
 	return FactionTeam;
 }({});
 var GameConfig = {
-	protocolVersion: 1027,
+	protocolVersion: 1026,
 	Action,
 	Anim,
 	DamageType,
@@ -60559,44 +60559,13 @@ var BunkerDefs = {
 		},
 		zIdx: 2,
 		floor: {
-			surfaces: [
-				{
-					type: "tile",
-					collision: [
-						collider.createAabbExtents(v2.create(-22, 9), v2.create(10.5, 14)),
-						collider.createAabbExtents(v2.create(19.5, 14), v2.create(11, 9)),
-						collider.createAabbExtents(v2.create(24, -28.5), v2.create(5, 7)),
-						collider.createAabbExtents(v2.create(-14, -32), v2.create(5, 5))
-					]
-				},
-				{
-					type: "tile",
-					data: { isBright: true },
-					collision: [collider.createAabbExtents(v2.create(-1, -5), v2.create(24, 22))]
-				},
-				{
-					type: "grass",
-					data: { isBright: true },
-					collision: [collider.createAabbExtents(v2.create(-1.5, -6), v2.create(12.5, 10.5))]
-				},
-				{
-					type: "bunker",
-					collision: [
-						collider.createAabbExtents(v2.create(-1.5, 27.5), v2.create(10, 10.5)),
-						collider.createAabbExtents(v2.create(-31, -21), v2.create(6, 16)),
-						collider.createAabbExtents(v2.create(5, -33.5), v2.create(14, 9)),
-						collider.createAabbExtents(v2.create(30, -8.25), v2.create(7, 13.25))
-					]
-				},
-				{
-					type: "water",
-					data: {
-						rippleColor: 11792639,
-						waterColor: 1589851
-					},
-					collision: [collider.createAabbExtents(v2.create(24.5, 17), v2.create(4.5, 4.5)), collider.createAabbExtents(v2.create(-30, 7), v2.create(2, 5.5))]
-				}
-			],
+			surfaces: [{
+				type: "bunker",
+				collision: [collider.createAabbExtents(v2.create(0, 0), v2.create(40, 36.5)), collider.createAabbExtents(v2.create(3.5, -39), v2.create(11.5, 2.5))]
+			}, {
+				type: "water",
+				collision: [collider.createAabbExtents(v2.create(24.5, 17), v2.create(4.5, 4.5)), collider.createAabbExtents(v2.create(-30, 7), v2.create(2, 5.5))]
+			}],
 			imgs: [
 				{
 					sprite: "map-bunker-cloud-floor-01.img",
@@ -80089,7 +80058,7 @@ var CrateDefs = {
 		health: 200,
 		loot: [
 			tierLoot("tier_airdrop_rare", 1, 1),
-			autoLoot("backpack04_cloud", 1),
+			tierLoot("tier_airdrop_armor", 1, 1),
 			tierLoot("tier_medical", 2, 2),
 			tierLoot("tier_airdrop_scopes", 1, 1),
 			tierLoot("tier_airdrop_outfits", 1, 1),

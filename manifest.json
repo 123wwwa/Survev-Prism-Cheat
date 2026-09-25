@@ -1,23 +1,34 @@
 {
   "schemaVersion": 2,
   "upstreamRepository": "https://github.com/survev/survev.git",
-  "upstreamCommit": "3d68ff85cef50aef8de992fa21c45b711952694d",
-  "inputHash": "43888e547af9e193d6f1b7f4e7fb73259b13551228cf551293de47b8e25a3131",
-  "builtAt": "2026-09-25T17:42:06.844Z",
+  "upstreamCommit": "bbc579e2e8f55dc9f217d7dc15594d1962a936a2",
+  "liveSite": {
+    "protocolVersion": 1026,
+    "pageURL": "https://survev.io/",
+    "appURL": "https://survev.io/js/rv39I73V.js",
+    "sharedURL": "https://survev.io/js/Cbg9k6wS.js",
+    "selectors": [
+      "*rv39I73V.js",
+      "*Cbg9k6wS.js"
+    ],
+    "checkedAt": "2026-09-25T17:52:09.677Z"
+  },
+  "inputHash": "1cbf7972f244dfdddbb9df10f0bb602daea331ad7152d2e2e14f93cd5ab1e176",
+  "builtAt": "2026-09-25T17:52:11.379Z",
   "license": "GPL-3.0-or-later",
   "artifacts": {
     "app": {
       "file": "app.js",
       "bytes": 1540555,
-      "sha256": "a1a9052c47f9db5b96a01f8d7b2ebb353c1463167eaab81a40a4a320eb9dcff9",
-      "originalFile": "js/CYv_mzN3.js",
+      "sha256": "47813a71550fab3ea6e3cc533245a67e4091791463b4ec4ea8443606b3965ae7",
+      "originalFile": "js/Y8fgEaSk.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/app.js"
     },
     "shared": {
       "file": "shared.js",
-      "bytes": 2549185,
-      "sha256": "041eabef5c66e7ad68593c6d401c4510c64fa77b4b3c864c56fdc1f437abe077",
-      "originalFile": "js/BBMqg-pj.js",
+      "bytes": 2548277,
+      "sha256": "0f48b25a42606ed41f4079a19cc8257366f931b63849d32c2c3bd5ad9c00dbf2",
+      "originalFile": "js/D0Lmdf92.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/shared.js"
     }
   },
@@ -130,20 +141,20 @@
     "GameInitInjection",
     "Override gameControls"
   ],
-  "sourceUrl": "https://github.com/survev/survev/tree/3d68ff85cef50aef8de992fa21c45b711952694d",
+  "sourceUrl": "https://github.com/survev/survev/tree/bbc579e2e8f55dc9f217d7dc15594d1962a936a2",
   "build": {
     "artifacts": {
       "app": {
-        "entry": "js/CYv_mzN3.js",
+        "entry": "js/Y8fgEaSk.js",
         "readableEntry": "readable-app.js",
         "imports": [
           "js/7_rZTKki.js",
-          "js/BBMqg-pj.js"
+          "js/D0Lmdf92.js"
         ],
         "dynamicImports": []
       },
       "shared": {
-        "entry": "js/BBMqg-pj.js",
+        "entry": "js/D0Lmdf92.js",
         "readableEntry": "readable-shared.js",
         "imports": [
           "js/7_rZTKki.js"
@@ -154,16 +165,16 @@
     "minify": false,
     "propertyObfuscation": false,
     "generatedJavaScript": [
-      "js/CYv_mzN3.js",
-      "js/kSmlWr9g.js",
+      "js/Bn2phLNg.js",
+      "js/Y8fgEaSk.js",
       "js/7_rZTKki.js",
-      "js/BBMqg-pj.js"
+      "js/D0Lmdf92.js"
     ],
     "productionHashes": {
-      "js/CYv_mzN3.js": "8226c58d922be5f3ce3bc60791ecaeca640730dd74370624d497673889e206ed",
-      "js/kSmlWr9g.js": "d222707232e9e058f32ce33992c09683e9e2e9675d4d82637916381576bf11fe",
+      "js/Bn2phLNg.js": "87e485eece4c81fd92540fe7d352279dedbda4dae63507af35c8401fdc756050",
+      "js/Y8fgEaSk.js": "82a73fea5a4e613499484c82b2450bb1f627c31df554442b094aeec1586a3cdd",
       "js/7_rZTKki.js": "ee6f7f26af65d579908c6904c08fa7fd954f22673d48974bf74dd8036a83cc71",
-      "js/BBMqg-pj.js": "81d6d64169e8a74c7766c25891f29a06bbbcb7c8ea772b6d3202ad2cb461375f"
+      "js/D0Lmdf92.js": "abb459029730bbfe9c2a443f654defcd76676bd7f9804b612593de7528348710"
     }
   },
   "publicationMode": "readable-app-and-shared-original-production-imports"

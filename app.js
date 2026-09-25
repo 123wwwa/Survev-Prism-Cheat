@@ -1,9 +1,9 @@
 /*!
  * SPDX-License-Identifier: GPL-3.0-or-later
  * Derived from survev/survev (GPL-3.0-or-later).
- * Upstream commit: 3d68ff85cef50aef8de992fa21c45b711952694d
- * Upstream source: https://github.com/survev/survev/tree/3d68ff85cef50aef8de992fa21c45b711952694d
- * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-25T17:42:06.844Z
+ * Upstream commit: bbc579e2e8f55dc9f217d7dc15594d1962a936a2
+ * Upstream source: https://github.com/survev/survev/tree/bbc579e2e8f55dc9f217d7dc15594d1962a936a2
+ * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-25T17:52:11.379Z
  * Modifications: readable client build and injector hooks/global exports.
  * Modification source: https://github.com/123wwwa/Survev-Prism-Cheat
  * Injector base source: https://github.com/123wwwa/Survev-Prism-Cheat
@@ -15,7 +15,7 @@
  * Bundled third-party notices are retained; see THIRD_PARTY_LICENSES.md.
  */
 import { a as __toESM } from "./7_rZTKki.js";
-import { $ as Graphics, A as SCOPE_LEVELS, B as Anim, C as MapObjectDefs, D as PingDefs, E as QuestDefs, F as assert, G as HasteType, H as EmoteSlot, I as util, J as Rarity, K as Input, L as math, M as EmotesDefs, N as CrosshairDefs, O as PassDefs, P as BulletDefs, Q as BasePrepare, R as v2, S as GameObjectDefs, T as coldet, U as GameConfig, V as DamageType, W as GasMode, X as WeaponSlot, Y as TeamMode, Z as Spritesheet, _ as ObjectType, a as helpers, at as Container, b as InputMsg, c as proxy, ct as Point, d as MsgStream, dt as PRECISION, et as LINE_JOIN, f as MsgType, ft as RENDERER_TYPE, g as getPlayerStatusUpdateRate, h as UpdateMsg, i as ConfigManager, it as Sprite, j as EmoteCategory, k as GEAR_TYPES, l as loadout, lt as Color$1, m as UpdatePassMsg, mt as require_jquery, n as SDK, nt as Text, o as MapDefs, ot as RenderTexture, p as PickupMsgType, pt as SCALE_MODES, r as device, rt as TextStyle, s as api, st as Texture, t as Localization, tt as Application$1, u as Constants, ut as settings, v as MapMsg, w as collider, x as BitStream, y as JoinMsg, z as Action } from "./BBMqg-pj.js";
+import { $ as Graphics, A as SCOPE_LEVELS, B as Anim, C as MapObjectDefs, D as PingDefs, E as QuestDefs, F as assert, G as HasteType, H as EmoteSlot, I as util, J as Rarity, K as Input, L as math, M as EmotesDefs, N as CrosshairDefs, O as PassDefs, P as BulletDefs, Q as BasePrepare, R as v2, S as GameObjectDefs, T as coldet, U as GameConfig, V as DamageType, W as GasMode, X as WeaponSlot, Y as TeamMode, Z as Spritesheet, _ as ObjectType, a as helpers, at as Container, b as InputMsg, c as proxy, ct as Point, d as MsgStream, dt as PRECISION, et as LINE_JOIN, f as MsgType, ft as RENDERER_TYPE, g as getPlayerStatusUpdateRate, h as UpdateMsg, i as ConfigManager, it as Sprite, j as EmoteCategory, k as GEAR_TYPES, l as loadout, lt as Color$1, m as UpdatePassMsg, mt as require_jquery, n as SDK, nt as Text, o as MapDefs, ot as RenderTexture, p as PickupMsgType, pt as SCALE_MODES, r as device, rt as TextStyle, s as api, st as Texture, t as Localization, tt as Application$1, u as Constants, ut as settings, v as MapMsg, w as collider, x as BitStream, y as JoinMsg, z as Action } from "./D0Lmdf92.js";
 
 //#region ../shared/net/aliveCountsMsg.ts
 var AliveCountsMsg = class {
@@ -280,7 +280,7 @@ setInterval(() => {
 }, 1e3);
 
 //#endregion
-//#region ../node_modules/.pnpm/hono@4.13.8/node_modules/hono/dist/utils/cookie.js
+//#region ../node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/utils/cookie.js
 var validCookieNameRegEx = /^[\w!#$%&'*.^`|~+-]+$/;
 var _serialize = (name, value, opt = {}) => {
 	if (!validCookieNameRegEx.test(name)) throw new Error("Invalid cookie name");
@@ -323,7 +323,7 @@ var serialize = (name, value, opt) => {
 };
 
 //#endregion
-//#region ../node_modules/.pnpm/hono@4.13.8/node_modules/hono/dist/client/utils.js
+//#region ../node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/client/utils.js
 var mergePath = (base, path) => {
 	base = base.replace(/\/+$/, "");
 	base = base + "/";
@@ -374,7 +374,7 @@ function deepMerge(target, source) {
 }
 
 //#endregion
-//#region ../node_modules/.pnpm/hono@4.13.8/node_modules/hono/dist/client/client.js
+//#region ../node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/client/client.js
 var createProxy = (callback, path) => {
 	return new Proxy(() => {}, {
 		get(_obj, key) {
@@ -25533,7 +25533,7 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 		stacktrace,
 		browser: navigator.userAgent,
 		protocol: GameConfig.protocolVersion,
-		clientGitVersion: "3d68ff85cef50aef8de992fa21c45b711952694d",
+		clientGitVersion: "bbc579e2e8f55dc9f217d7dc15594d1962a936a2",
 		serverGitVersion: App.siteInfo.info.gitRevision
 	};
 	const errStr = JSON.stringify(errObj);
