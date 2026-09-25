@@ -1,7 +1,7 @@
 import './detectWrongExtension.js';
 import './newFeaturesInfo.js';
 import './iceHackMenu.js';
-import './plugins/alguienClient.js';
+import './plugins/clientUi.js';
 import './overlay.js';
 import './injecting.js';
 import './plugins/gameOptimization.js';

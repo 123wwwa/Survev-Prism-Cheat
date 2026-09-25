@@ -8,3 +8,6 @@ node_modules/
 pipeline.local.json
 *.log
 presentations/
+userscript/dist-experimental/
+userscript/dist-html-probe/
+userscript/dist-html-experimental/

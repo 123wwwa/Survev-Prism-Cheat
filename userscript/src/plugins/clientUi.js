@@ -1,16 +1,14 @@
 import { version } from "../constants.js";
 
 
-class GameMod {
+class ClientUi {
     constructor() {
         this.lastFrameTime = performance.now();
         this.frameCount = 0;
         this.fps = 0;
         this.kills = 0;
-        this.setAnimationFrameCallback();
 
         if (unsafeWindow.location.hostname !== 'resurviv.biz' && unsafeWindow.location.hostname !== 'zurviv.io' && unsafeWindow.location.hostname !== 'eu-comp.net'){
-            // cause they have fps counter, etc...
             this.initCounter("fpsCounter");
             this.initCounter("pingCounter");
             this.initCounter("killsCounter");
@@ -38,21 +36,11 @@ class GameMod {
         });
 
         const uiTopLeft = document.getElementById("ui-top-left");
-        // const uiTeam = document.getElementById("ui-team");
         if (uiTopLeft) {
-            // if (uiTeam) {
-            // uiTopLeft.insertBefore(this[id], uiTeam);
-            // uiTeam.style.marginTop = '20px';
-            // } else {
             uiTopLeft.appendChild(this[id]);
-            // }
         }
     }
     
-    setAnimationFrameCallback() {
-        this.animationFrameCallback = (callback) => setTimeout(callback, 1);
-    }
-
     getKills() {
       const killElement = document.querySelector(
         ".ui-player-kills.js-ui-player-kills",
@@ -202,27 +190,18 @@ class GameMod {
             let border = "#FFFFFF";
   
             switch (weaponName.toUpperCase()) { 
-              //yellow
               case "CZ-3A1": case "G18C": case "M9": case "M93R": case "MAC-10": case "MP5": case "P30L": case "DUAL P30L": case "UMP9": case "VECTOR": case "VSS": case "FLAMETHROWER": border = "#FFAE00"; break;
-              //blue 
               case "AK-47": case "OT-38": case "OTS-38": case "M39 EMR": case "DP-28": case "MOSIN-NAGANT": case "SCAR-H": case "SV-98": case "M1 GARAND": case "PKP PECHENEG": case "AN-94": case "BAR M1918": case "BLR 81": case "SVD-63": case "M134": case "GROZA": case "GROZA-S": border = "#007FFF"; break;
-              //green
               case "FAMAS": case "M416": case "M249": case "QBB-97": case "MK 12 SPR": case "M4A1-S": case "SCOUT ELITE": case "L86A2": border = "#0f690d"; break;
-              //red 
               case "M870": case "MP220": case "SAIGA-12": case "SPAS-12": case "USAS-12": case "SUPER 90": case "LASR GUN": case "M1100": border = "#FF0000"; break;
-              //purple
               case "MODEL 94": case "PEACEMAKER": case "VECTOR (.45 ACP)": case "M1911": case "M1A1": border = "#800080"; break;
-              //black
               case "DEAGLE 50": case "RAINBOW BLASTER": border = "#000000"; break;
-              //olive
               case "AWM-S": case "MK 20 SSR": border = "#808000"; break; 
-              //brown
               case "POTATO CANNON": case "SPUD GUN": border = "#A52A2A"; break;
-              //other Guns
               case "FLARE GUN": border = "#FF4500"; break; case "M79": border = "#008080"; break; case "HEART CANNON": border = "#FFC0CB"; break; 
               default: border = "#FFFFFF"; break; }
   
-            if (weaponContainer.id !== "ui-weapon-id-4") {
+            if (weaponContainer && weaponContainer.id !== "ui-weapon-id-4") {
               weaponContainer.style.border = `3px solid ${border}`;
             }
           });
@@ -235,10 +214,9 @@ class GameMod {
         });
       }
 
-    //menu
     initMenu() {
         const middleRow = document.querySelector("#start-row-top");
-        Object.assign(middleRow.style, {
+        if (middleRow) Object.assign(middleRow.style, {
             display: "flex",
             flexDirection: "row",
         });
@@ -256,9 +234,7 @@ class GameMod {
           color: "#fff",
           maxWidth: "300px",
           height: "100%",
-        //   maxHeight: "320px",
           overflowY: "auto",
-        //   marginTop: "20px",
           marginRight: "30px",
           boxSizing: "border-box",
         });
@@ -283,6 +259,7 @@ class GameMod {
           const a = document.createElement("a");
           a.textContent = `${text}`;
           a.target = "_blank";
+          a.rel = "noopener noreferrer";
           Object.assign(a.style, {
             display: "block",
             border: "none",
@@ -304,15 +281,21 @@ class GameMod {
         githubLink.href = __INJECTOR_PROJECT_URL__;
         githubLink.innerHTML = `<i class="fa-brands fa-github"></i> Survev Prism Cheat`;
         menu.append(githubLink);
+
+        const discordLink = createSocialLink("Join Discord");
+        discordLink.href = "https://discord.gg/FVWzqn5k";
+        discordLink.style.backgroundColor = "#5865F2";
+        menu.append(discordLink);
         
         const additionalDescription = document.createElement("p");
         additionalDescription.className = "news-paragraph";
         additionalDescription.style.fontSize = "14px";
-        additionalDescription.innerHTML = `If you support this project star github repository.`
+        additionalDescription.innerHTML = `Star the repository to support the project, or join Discord for discussion.`
         menu.append(additionalDescription);
 
         const leftColumn = document.querySelector('#left-column');
-        leftColumn.innerHTML = ``;
+        if (!leftColumn) return;
+        leftColumn.replaceChildren();
         leftColumn.style.marginTop = "10px";
         leftColumn.style.marginBottom = "27px";
         leftColumn.append(menu);
@@ -322,45 +305,18 @@ class GameMod {
 
     initRules() {
         const newsBlock = document.querySelector("#news-block");
+        if (!newsBlock) return;
         newsBlock.innerHTML = `
 <h3 class="news-header">Survev Prism Cheat v${version}</h3>
-<div id="news-current">
-<small class="news-date">Version 0.1</small>
-                      
-<h2>Survev Prism Cheat controls</h2>
-<p class="news-paragraph">Available controls and settings:</p>
-
-<h3>Hotkeys:</h3>
+<p class="news-paragraph">Press <strong>TAB</strong> to open settings and <strong>ESC</strong> to close them.</p>
 <ul>
-    <li><strong>[B]</strong> - Toggle AimBot</li>
-    <li><strong>[Z]</strong> - Toggle Zoom</li>
-    <li><strong>[M]</strong> - Toggle Melee Attack</li>
-    <li><strong>[Y]</strong> - Toggle SpinBot</li>
-    <li><strong>[T]</strong> - Focus on enemy</li>
-    <li><strong>[V]</strong> - Lock weapon</li>
-</ul>
-
-<h3>Features:</h3>
-<ul>
-    <li><strong>[TAB]</strong> - Open Cheats Menu</li>
-    <li>AimBot activates when you shoot.</li>
-    <li><strong>AutoMelee:</strong> If the enemy is close enough (4 game coordinates), AutoMelee will automatically move towards and attack them when holding down the left mouse button. If you equip a melee weapon, AutoMelee will work at a distance of 8 game coordinates.</li>
-    <li><strong>AutoSwitch:</strong> By default, quickly switch weapons to avoid cooldown after shooting.</li>
-    <li><strong>BumpFire:</strong> Shoot without constant clicking.</li>
-    <li><strong>FocusedEnemy:</strong> Press <strong>[T]</strong> to focus on an enemy. AimBot will continuously target the focused enemy. Press <strong>[T]</strong> again to reset.</li>
-    <li><strong>UseOneGun:</strong> Press <strong>[V]</strong> to lock a weapon and shoot only from it using autoswitch. Useful when you have a shotgun and a rifle, and the enemy is far away.
-</ul>
-
-<h3>Recommendations:</h3>
-<ul>
-    <li>Play smart and don't rush headlong, as the cheat does not provide immortality.</li>
-    <li>Use adrenaline to the max to heal and run fast.</li>
-    <li>The map is color-coded: white circle - Mosin, gold container - SV98, etc.</li>
-</ul>
-
-<p class="news-paragraph">Project details and updates: <a href="${__INJECTOR_PROJECT_URL__}">Project on GitHub</a>.</p></div>`;
-    
-    
+    <li><strong>B</strong> — Aim assist</li>
+    <li><strong>Z</strong> — Zoom</li>
+    <li><strong>M</strong> — Automatic melee</li>
+    <li><strong>Y</strong> — Spin</li>
+    <li><strong>T</strong> — Focus target</li>
+    <li><strong>V</strong> — Lock weapon</li>
+</ul>`;
     }
 
     startUpdateLoop() {
@@ -461,4 +417,5 @@ class PingTest {
     }
 }
 
-unsafeWindow.GameMod = new GameMod(); // AlguienClient
+// Retain the existing ticker integration.
+unsafeWindow.GameMod = new ClientUi();
