@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    Survev Prism Cheat
 // @namespace    https://github.com/123wwwa/Survev-Prism-Cheat
-// @version      1790358813149
+// @version      1790359666716
 // @description  Survev Prism Cheat: configurable aim assist, ESP, combat tools and a TAB settings menu.
 // @author    fissure
 // @license      GPL3
@@ -1456,6 +1456,58 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
       }
     }
     unsafeWindow.GameMod = new ClientUi();
+
+    // Import in the page's module realm, not the userscript manager's sandbox.
+    // A string event detail also crosses Firefox's sandbox boundary safely.
+    async function loadPageModule(url) {
+        const eventName = `prism-module-${crypto.randomUUID()}`;
+        const wrapper = `
+try {
+    await import(${JSON.stringify(url)});
+    document.dispatchEvent(new CustomEvent(${JSON.stringify(eventName)}, { detail: JSON.stringify({ ok: true }) }));
+} catch (error) {
+    console.error('[Injector] Page module import failed:', error);
+    document.dispatchEvent(new CustomEvent(${JSON.stringify(eventName)}, {
+        detail: JSON.stringify({ ok: false, message: String(error?.message ?? error), stack: String(error?.stack ?? '') })
+    }));
+}`;
+        const wrapperURL = URL.createObjectURL(new Blob([wrapper], { type: 'application/javascript' }));
+        const script = document.createElement('script');
+        let timer;
+        let onResult;
+        let onPolicy;
+        let policyFailure = '';
+        try {
+            await new Promise((resolve, reject) => {
+                onResult = event => {
+                    try {
+                        const result = JSON.parse(event.detail);
+                        if (result.ok) resolve();
+                        else reject(new Error(`Page module import failed: ${result.message}\n${result.stack}`));
+                    } catch (error) { reject(error); }
+                };
+                onPolicy = event => {
+                    if (event.blockedURI === 'blob' || event.blockedURI?.startsWith('blob:')) {
+                        policyFailure = ` CSP: ${event.effectiveDirective} blocked ${event.blockedURI}.`;
+                        console.error('[Injector] Blob blocked by CSP:', event.effectiveDirective, event.blockedURI);
+                    }
+                };
+                document.addEventListener(eventName, onResult);
+                document.addEventListener('securitypolicyviolation', onPolicy);
+                script.type = 'module';
+                script.src = wrapperURL;
+                script.onerror = () => reject(new Error(`Page module diagnostic wrapper failed to load.${policyFailure} No import error was received.`));
+                timer = setTimeout(() => reject(new Error(`Page module import timed out after 30 seconds.${policyFailure}`)), 30000);
+                document.head.append(script);
+            });
+        } finally {
+            clearTimeout(timer);
+            document.removeEventListener(eventName, onResult);
+            document.removeEventListener('securitypolicyviolation', onPolicy);
+            script.remove();
+            URL.revokeObjectURL(wrapperURL);
+        }
+    }
 
     // Shared by Node build scripts and the browser bundle. No Node-only imports.
     const patchValidationReport = [];
@@ -8008,17 +8060,7 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
         };
         document.addEventListener = intercept;
         try {
-          await new Promise((resolve, reject) => {
-            const script = document.createElement("script");
-            script.type = "module";
-            script.src = appBlobURL;
-            script.onload = resolve;
-            script.onerror = () => {
-              script.remove();
-              reject(new Error("Injected module failed to load; inspect browser console"));
-            };
-            document.head.append(script);
-          });
+          await loadPageModule(appBlobURL);
         } finally {
           if (document.addEventListener === intercept) document.addEventListener = originalAdd;
         }
@@ -8849,8 +8891,11 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
     }
 
     let tickerOneTime = false;
+    let pendingInitialization;
     function initGame() {
-        console.log('init game...........');
+        clearTimeout(pendingInitialization);
+        const game = unsafeWindow.game;
+        const deadline = performance.now() + 30000;
 
         unsafeWindow.lastAimPos = null;
         unsafeWindow.aimTouchMoveDir = null;
@@ -8863,33 +8908,36 @@ input{width:100%;accent-color:#63d4bd;margin:14px 0}output{color:#91ecd8;font-va
             {isApplied: false, condition: () => unsafeWindow.game?.m_input?.mousePos && unsafeWindow.game?.m_touch?.aimMovement?.toAimDir, action: overrideMousePos},
             {isApplied: false, condition: () => unsafeWindow.game?.m_input?.mouseButtonsOld, action: bumpFire},
             {isApplied: false, condition: () => unsafeWindow.game?.m_activePlayer?.m_localData, action: betterZoom},
-            {isApplied: false, condition: () => Array.prototype.push === unsafeWindow.game?.m_smokeBarn?.m_particles.push, action: smokeOpacity},
-            {isApplied: false, condition: () => Array.prototype.push === unsafeWindow.game?.m_playerBarn?.playerPool?.m_pool.push, action: visibleNames},
+            {isApplied: false, condition: () => Array.prototype.push === unsafeWindow.game?.m_smokeBarn?.m_particles?.push, action: smokeOpacity},
+            {isApplied: false, condition: () => Array.prototype.push === unsafeWindow.game?.m_playerBarn?.playerPool?.m_pool?.push, action: visibleNames},
             {isApplied: false, condition: () => unsafeWindow.game?.m_pixi?._ticker && unsafeWindow.game?.m_activePlayer?.container && unsafeWindow.game?.m_activePlayer?.m_pos, action: () => { if (!tickerOneTime) { tickerOneTime = true; initTicker(); } } },
         ];
 
         (function checkLocalData(){
-            if(!unsafeWindow?.game?.m_connection) return;
+            if (unsafeWindow.game !== game || !game?.m_connection) return;
 
-            console.log('Checking local data');
+            try {
+                for (const task of tasks) {
+                    if (task.isApplied || !task.condition()) continue;
+                    task.action();
+                    task.isApplied = true;
+                }
+            } catch (error) {
+                console.error('[Injector] Plugin initialization stopped:', error);
+                return;
+            }
 
-            console.log(
-                unsafeWindow.game?.m_activePlayer?.m_localData, 
-                unsafeWindow.game?.m_map?.m_obstaclePool?.m_pool,
-                unsafeWindow.game?.m_smokeBarn?.m_particles,
-                unsafeWindow.game?.m_playerBarn?.playerPool?.m_pool
-            );
-
-            tasks.forEach(task => console.log(task.action, task.isApplied));
-            
-            tasks.forEach(task => {
-                if (task.isApplied || !task.condition()) return;
-                task.action();
-                task.isApplied = true;
-            });
-            
-            if (tasks.some(task => !task.isApplied)) setTimeout(checkLocalData, 5);
-            else console.log('All functions applied, stopping loop.');
+            if (!tasks.some(task => !task.isApplied)) return;
+            if (performance.now() >= deadline) {
+                console.error('[Injector] Player initialization timed out; retry loop stopped.', {
+                    activeId: game.m_activeId,
+                    activePlayerFound: Boolean(game.m_activePlayer),
+                    playerCount: game.m_playerBarn?.playerPool?.m_pool?.length,
+                    pending: tasks.filter(task => !task.isApplied).map(task => task.action.name),
+                });
+                return;
+            }
+            pendingInitialization = setTimeout(checkLocalData, 100);
         })();
 
         updateOverlay();
