@@ -1,3 +1,4 @@
+import { loadPageModule } from './loadPageModule.js';
 import { patchValidationReport, resetPatchValidationReport, validateMatches } from '../../scripts/patch-validation.mjs';
 import { validatePatchedModules } from './patchValidation.js';
 import { transferServers, moduleImports, rewriteImports } from './serverTransfer.js';
@@ -62,14 +63,7 @@ async function requestScript(url) {
         };
         document.addEventListener = intercept;
         try {
-            await new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.type = 'module';
-                script.src = appBlobURL;
-                script.onload = resolve;
-                script.onerror = () => { script.remove(); reject(new Error('Injected module failed to load; inspect browser console')); };
-                document.head.append(script);
-            });
+            await loadPageModule(appBlobURL);
         } finally {
             if (document.addEventListener === intercept) document.addEventListener = originalAdd;
         }

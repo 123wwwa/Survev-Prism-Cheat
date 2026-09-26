@@ -1,3 +1,5 @@
+import { bundledDefinitionIds } from '../../scripts/definition-ids.mjs';
+import { protocolVersion } from '../../scripts/protocol-version.mjs';
 import { parse as parseHtml } from 'parse5';
 import { parse as parseJs } from 'acorn';
 
@@ -45,8 +47,8 @@ export async function discoverScripts(pageURL = 'https://survev.io/', fetcher = 
     const app = parseJs(await download(appURL), { ecmaVersion: 'latest', sourceType: 'module' });
     const imports = app.body.filter(node => node.type === 'ImportDeclaration').map(node => new URL(node.source.value, appURL).href);
     if (imports.length !== 2) throw new Error(`Expected runtime/shared app dependencies, found ${imports.length}`);
-    const candidates = await Promise.all(imports.map(async url => ({ url, shared: hasProxyMethod(await download(url)) })));
-    const shared = candidates.filter(candidate => candidate.shared);
+    const candidates = await Promise.all(imports.map(async url => ({ url, code: await download(url) })));
+    const shared = candidates.filter(candidate => hasProxyMethod(candidate.code));
     if (shared.length !== 1) throw new Error(`Expected one shared module with getProxyDef, found ${shared.length}`);
     if (shared[0].url !== imports[1]) throw new Error('App import order changed; review userscript runtime/shared mapping');
     const selectors = [appURL, shared[0].url].map(url => {
@@ -55,7 +57,7 @@ export async function discoverScripts(pageURL = 'https://survev.io/', fetcher = 
         return `*${name}`;
     });
     if (new Set(selectors).size !== 2) throw new Error('App/shared filenames must be distinct');
-    return { pageURL, appURL, sharedURL: shared[0].url, selectors, checkedAt: new Date().toISOString() };
+    return { protocolVersion: protocolVersion(shared[0].code), definitionIds: bundledDefinitionIds(shared[0].code), pageURL, appURL, sharedURL: shared[0].url, selectors, checkedAt: new Date().toISOString() };
 }
 
 export function renderMetadata(template, discovery) {

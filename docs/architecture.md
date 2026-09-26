@@ -15,7 +15,7 @@ flowchart TD
     Site["Live survev.io HTML and module imports"] --> Discovery["Discover app/shared filenames"]
     Discovery --> UserBuild
     UserBuild --> Rules["Generated webRequest blocking rules"]
-    UserBuild --> Upstream["Sync managed survev/survev checkout"]
+    UserBuild --> Upstream["Read live protocol and definition IDs; select matching upstream commit"]
     Upstream --> Cache{"Matching verified build available?"}
     Cache -->|No| Build["Production client build: minify false; codefend excluded"]
     Build --> Extract["Extract game entry and shared chunk"]
@@ -36,7 +36,7 @@ flowchart TD
     CDN --> JSDelivr["jsDelivr serves public GitHub files"]
 ```
 
-The diagram describes an update cycle. `check` is read-only; `userscript` stops after the userscript build. A failed preflight or patch validation stops publication. Unchanged releases do not create another push. Greasy Fork synchronization is an external account setting, not a direct upload performed by this pipeline.
+The diagram describes an update cycle. `check` fetches history for selection without building or publishing; `userscript` stops after the userscript build. A failed preflight or patch validation stops publication. Unchanged releases do not create another push. Greasy Fork synchronization is an external account setting, not a direct upload performed by this pipeline.
 
 ## Browser loading and adaptation
 

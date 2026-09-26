@@ -1,3 +1,5 @@
+import { bundledDefinitionIds, sourceDefinitionIds, sameDefinitionIds } from './definition-ids.mjs';
+import { protocolVersion, selectProtocolCommit } from './protocol-version.mjs';
 import { addLicenseNotice } from './license-notice.mjs';
 import { loadConfig } from './config.mjs';
 import { prepareUserscriptRelease } from './userscript-release.mjs';
@@ -85,7 +87,21 @@ async function atomicWrite(path, data) {
 }
 const writeJson = (path, value) => atomicWrite(path, `${JSON.stringify(value, null, 2)}\n`);
 
-async function syncSource() {
+let liveSite;
+async function inspectLiveSite() {
+  if (!existsSync(resolve(root, 'userscript/node_modules/parse5'))) {
+    await pnpm(['install', '--frozen-lockfile', '--ignore-scripts'], resolve(root, 'userscript'));
+  }
+  const { discoverScripts } = await import('../userscript/scripts/discover-scripts.mjs');
+  return discoverScripts('https://survev.io/');
+}
+async function verifyLiveSite() {
+  const current = await inspectLiveSite();
+  if (current.protocolVersion !== liveSite.protocolVersion || current.appURL !== liveSite.appURL || current.sharedURL !== liveSite.sharedURL || !sameDefinitionIds(current.definitionIds, liveSite.definitionIds)) {
+    throw new Error('Live site changed during this run; publication aborted. Rerun update.');
+  }
+}
+async function syncSource(checkOnly = false) {
   if (!existsSync(resolve(source, '.git/config'))) {
     await mkdir(dirname(source), { recursive: true });
     await git(['clone', '--depth', '1', '--branch', config.upstreamBranch, config.upstreamRepository, source]);
@@ -93,10 +109,24 @@ async function syncSource() {
   const remote = await git(['remote', 'get-url', 'origin'], source);
   if (remote !== config.upstreamRepository) throw new Error('Unexpected upstream origin; refusing to update.');
   if (await git(['status', '--porcelain'], source)) throw new Error('vendor/survev contains local changes; preserve or commit them before updating.');
-  await git(['fetch', '--depth', '1', 'origin', config.upstreamBranch], source);
+  const shallow = await git(['rev-parse', '--is-shallow-repository'], source);
+  await git(['fetch', ...(shallow === 'true' ? ['--unshallow'] : []), 'origin', config.upstreamBranch], source);
+  const head = await git(['rev-parse', 'FETCH_HEAD'], source);
+  let revision = await selectProtocolCommit(args => git(args, source), head, liveSite.protocolVersion);
+  const parents = (await git(['log', '--first-parent', '--format=%P', revision, '--', 'shared/defs'], source)).split('\n').map(line => line.trim().split(/\s+/)[0]).filter(Boolean);
+  let compatible = false;
+  for (const candidate of new Set([revision, ...parents])) {
+    if (protocolVersion(await git(['show', `${candidate}:shared/gameConfig.ts`], source)) !== liveSite.protocolVersion) continue;
+    const ids = await sourceDefinitionIds(path => git(['show', `${candidate}:${path}`], source));
+    if (sameDefinitionIds(ids, liveSite.definitionIds)) { revision = candidate; compatible = true; break; }
+    log(`Skipping ${candidate.slice(0, 12)}: live Game/Map definition IDs differ.`);
+  }
+  if (!compatible) throw new Error('No upstream commit matches both live protocol and definition IDs; publication aborted.');
+  log(`Live protocol: ${liveSite.protocolVersion}; upstream tip: ${head}; selected: ${revision}`);
+  if (checkOnly) return revision;
   // No reset/clean: checkout refuses to overwrite local files. Detached checkout also
   // handles an upstream branch whose history was rewritten.
-  await git(['checkout', '--detach', 'FETCH_HEAD'], source);
+  await git(['checkout', '--detach', revision], source);
   // Avoid upstream's randomly generated secrets/config on every fresh CI checkout.
   // This tracked public configuration is the sole source for client build settings.
   await copyFile(resolve(root, 'client-config.hjson'), resolve(source, 'survev-config.hjson'));
@@ -105,7 +135,7 @@ async function syncSource() {
 
 async function inputHash() {
   const files = ['pipeline.config.json', 'client-config.hjson', 'scripts/build-client.mjs', 'scripts/canvas-paths.cjs',
-    'scripts/pipeline.mjs', 'scripts/lib.mjs', 'scripts/license-notice.mjs', 'LICENSE', 'scripts/shared-patches.mjs', 'scripts/patch-validation.mjs', 'scripts/app-patches.mjs', 'scripts/invoke-pnpm.ps1'];
+    'scripts/pipeline.mjs', 'scripts/protocol-version.mjs', 'scripts/definition-ids.mjs', 'userscript/scripts/discover-scripts.mjs', 'scripts/lib.mjs', 'scripts/license-notice.mjs', 'LICENSE', 'scripts/shared-patches.mjs', 'scripts/patch-validation.mjs', 'scripts/app-patches.mjs', 'scripts/invoke-pnpm.ps1'];
   const normalized = async path => Buffer.from((await readFile(path, 'utf8')).replaceAll('\r\n', '\n'));
   const contents = await Promise.all(files.map(file => normalized(resolve(root, file))));
   contents.push(Buffer.from(JSON.stringify({ fileNames: config.fileNames, publishRepository: config.publishRepository })));
@@ -187,6 +217,8 @@ async function build(revision) {
       await writeFile(validationPath, data);
       log(`${name} patches applied: ${patched.applied.join(', ')}`);
     }
+    if (name === 'shared' && !sameDefinitionIds(bundledDefinitionIds(data.toString('utf8')), liveSite.definitionIds)) throw new Error('Built shared definition IDs do not match live site.');
+    if (name === 'shared' && protocolVersion(data.toString('utf8')) !== liveSite.protocolVersion) throw new Error('Built shared protocol does not match live site.');
     validateArtifact(data);
     await run(process.execPath, ['--check', validationPath], root, true);
     buffers[name] = data;
@@ -198,6 +230,7 @@ async function build(revision) {
     schemaVersion: 2,
     upstreamRepository: config.upstreamRepository,
     upstreamCommit: revision,
+    liveSite,
     inputHash: await inputHash(),
     builtAt: modifiedAt,
     license: 'GPL-3.0-or-later',
@@ -300,14 +333,13 @@ async function recordPublication(revision) {
 }
 
 async function checkUpdates() {
-  const remote = await git(['ls-remote', '--heads', config.upstreamRepository, `refs/heads/${config.upstreamBranch}`]);
-  const revision = remote.split(/\s+/)[0];
-  if (!/^[a-f0-9]{40}$/.test(revision)) throw new Error('Upstream branch was not found.');
+  liveSite = await inspectLiveSite();
+  const revision = await syncSource(true);
   const local = await readJson(resolve(dist, 'manifest.json'));
   log(`Upstream: ${revision}`);
   log(`Local build: ${local?.upstreamCommit ?? 'none'}`);
-  log(matchesBuild(local, revision, await inputHash()) ? 'Local build is up to date.' : 'An update/build is available. Run .\\run.ps1 update to build and publish.');
-  // Read-only: no checkout, build, commit, push, or CDN purge.
+  log(matchesBuild(local, revision, await inputHash()) ? 'Local build is up to date.' : 'An update/build is available. Run .\\run.cmd update to build and publish.');
+  // Fetch history for selection, but do not checkout, build, commit, or publish.
   if (!config.publishingEnabled) { log('Publication disabled; checking local build only.'); return; }
   const publicManifest = await fetch(`https://raw.githubusercontent.com/${githubSlug(config.publishRepository)}/${config.publishBranch}/manifest.json`, {
     signal: AbortSignal.timeout(20_000),
@@ -324,6 +356,7 @@ async function cycle() {
   // Fail before publication if local userscript edits do not build.
   await buildUserscript();
   if (mode === 'userscript') return;
+  liveSite = JSON.parse(await readFile(resolve(root, 'userscript/dist/upstream-scripts.json'), 'utf8'));
   const revision = await syncSource();
   const hash = await inputHash();
   const shouldPublish = mode !== 'build' && config.publishingEnabled;
@@ -331,6 +364,7 @@ async function cycle() {
   const remote = shouldPublish ? await preparePublish() : null;
   if (remote && matchesBuild(remote.manifest, revision, hash)) {
     log(`CDN unchanged: ${revision.slice(0, 12)}. No app/shared build or push needed; userscript was rebuilt.`);
+    await verifyLiveSite();
     await recordPublication(remote.sha);
     await publishUserscript(remote.sha);
     return;
@@ -347,6 +381,7 @@ async function cycle() {
   if (!validLocal) manifest = await build(revision);
   else log(`Reusing verified local build ${revision.slice(0, 12)}`);
   if (shouldPublish) {
+    await verifyLiveSite();
     const sha = await publish(manifest, remote);
     await recordPublication(sha);
     await publishUserscript(sha);

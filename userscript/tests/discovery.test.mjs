@@ -7,13 +7,14 @@ function fixture(overrides = {}) {
         [page]: '<!-- <script type="module" src="bad.js"></script> --><script src="analytics.js"></script><script src="./js/new-app.js" type="module"></script>',
         [page + 'js/new-app.js']: 'import {a} from "./runtime.js"; import {b} from "./new-shared.js";',
         [page + 'js/runtime.js']: 'export const a=1;',
-        [page + 'js/new-shared.js']: 'export const b={getProxyDef(){return null}};',
+        [page + 'js/new-shared.js']: 'export const b={protocolVersion:1026,getProxyDef(){return null}}; const map=new Register("Map",{tree:{}},12), game=new Register("Game",{gun:{}},10);',
         ...overrides,
     };
     return async url => ({ ok: responses[url] !== undefined, status: responses[url] === undefined ? 404 : 200, url, text: async () => responses[url] });
 }
 test('discovers fresh app/shared names and generates exactly two cancel rules', async () => {
     const found = await discoverScripts(page, fixture());
+    assert.equal(found.protocolVersion, 1026);
     assert.deepEqual(found.selectors, ['*new-app.js', '*new-shared.js']);
     const output = renderMetadata('// ==UserScript==\n// @upstream-webRequest\n// ==/UserScript==', found);
     const rules = output.split('\n').filter(line => line.startsWith('// @webRequest')).flatMap(line => JSON.parse(line.replace('// @webRequest', '').trim()));
@@ -30,4 +31,8 @@ test('failed fetches, ambiguous dependencies and altered ordering stop generatio
     await assert.rejects(discoverScripts(page, fixture({ [page + 'js/runtime.js']: 'const a={getProxyDef(){}}' })), /found 2/);
     await assert.rejects(discoverScripts(page, fixture({ [page + 'js/new-app.js']: 'import {b} from "./new-shared.js";import {a} from "./runtime.js";' })), /order changed/);
     await assert.rejects(discoverScripts(page, fixture({ [page + 'js/new-app.js']: 'import "https://other.test/a.js";import "./runtime.js";' })), /cross-origin/);
+});
+
+test('missing live protocol stops discovery instead of guessing', async () => {
+    await assert.rejects(discoverScripts(page, fixture({ [page + 'js/new-shared.js']: 'export const b={getProxyDef(){}};' })), /protocolVersion/);
 });

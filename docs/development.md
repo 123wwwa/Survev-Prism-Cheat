@@ -3,6 +3,16 @@
 [← Back to README](../README.md) · [Userscript internals](../userscript/README.md)
 
 
+## Matching the live client protocol
+
+The pipeline discovers the current app/shared URLs on `https://survev.io/` and reads `protocolVersion` from the live shared module. It fetches upstream history and selects the newest first-parent commit on the configured upstream branch with that same protocol in `shared/gameConfig.ts` and identical ordered Game/Map definition IDs. The ID lists are extracted statically from the live bundle and candidate TypeScript sources; downloaded code is not executed. The branch tip is used only when both checks match. A shared protocol alone is insufficient: inserting a new map definition can shift numeric IDs so a building is decoded as a tree. This can intentionally roll back a previously built client when GitHub is ahead of the deployed site.
+
+Run `.\run.cmd check` to see the live protocol, upstream tip, selected commit, and existing build. Run `.\run.cmd update` to build that selection and publish when your publication settings are enabled. The first history fetch may take longer because shallow history must be expanded. Existing local modifications in the managed upstream checkout are never discarded.
+
+The build verifies the generated shared protocol and both definition ID lists and records the live URLs/version in `dist/manifest.json`. Immediately before publication it rechecks the live protocol and app/shared URLs; a site change aborts the run and requires another update. Missing/ambiguous protocol values, no matching commit, or failed patches also stop the pipeline. It never changes the protocol number to bypass a mismatch. Install/update the released userscript after publication: an already installed release continues using its pinned CDN commit until updated.
+
+Matching protocol and ID tables are compatibility filters, not proof of the exact deployed source revision. Changes can occur without a protocol bump, and the live deployment may contain unpublished changes. Existing structural patch validation remains required; runtime compatibility still needs checking.
+
 ## Clone/fork defaults and optional publication
 
 A fresh clone builds locally: `update` does not push either publication branch by default. The checked-in `publishingEnabled` and `userscript.publish` settings are both false. GitHub Actions skips the daily/manual publication job unless repository variable `PUBLISH_ENABLED` is `true`. Normal users installing from Greasy Fork do not need any of this setup.
@@ -54,7 +64,7 @@ Run these commands in PowerShell from the project directory.
 
 `deploy` is an alias for `update`. If Node is on your PATH, you can also use `node scripts/pipeline.mjs check` or `node scripts/pipeline.mjs update`. The optional `watch` command repeats the update once a day while the process is running, but the daily GitHub Actions workflow is sufficient on its own. No background watcher starts automatically.
 
-`build`, `update`, `deploy`, and each `watch` cycle always build `userscript/dist/injector.user.js` first, including local userscript changes. Dependencies are installed from `userscript/pnpm-lock.yaml` with lifecycle scripts disabled. A userscript build failure stops the command before CDN publication. An unchanged upstream commit skips only the app/shared build and push; the userscript still rebuilds. Install the resulting `.user.js` file in your browser to apply changes. For update/deploy/watch, the final userscript pins both module URLs to the published CDN commit and is published separately to the `userscript` branch. Local build/userscript commands do not publish and retain the development branch URLs. `check` remains read-only.
+`build`, `update`, `deploy`, and each `watch` cycle always build `userscript/dist/injector.user.js` first, including local userscript changes. Dependencies are installed from `userscript/pnpm-lock.yaml` with lifecycle scripts disabled. A userscript build failure stops the command before CDN publication. An unchanged upstream commit skips only the app/shared build and push; the userscript still rebuilds. Install the resulting `.user.js` file in your browser to apply changes. For update/deploy/watch, the final userscript pins both module URLs to the published CDN commit and is published separately to the `userscript` branch. Local build/userscript commands do not publish and retain the development branch URLs. `check` may clone/fetch upstream history and install the script-discovery dependencies, but does not switch an existing checkout, build artifacts, or publish.
 
 `run.cmd` calls `powershell -NoProfile -ExecutionPolicy Bypass -File run.ps1`. The execution policy override applies only to that process and does not change your user or system policy. Use `.\run.cmd` if PowerShell blocks `.\run.ps1`. Enforced organizational Group Policy takes precedence.
 
