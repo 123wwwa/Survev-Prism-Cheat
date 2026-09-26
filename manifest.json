@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "upstreamRepository": "https://github.com/survev/survev.git",
-  "upstreamCommit": "c7a7cd703557861905064f02be10b0f1d7477f77",
+  "upstreamCommit": "2b44c3d262d84f9e60da03c52fa0b94643dda8db",
   "liveSite": {
-    "protocolVersion": 1026,
+    "protocolVersion": 1027,
     "definitionIds": {
       "Map": [
         "",
@@ -178,6 +178,7 @@
         "metal_wall_ext_12",
         "metal_wall_ext_12_5",
         "metal_wall_ext_13",
+        "metal_wall_1x15",
         "metal_wall_ext_16",
         "metal_wall_ext_18",
         "metal_wall_ext_23",
@@ -185,6 +186,7 @@
         "metal_wall_ext_short_6",
         "metal_wall_ext_short_7",
         "metal_wall_ext_thick_5",
+        "metal_wall_2x5_5",
         "metal_wall_ext_thick_6",
         "metal_wall_ext_thick_8",
         "metal_wall_ext_thick_12",
@@ -226,12 +228,20 @@
         "metal_wall_ext_thicker_42",
         "metal_wall_ext_thicker_48",
         "metal_wall_ext_thicker_49",
+        "metal_wall_5x6",
+        "metal_wall_5x10",
+        "metal_wall_5x13",
+        "metal_wall_5x22_5",
+        "metal_wall_5x23",
+        "metal_wall_5x26",
+        "metal_wall_6x8",
         "glass_wall_9",
         "glass_wall_10",
         "glass_wall_12",
         "glass_wall_12_2",
         "glass_wall_13",
-        "glass_wall_18",
+        "glass_wall_1x19",
+        "glass_wall_1x23",
         "barn_wall_int_2",
         "barn_wall_int_2_5",
         "barn_wall_int_4",
@@ -372,6 +382,7 @@
         "case_08",
         "case_08sv",
         "case_09",
+        "case_10",
         "chest_01",
         "chest_01cb",
         "chest_02",
@@ -539,6 +550,10 @@
         "table_03x",
         "table_04",
         "table_05",
+        "table_06",
+        "table_07",
+        "table_08",
+        "table_09",
         "toilet_01",
         "toilet_02",
         "toilet_02b",
@@ -549,6 +564,8 @@
         "vat_01",
         "vat_02",
         "vat_03",
+        "vat_04",
+        "vat_05",
         "vending_01",
         "wheel_01",
         "wheel_02",
@@ -559,7 +576,8 @@
         "control_panel_03",
         "control_panel_04",
         "control_panel_06",
-        "control_panel_07",
+        "control_panel_07de",
+        "control_panel_07sv",
         "switch_01",
         "switch_01o",
         "switch_01p",
@@ -884,6 +902,10 @@
         "bunker_chrys_compartment_02b",
         "bunker_chrys_compartment_03",
         "bunker_chrys_compartment_03b",
+        "bunker_cloud_01",
+        "bunker_cloud_sublevel_01",
+        "bunker_cloud_compartment_01",
+        "bunker_cloud_compartment_02",
         "bunker_egg_01",
         "bunker_egg_sublevel_01",
         "bunker_egg_sublevel_02",
@@ -980,6 +1002,7 @@
         "bunker_structure_08",
         "bunker_structure_08b",
         "bunker_structure_09",
+        "bunker_structure_10",
         "decal_barrel_explosion",
         "decal_frag_explosion",
         "decal_frag_small_explosion",
@@ -1031,6 +1054,7 @@
         "loot_tier_sv98",
         "loot_tier_scopes_sniper",
         "loot_tier_woodaxe",
+        "loot_tier_fireaxe",
         "loot_tier_stonehammer",
         "loot_tier_barn_melee",
         "loot_tier_hatchet_melee",
@@ -1392,6 +1416,7 @@
         "backpack01",
         "backpack02",
         "backpack03",
+        "backpack04",
         "helmet01",
         "helmet02",
         "helmet03",
@@ -1421,6 +1446,7 @@
         "helmet04_leader",
         "helmet04_captain",
         "helmet04_classless",
+        "backpack04_cloud",
         "mp5",
         "mac10",
         "ump9",
@@ -1813,30 +1839,30 @@
       ]
     },
     "pageURL": "https://survev.io/",
-    "appURL": "https://survev.io/js/rv39I73V.js",
-    "sharedURL": "https://survev.io/js/Cbg9k6wS.js",
+    "appURL": "https://survev.io/js/DCCpSQPl.js",
+    "sharedURL": "https://survev.io/js/DuBe5OSz.js",
     "selectors": [
-      "*rv39I73V.js",
-      "*Cbg9k6wS.js"
+      "*DCCpSQPl.js",
+      "*DuBe5OSz.js"
     ],
-    "checkedAt": "2026-09-25T18:18:27.277Z"
+    "checkedAt": "2026-09-26T00:56:14.908Z"
   },
   "inputHash": "5f64ee78db8b316bf861c1df9a582949e28ade9d82b128b9d729dd359843fac2",
-  "builtAt": "2026-09-25T18:18:42.525Z",
+  "builtAt": "2026-09-26T00:56:19.706Z",
   "license": "GPL-3.0-or-later",
   "artifacts": {
     "app": {
       "file": "app.js",
-      "bytes": 1531025,
-      "sha256": "5bd84592fc8b7ba24b93a192c986465c1bba1eb28172607127624599350b70e6",
-      "originalFile": "js/BCZGOfDF.js",
+      "bytes": 1540555,
+      "sha256": "d042e0c4a621b95c7b13e700ce977b2c19e9436b4616df24a70b4f099b5862fa",
+      "originalFile": "js/Cj7UQBTs.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/app.js"
     },
     "shared": {
       "file": "shared.js",
-      "bytes": 2526651,
-      "sha256": "3e5c79a837aa9d9090339e48a14fd4720d8c2b9cbd7bd0eff85323d97cb8896c",
-      "originalFile": "js/C0uD4Xfr.js",
+      "bytes": 2549100,
+      "sha256": "ae60b7bef9507280df52bdd0f18652d5c33aca0baf6d8ff6a20f998b1771081a",
+      "originalFile": "js/DkXf4qJK.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/shared.js"
     }
   },
@@ -1949,20 +1975,20 @@
     "GameInitInjection",
     "Override gameControls"
   ],
-  "sourceUrl": "https://github.com/survev/survev/tree/c7a7cd703557861905064f02be10b0f1d7477f77",
+  "sourceUrl": "https://github.com/survev/survev/tree/2b44c3d262d84f9e60da03c52fa0b94643dda8db",
   "build": {
     "artifacts": {
       "app": {
-        "entry": "js/BCZGOfDF.js",
+        "entry": "js/Cj7UQBTs.js",
         "readableEntry": "readable-app.js",
         "imports": [
           "js/7_rZTKki.js",
-          "js/C0uD4Xfr.js"
+          "js/DkXf4qJK.js"
         ],
         "dynamicImports": []
       },
       "shared": {
-        "entry": "js/C0uD4Xfr.js",
+        "entry": "js/DkXf4qJK.js",
         "readableEntry": "readable-shared.js",
         "imports": [
           "js/7_rZTKki.js"
@@ -1973,16 +1999,16 @@
     "minify": false,
     "propertyObfuscation": false,
     "generatedJavaScript": [
-      "js/BCZGOfDF.js",
-      "js/CvflBnfW.js",
+      "js/Cj7UQBTs.js",
+      "js/UvnCxVoJ.js",
       "js/7_rZTKki.js",
-      "js/C0uD4Xfr.js"
+      "js/DkXf4qJK.js"
     ],
     "productionHashes": {
-      "js/BCZGOfDF.js": "c8f4662b75d87cb649de0e8508e3c5d80fa82a0e81e5beb11c0af390a6ee5792",
-      "js/CvflBnfW.js": "6102c30d7d68ccd527b9e42413d322afc5dbc12f30231cb1041f13b6f74e627c",
+      "js/Cj7UQBTs.js": "e7d6a24517ca0a3aa379f8f5179754004ffd9455fda0dcd6a4884d5cc6d80658",
+      "js/UvnCxVoJ.js": "cccece3db02cdd4d6e36fc3cf021a38aa30880374fdfbe3d2b6e3e9d566be9a2",
       "js/7_rZTKki.js": "ee6f7f26af65d579908c6904c08fa7fd954f22673d48974bf74dd8036a83cc71",
-      "js/C0uD4Xfr.js": "08854d0cce629514600679d9c99a5c2b0fe2844e81b26000a15a7e3ec50b202a"
+      "js/DkXf4qJK.js": "f51d5064f3f4af946fff68ae6efaa7d5d726eff116c53b951e36dd5858b80716"
     }
   },
   "publicationMode": "readable-app-and-shared-original-production-imports"
