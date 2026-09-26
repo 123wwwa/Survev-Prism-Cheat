@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name    Survev Prism Cheat
 // @namespace    https://github.com/123wwwa/Survev-Prism-Cheat
-// @version      1790360418961
+// @version      1790384195541
 // @description  Survev Prism Cheat: configurable aim assist, ESP, combat tools and a TAB settings menu.
 // @author    fissure
 // @license      GPL3
@@ -10,8 +10,8 @@
 // @match        https://survev.io/*
 // @icon         https://www.google.com/s2/favicons?domain=survev.io
 // @run-at       document-end
-// @webRequest   [{"selector":"*rv39I73V.js","action":"cancel"}]
-// @webRequest   [{"selector":"*Cbg9k6wS.js","action":"cancel"}]
+// @webRequest   [{"selector":"*DCCpSQPl.js","action":"cancel"}]
+// @webRequest   [{"selector":"*DuBe5OSz.js","action":"cancel"}]
 // @grant        GM_xmlhttpRequest
 // @grant        GM.xmlHttpRequest
 // @connect      self
@@ -8010,8 +8010,8 @@ try {
         return { code: injectedShared.slice(0, start) + scope + injectedShared.slice(end), hosts: Object.keys(defs) };
     }
 
-    const injectedSharedUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@927621b418743cc59f255bc49f7808db962366bc/shared.js";
-    const injectedAppUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@927621b418743cc59f255bc49f7808db962366bc/app.js";
+    const injectedSharedUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@a4da3a2547d762257d9539b895a78eee6488aa92/shared.js";
+    const injectedAppUrl = "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@a4da3a2547d762257d9539b895a78eee6488aa92/app.js";
     async function requestScript(url) {
       const response = await GM.xmlHttpRequest({ method: "GET", url, timeout: 3e4 });
       if (response.status < 200 || response.status >= 300 || !response.responseText?.trim()) {
