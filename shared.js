@@ -1,9 +1,9 @@
 /*!
  * SPDX-License-Identifier: GPL-3.0-or-later
  * Derived from survev/survev (GPL-3.0-or-later).
- * Upstream commit: 2b44c3d262d84f9e60da03c52fa0b94643dda8db
- * Upstream source: https://github.com/survev/survev/tree/2b44c3d262d84f9e60da03c52fa0b94643dda8db
- * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-26T00:56:19.706Z
+ * Upstream commit: 6d25af641dbf83bced9a65fc55148a2503832c65
+ * Upstream source: https://github.com/survev/survev/tree/6d25af641dbf83bced9a65fc55148a2503832c65
+ * Modified by Survev Prism Cheat; modified date (UTC): 2026-09-29T17:01:22.803Z
  * Modifications: readable client build and injector hooks/global exports.
  * Modification source: https://github.com/123wwwa/Survev-Prism-Cheat
  * Injector base source: https://github.com/123wwwa/Survev-Prism-Cheat
@@ -31964,7 +31964,7 @@ var FactionTeam = /* @__PURE__ */ function(FactionTeam) {
 	return FactionTeam;
 }({});
 var GameConfig = {
-	protocolVersion: 1027,
+	protocolVersion: 1028,
 	Action,
 	Anim,
 	DamageType,
@@ -33576,7 +33576,7 @@ var BaseDefs$5 = window.bullets = {
 		obstacleDamage: 1,
 		falloff: .94,
 		distance: 300,
-		speed: 110,
+		speed: 120,
 		variance: 0,
 		shrapnel: false,
 		tracerColor: "762mm",
@@ -34000,7 +34000,7 @@ var BaseDefs$5 = window.bullets = {
 	},
 	bullet_ump9: {
 		type: "bullet",
-		damage: 15,
+		damage: 14.5,
 		obstacleDamage: 1,
 		falloff: .75,
 		distance: 100,
@@ -34185,7 +34185,7 @@ var BaseDefs$5 = window.bullets = {
 	},
 	bullet_l86: {
 		type: "bullet",
-		damage: 27,
+		damage: 25,
 		obstacleDamage: 1,
 		falloff: .9,
 		distance: 425,
@@ -37558,7 +37558,8 @@ var SkinDefs$4 = {
 		name: "Experimental Pack",
 		hasDesc: true,
 		desc: "You can equip an extra perk.",
-		maxPerks: 2
+		maxPerks: 2,
+		lootImg: { sprite: "loot-pack-04-cloud.img" }
 	})
 };
 var GEAR_TYPES = [
@@ -37710,8 +37711,8 @@ var BaseDefs$3 = window.guns = {
 		extendedClip: 40,
 		extendedReload: 40,
 		reloadTime: 1.9,
-		fireDelay: .35,
-		burstDelay: .07,
+		fireDelay: .3,
+		burstDelay: .06,
 		switchDelay: .75,
 		barrelLength: 2.7,
 		barrelOffset: 0,
@@ -37957,7 +37958,7 @@ var BaseDefs$3 = window.guns = {
 		shotSpread: 2,
 		bulletCount: 1,
 		bulletType: "bullet_vss",
-		headshotMult: 1.75,
+		headshotMult: 1.5,
 		speed: {
 			equip: 0,
 			attack: 0
@@ -38009,7 +38010,7 @@ var BaseDefs$3 = window.guns = {
 		extendedReload: 35,
 		reloadTime: 2.3,
 		fireDelay: .35,
-		burstDelay: .07,
+		burstDelay: .05,
 		switchDelay: .75,
 		barrelLength: 3.1,
 		barrelOffset: 0,
@@ -38201,7 +38202,7 @@ var BaseDefs$3 = window.guns = {
 		shotSpread: 1,
 		bulletCount: 1,
 		bulletType: "bullet_mk12",
-		headshotMult: 1.75,
+		headshotMult: 1.5,
 		speed: {
 			equip: 0,
 			attack: 0
@@ -38260,7 +38261,7 @@ var BaseDefs$3 = window.guns = {
 		shotSpread: 1,
 		bulletCount: 1,
 		bulletType: "bullet_l86",
-		headshotMult: 1.75,
+		headshotMult: 1.5,
 		speed: {
 			equip: 0,
 			attack: 0
@@ -39515,7 +39516,7 @@ var BaseDefs$3 = window.guns = {
 		shotSpread: 1,
 		bulletCount: 1,
 		bulletType: "bullet_m39",
-		headshotMult: 1.75,
+		headshotMult: 1.5,
 		speed: {
 			equip: 0,
 			attack: 0
@@ -39574,7 +39575,7 @@ var BaseDefs$3 = window.guns = {
 		shotSpread: 1,
 		bulletCount: 1,
 		bulletType: "bullet_svd",
-		headshotMult: 1.75,
+		headshotMult: 1.5,
 		speed: {
 			equip: 0,
 			attack: 0
@@ -39633,7 +39634,7 @@ var BaseDefs$3 = window.guns = {
 		shotSpread: .4,
 		bulletCount: 1,
 		bulletType: "bullet_garand",
-		headshotMult: 1.74,
+		headshotMult: 1.44,
 		speed: {
 			equip: 0,
 			attack: 0
@@ -45991,7 +45992,7 @@ var QuestDefs = {
 	quest_damage_762mm_ltm: {
 		type: "quest",
 		event: "damage",
-		target: 350,
+		target: 700,
 		xp: 30,
 		icon: { urls: ["img/emotes/ammo-762mm.svg"] },
 		filters: [{
@@ -46027,13 +46028,13 @@ var QuestDefs = {
 	quest_damage_556mm_ltm: {
 		type: "quest",
 		event: "damage",
-		target: 350,
+		target: 700,
 		xp: 30,
-		icon: { urls: ["img/emotes/ammo-762mm.svg"] },
+		icon: { urls: ["img/emotes/ammo-556mm.svg"] },
 		filters: [{
 			type: "weapon",
 			weaponClass: "gun",
-			ammo: ["762mm"]
+			ammo: ["556mm"]
 		}],
 		mapFilterType: "only_on",
 		maps: [
@@ -67843,7 +67844,7 @@ function createLoggingComplex3(overrides, params) {
 	};
 	return util.mergeDeep(baseDef, overrides);
 }
-function createOasis(overrides) {
+function createOasis(overrides, params) {
 	const baseDef = {
 		type: "building",
 		map: {
@@ -67857,7 +67858,7 @@ function createOasis(overrides) {
 		mapObstacleBounds: [collider.createCircle(v2.create(0, 0), 43)],
 		mapGroundPatches: [{
 			bound: collider.createCircle(v2.create(0, 0), 40),
-			color: 10923848,
+			color: params.groundTint || 10923848,
 			roughness: .3,
 			offsetDist: 2
 		}],
@@ -67873,7 +67874,7 @@ function createOasis(overrides) {
 			imgs: []
 		},
 		soundEmitters: [{
-			sound: "ambient_wind_01",
+			sound: "ambient_waves_01",
 			channel: "ambient",
 			pos: v2.create(0, 0),
 			range: {
@@ -67901,7 +67902,7 @@ function createOasis(overrides) {
 				ori: 0
 			},
 			{
-				type: "crate_09de",
+				type: params.centralCrate || "crate_09de",
 				pos: v2.create(5, 0),
 				scale: 1,
 				ori: 0
@@ -68090,7 +68091,7 @@ function createOasis(overrides) {
 				ori: 0
 			},
 			{
-				type: "crate_02",
+				type: params.outerCrate || "crate_02",
 				pos: v2.create(25, -25),
 				scale: 1,
 				ori: 0
@@ -72414,7 +72415,7 @@ var ModeBuildingDefs = {
 			}
 		]
 	},
-	oasis_01: createOasis({}),
+	oasis_01: createOasis({}, {}),
 	river_town_02: {
 		type: "building",
 		map: {
@@ -75199,6 +75200,11 @@ var ModeBuildingDefs = {
 		spawnPriority: 2
 	} }, { grass_color: 8035865 }),
 	perch_01: createPerch({}),
+	oasis_01sv: createOasis({}, {
+		groundTint: 8035865,
+		centralCrate: "crate_21",
+		outerCrate: "crate_02sv_lake"
+	}),
 	hut_01x: createHut({ ceiling: { imgs: [
 		{
 			sprite: "map-building-hut-ceiling-01.img",
@@ -83230,7 +83236,7 @@ var InteractableDefs = {
 			useStyle: "close",
 			useLock: "lock",
 			useCooldown: 40,
-			useExpiration: 15,
+			useExpiration: 10,
 			resetAfterCooldown: true,
 			useDir: v2.create(-1, 0),
 			useImg: "map-control-panel-02.img",
@@ -87803,7 +87809,7 @@ var Main = {
 		name: "Normal",
 		icon: "",
 		buttonCss: "",
-		backgroundImg: "img/main_splash.png"
+		backgroundImg: "img/splashes/main.webp"
 	},
 	assets: {
 		audio: [
@@ -87860,6 +87866,12 @@ var Main = {
 		},
 		valueAdjust: 1,
 		sound: { riverShore: "sand" },
+		ambience: {
+			music: "menu_music_01",
+			wind: "ambient_wind_01",
+			river: "ambient_stream_01",
+			waves: "ambient_waves_01"
+		},
 		particles: { camera: "" },
 		tracerColors: {},
 		airdrop: {
@@ -87992,7 +88004,7 @@ var mapDef$15 = {
 		name: "Cobalt",
 		icon: "img/gui/cobalt.svg",
 		buttonCss: "btn-mode-cobalt",
-		backgroundImg: "img/main_splash_cobalt.png"
+		backgroundImg: "img/splashes/desert.webp"
 	},
 	assets: {
 		audio: [
@@ -88059,7 +88071,7 @@ var mapDef$14 = {
 		name: "Desert",
 		icon: "img/loot/loot-weapon-flare-gun.svg",
 		buttonCss: "btn-mode-desert",
-		backgroundImg: "img/main_splash_desert_01.png"
+		backgroundImg: "img/splashes/desert.webp"
 	},
 	assets: {
 		audio: [
@@ -88135,7 +88147,7 @@ var mapDef$13 = {
 		icon: "img/gui/star.svg",
 		buttonCss: "btn-mode-faction",
 		buttonText: "50v50",
-		backgroundImg: "img/main_splash_0_7_0.png"
+		backgroundImg: "img/splashes/faction.webp"
 	},
 	assets: {
 		audio: [
@@ -88245,8 +88257,7 @@ var mapDef$12 = {
 		name: "Potato vs Tomato",
 		icon: "img/gui/star.svg",
 		buttonCss: "btn-mode-faction-potato",
-		buttonText: "50v50",
-		backgroundImg: "img/main_splash_0_7_0.png"
+		buttonText: "50v50"
 	},
 	assets: {
 		audio: [
@@ -88376,7 +88387,7 @@ var mapDef$11 = {
 		name: "Halloween",
 		icon: "img/gui/pumpkin-play.svg",
 		buttonCss: "btn-mode-halloween",
-		backgroundImg: "img/main_splash_halloween.png"
+		backgroundImg: "img/splashes/halloween.webp"
 	},
 	assets: {
 		audio: [
@@ -88463,6 +88474,7 @@ var mapDef$11 = {
 			playerSubmerge: 1310720
 		},
 		particles: { camera: "falling_leaf_halloween" },
+		ambience: { music: "menu_music_02" },
 		valueAdjust: .3
 	},
 	gameMode: {
@@ -88476,7 +88488,7 @@ var Halloween = util.mergeDeep({}, Main, mapDef$11);
 //#endregion
 //#region ../shared/defs/maps/mainSpringDefs.ts
 var mapDef$10 = {
-	desc: { backgroundImg: "img/main_splash_7_3.png" },
+	desc: { backgroundImg: "img/splashes/main_spring.webp" },
 	assets: {
 		audio: [],
 		atlases: [
@@ -88651,6 +88663,7 @@ var Potato = util.mergeDeep({}, Main, mapDef$8);
 //#endregion
 //#region ../shared/defs/maps/potatoSpringDefs.ts
 var mapDef$7 = {
+	desc: { backgroundImg: "img/splashes/potato_spring.webp" },
 	assets: {
 		audio: [
 			{
@@ -88732,7 +88745,13 @@ var mapDef$6 = {
 		buttonCss: "btn-mode-savannah"
 	},
 	assets: {
-		audio: [],
+		audio: [{
+			name: "coconut_01",
+			channel: "sfx"
+		}, {
+			name: "potato_pickup_01",
+			channel: "ui"
+		}],
 		atlases: [
 			"loadout",
 			"shared",
@@ -88764,9 +88783,9 @@ var Savannah = util.mergeDeep({}, Main, mapDef$6);
 //#region ../shared/defs/maps/snowDefs.ts
 var mapDef$5 = {
 	desc: {
-		backgroundImg: "img/main_splash_0_6_10.png",
 		icon: "img/loot/loot-throwable-snowball.svg",
-		buttonCss: "btn-mode-snow"
+		buttonCss: "btn-mode-snow",
+		backgroundImg: "img/splashes/snow.webp"
 	},
 	assets: {
 		audio: [
@@ -88855,7 +88874,7 @@ var mapDef$4 = {
 		name: "Turkey",
 		icon: "",
 		buttonCss: "",
-		backgroundImg: "img/main_splash_turkey_01.png"
+		backgroundImg: "img/splashes/turkey.webp"
 	},
 	assets: {
 		audio: [
@@ -89415,6 +89434,7 @@ var defaultConfig = {
 	touchAimStyle: "anywhere",
 	touchAimLine: true,
 	binds: "",
+	clientTheme: "main",
 	cachedBgImg: "img/main_splash.png",
 	language: "en",
 	playerName: "",
@@ -89624,8 +89644,8 @@ var quest_heal = "Use healing items";
 var quest_boost = "Use adrenaline items";
 var quest_airdrop = "Unlock air drops";
 var quest_airdrop_ltm = "Unlock air drops";
-var quest_airdrop_rare = "Unlock rare air drops";
 var quest_airdrop_ltm_hard = "Unlock air drops";
+var quest_airdrop_rare = "Unlock rare air drops";
 var quest_crates = "Destroy crates";
 var quest_toilets = "Destroy toilets";
 var quest_furniture = "Destroy furniture";
@@ -89646,11 +89666,10 @@ var quest_reserve_kills = "Kill enemies at: Reserve";
 var quest_logging_complex_kills = "Kill at: Logging Complex";
 var quest_be_mvp = "Be the MVP";
 var quest_promote_hunted = "Become The Hunted";
-var quest_factions_kills = "Kills as any role";
 var quest_factions_damage = "Damage as any role";
 var quest_last_man_damage = "Damage as Lone Survivr";
 var quest_last_man_damage_hard = "Damage as Lone Survivr";
-var quest_last_man_kills = "Kills as Lone Survivr";
+var quest_factions_kills = "Kills as any role";
 var quest_healer_kills = "Kills as Medic";
 var quest_tank_kills = "Kills as Tank";
 var quest_sniper_kills = "Kills as Sniper";
@@ -89912,8 +89931,8 @@ var en_default = {
 	quest_boost,
 	quest_airdrop,
 	quest_airdrop_ltm,
-	quest_airdrop_rare,
 	quest_airdrop_ltm_hard,
+	quest_airdrop_rare,
 	quest_crates,
 	quest_toilets,
 	quest_furniture,
@@ -89934,11 +89953,10 @@ var en_default = {
 	quest_logging_complex_kills,
 	quest_be_mvp,
 	quest_promote_hunted,
-	quest_factions_kills,
 	quest_factions_damage,
 	quest_last_man_damage,
 	quest_last_man_damage_hard,
-	quest_last_man_kills,
+	quest_factions_kills,
 	quest_healer_kills,
 	quest_tank_kills,
 	quest_sniper_kills,
@@ -90838,4 +90856,4 @@ var Localization = class {
 };
 
 //#endregion
-export { Graphics as $, SCOPE_LEVELS as A, Anim as B, MapObjectDefs as C, PingDefs as D, QuestDefs as E, assert as F, HasteType as G, EmoteSlot as H, util as I, Rarity as J, Input as K, math as L, EmotesDefs as M, CrosshairDefs as N, PassDefs as O, BulletDefs as P, BasePrepare as Q, v2 as R, GameObjectDefs as S, coldet as T, GameConfig as U, DamageType as V, GasMode as W, WeaponSlot as X, TeamMode as Y, Spritesheet as Z, ObjectType as _, helpers as a, Container as at, InputMsg as b, proxy as c, Point as ct, MsgStream as d, PRECISION as dt, LINE_JOIN as et, MsgType as f, RENDERER_TYPE as ft, getPlayerStatusUpdateRate as g, UpdateMsg as h, ConfigManager as i, Sprite as it, EmoteCategory as j, GEAR_TYPES as k, loadout as l, Color as lt, UpdatePassMsg as m, require_jquery as mt, SDK as n, Text as nt, MapDefs as o, RenderTexture as ot, PickupMsgType as p, SCALE_MODES as pt, MapId as q, device as r, TextStyle as rt, api as s, Texture as st, Localization as t, Application as tt, Constants as u, settings as ut, MapMsg as v, collider as w, BitStream$1 as x, JoinMsg as y, Action as z };
+export { Graphics as $, SCOPE_LEVELS as A, Anim as B, MapObjectDefs as C, PingDefs as D, QuestDefs as E, assert as F, HasteType as G, EmoteSlot as H, util as I, Rarity as J, Input as K, math as L, EmotesDefs as M, CrosshairDefs as N, PassDefs as O, BulletDefs as P, BasePrepare as Q, v2 as R, GameObjectDefs as S, coldet as T, GameConfig as U, DamageType as V, GasMode as W, WeaponSlot as X, TeamMode as Y, Spritesheet as Z, ObjectType as _, helpers as a, Container as at, InputMsg as b, proxy as c, Color as ct, MsgStream as d, RENDERER_TYPE as dt, LINE_JOIN as et, MsgType as f, SCALE_MODES as ft, getPlayerStatusUpdateRate as g, UpdateMsg as h, ConfigManager as i, Sprite as it, EmoteCategory as j, GEAR_TYPES as k, loadout as l, settings as lt, UpdatePassMsg as m, SDK as n, Text as nt, MapDefs as o, RenderTexture as ot, PickupMsgType as p, require_jquery as pt, MapId as q, device as r, TextStyle as rt, api as s, Texture as st, Localization as t, Application as tt, Constants as u, PRECISION as ut, MapMsg as v, collider as w, BitStream$1 as x, JoinMsg as y, Action as z };

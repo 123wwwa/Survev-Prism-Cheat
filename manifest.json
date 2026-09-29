@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
   "upstreamRepository": "https://github.com/survev/survev.git",
-  "upstreamCommit": "2b44c3d262d84f9e60da03c52fa0b94643dda8db",
+  "upstreamCommit": "6d25af641dbf83bced9a65fc55148a2503832c65",
   "liveSite": {
-    "protocolVersion": 1027,
+    "protocolVersion": 1028,
     "definitionIds": {
       "Map": [
         "",
@@ -850,6 +850,7 @@
         "savannah_patch_01",
         "kopje_patch_01",
         "perch_01",
+        "oasis_01sv",
         "hut_01x",
         "hut_02x",
         "warehouse_01x",
@@ -1839,30 +1840,30 @@
       ]
     },
     "pageURL": "https://survev.io/",
-    "appURL": "https://survev.io/js/DCCpSQPl.js",
-    "sharedURL": "https://survev.io/js/DuBe5OSz.js",
+    "appURL": "https://survev.io/js/BGmvCf-g.js",
+    "sharedURL": "https://survev.io/js/DXNtK47S.js",
     "selectors": [
-      "*DCCpSQPl.js",
-      "*DuBe5OSz.js"
+      "*BGmvCf-g.js",
+      "*DXNtK47S.js"
     ],
-    "checkedAt": "2026-09-26T00:56:14.908Z"
+    "checkedAt": "2026-09-29T17:01:15.369Z"
   },
   "inputHash": "5f64ee78db8b316bf861c1df9a582949e28ade9d82b128b9d729dd359843fac2",
-  "builtAt": "2026-09-26T00:56:19.706Z",
+  "builtAt": "2026-09-29T17:01:22.803Z",
   "license": "GPL-3.0-or-later",
   "artifacts": {
     "app": {
       "file": "app.js",
-      "bytes": 1540555,
-      "sha256": "d042e0c4a621b95c7b13e700ce977b2c19e9436b4616df24a70b4f099b5862fa",
-      "originalFile": "js/Cj7UQBTs.js",
+      "bytes": 1541923,
+      "sha256": "5a072fd4ecebd9bb233cc9bb98d7acf36c0d8a5e651200119b2d506e9dd48df3",
+      "originalFile": "js/D-jOKjnL.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/app.js"
     },
     "shared": {
       "file": "shared.js",
-      "bytes": 2549100,
-      "sha256": "ae60b7bef9507280df52bdd0f18652d5c33aca0baf6d8ff6a20f998b1771081a",
-      "originalFile": "js/DkXf4qJK.js",
+      "bytes": 2549555,
+      "sha256": "a4557acb6f922bb65a76aa1cdd9f97f125a8451e491e3c39beb5ce2b1e94d08e",
+      "originalFile": "js/r-eMSYr7.js",
       "latestUrl": "https://cdn.jsdelivr.net/gh/123wwwa/Survev-Prism-Cheat@cdn/shared.js"
     }
   },
@@ -1975,20 +1976,20 @@
     "GameInitInjection",
     "Override gameControls"
   ],
-  "sourceUrl": "https://github.com/survev/survev/tree/2b44c3d262d84f9e60da03c52fa0b94643dda8db",
+  "sourceUrl": "https://github.com/survev/survev/tree/6d25af641dbf83bced9a65fc55148a2503832c65",
   "build": {
     "artifacts": {
       "app": {
-        "entry": "js/Cj7UQBTs.js",
+        "entry": "js/D-jOKjnL.js",
         "readableEntry": "readable-app.js",
         "imports": [
           "js/7_rZTKki.js",
-          "js/DkXf4qJK.js"
+          "js/r-eMSYr7.js"
         ],
         "dynamicImports": []
       },
       "shared": {
-        "entry": "js/DkXf4qJK.js",
+        "entry": "js/r-eMSYr7.js",
         "readableEntry": "readable-shared.js",
         "imports": [
           "js/7_rZTKki.js"
@@ -1999,16 +2000,16 @@
     "minify": false,
     "propertyObfuscation": false,
     "generatedJavaScript": [
-      "js/Cj7UQBTs.js",
-      "js/UvnCxVoJ.js",
+      "js/D-jOKjnL.js",
+      "js/Odoq-Ei2.js",
       "js/7_rZTKki.js",
-      "js/DkXf4qJK.js"
+      "js/r-eMSYr7.js"
     ],
     "productionHashes": {
-      "js/Cj7UQBTs.js": "e7d6a24517ca0a3aa379f8f5179754004ffd9455fda0dcd6a4884d5cc6d80658",
-      "js/UvnCxVoJ.js": "cccece3db02cdd4d6e36fc3cf021a38aa30880374fdfbe3d2b6e3e9d566be9a2",
+      "js/D-jOKjnL.js": "86b368245a5d887d4076b276753e34b71d91841382d55d33309bfa14124e4ac4",
+      "js/Odoq-Ei2.js": "9b2e77c24b63719c10832ac8a0180dda2aecf77c2c9c0a82d69e90c69df0bc1e",
       "js/7_rZTKki.js": "ee6f7f26af65d579908c6904c08fa7fd954f22673d48974bf74dd8036a83cc71",
-      "js/DkXf4qJK.js": "f51d5064f3f4af946fff68ae6efaa7d5d726eff116c53b951e36dd5858b80716"
+      "js/r-eMSYr7.js": "28b6bba5c63f3773b4457b8cf63be17ccb483f707179661fe3e9255a30495afd"
     }
   },
   "publicationMode": "readable-app-and-shared-original-production-imports"
